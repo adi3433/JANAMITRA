@@ -40,7 +40,7 @@ export function SystemBanner({ visible, onDismiss }: SystemBannerProps) {
             <div className="flex-1 text-sm text-[var(--color-primary-700)]">
               {locale === 'ml' ? (
                 <span className="font-ml">
-                  ഞാൻ വാക്ക്, കോട്ടയം ജില്ലയിലെ നിഷ്പക്ഷ വോട്ടർ വിവര സഹായിയാണ്.
+                  ഞാൻ ജനമിത്ര, കോട്ടയം ജില്ലയിലെ നിഷ്പക്ഷ വോട്ടർ വിവര സഹായിയാണ്.
                   ഉത്തരങ്ങൾ ഔദ്യോഗിക ഉറവിടങ്ങളിൽ നിന്നാണ്, രാഷ്ട്രീയ ഉപദേശങ്ങൾ നൽകില്ല.
                 </span>
               ) : (

@@ -71,7 +71,7 @@ export function ShortcutHelp() {
               </div>
 
               <p className="mt-4 text-center text-[10px] text-[var(--text-tertiary)]">
-                {isMl ? 'Ctrl+/ ഉപയോഗിച്ച് ഈ ഡയലോഗ് ടോഗിൾ ചെയ്യുക' : 'Press Ctrl+/ to toggle this dialog'}
+                {isMl ? 'Ctrl+/ ഉപയോഗിച്ച് ഈ ഡയലോഗ് ടോഗിൾ ചെയ്യുക' : 'Press Ctrl + / to toggle this dialog'}
               </p>
             </div>
           </motion.div>

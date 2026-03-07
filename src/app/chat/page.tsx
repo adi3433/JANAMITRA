@@ -20,6 +20,7 @@ import {
   Bars3Icon,
   SparklesIcon,
   ArrowDownTrayIcon,
+  ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -223,17 +224,35 @@ export default function ChatPage() {
                 transition={{ duration: 0.5, ease: [0, 0, 0.2, 1] }}
                 className="text-center max-w-lg"
               >
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-primary-600)] shadow-lg shadow-[var(--color-primary-500)]/20">
-                  <SparklesIcon className="h-8 w-8 text-white" />
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-primary-600)] shadow-lg shadow-[var(--color-primary-500)]/20">
+                  <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
                 </div>
                 <h2 className={`text-2xl font-bold text-[var(--text-primary)] ${locale === 'ml' ? 'font-ml' : ''}`}>
-                  {locale === 'ml' ? 'വാക്കിലേക്ക് സ്വാഗതം!' : 'Welcome to Janamitra'}
+                  {locale === 'ml' ? 'ജനമിത്രയിലേക്ക് സ്വാഗതം!' : 'Welcome to Janamitra'}
                 </h2>
                 <p className={`mt-2 text-sm text-[var(--text-secondary)] leading-relaxed ${locale === 'ml' ? 'font-ml' : ''}`}>
                   {locale === 'ml'
                     ? 'കോട്ടയം ജില്ലയിലെ വോട്ടർ വിവരങ്ങൾക്ക് നിങ്ങളുടെ AI സഹായി'
                     : 'Your AI voter information assistant for Kottayam District'}
                 </p>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-[11px] text-[var(--text-tertiary)]">
+                  <span className="flex items-center gap-1">
+                    <ShieldCheckIcon className="h-3.5 w-3.5 text-emerald-500" />
+                    {locale === 'ml' ? 'നിഷ്പക്ഷം' : 'Impartial'}
+                  </span>
+                  <span className="h-3 w-px bg-[var(--border-primary)]" />
+                  <span className="flex items-center gap-1">
+                    <SparklesIcon className="h-3.5 w-3.5 text-[var(--color-primary-400)]" />
+                    {locale === 'ml' ? 'AI അധിഷ്ഠിതം' : 'AI Powered'}
+                  </span>
+                  <span className="h-3 w-px bg-[var(--border-primary)]" />
+                  <span>{locale === 'ml' ? 'ഔദ്യോഗിക ഡാറ്റ' : 'Official Data'}</span>
+                </div>
               </motion.div>
 
               <motion.div
@@ -263,7 +282,7 @@ export default function ChatPage() {
             </div>
             <p className="mx-auto mt-1.5 max-w-3xl text-center text-[10px] text-[var(--text-tertiary)]">
               {locale === 'ml'
-                ? 'വാക്ക് നിഷ്പക്ഷ വോട്ടർ വിവരങ്ങൾ നൽകുന്നു. ഔദ്യോഗിക സൈറ്റുകളിൽ പരിശോധിക്കുക.'
+                ? 'ജനമിത്ര നിഷ്പക്ഷ വോട്ടർ വിവരങ്ങൾ നൽകുന്നു. ഔദ്യോഗിക സൈറ്റുകളിൽ പരിശോധിക്കുക.'
                 : 'Janamitra provides impartial voter info. Verify on official sources.'}
             </p>
           </div>
