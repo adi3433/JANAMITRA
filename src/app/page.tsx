@@ -1,5 +1,5 @@
 /**
- * Landing Page — Vaakku
+ * Landing Page — Janamitra
  * ──────────────────────
  * Hero with parallax background, quick action entry points,
  * and animated feature cards.

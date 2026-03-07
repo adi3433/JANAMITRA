@@ -13,7 +13,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useLocale } from '@/hooks/useLocale';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -33,7 +33,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
     resetTranscript,
   } = useSpeechRecognition(locale);
 
-  const { locationShared, setUserLocation } = useVaakkuStore();
+  const { locationShared, setUserLocation } = useJanamitraStore();
   const [locationLoading, setLocationLoading] = useState(false);
 
   const handleShareLocation = () => {

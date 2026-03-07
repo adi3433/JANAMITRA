@@ -1,5 +1,5 @@
 /**
- * Vaakku — Shared TypeScript Types
+ * Janamitra — Shared TypeScript Types
  * ─────────────────────────────────
  * Canonical types for the chat protocol, API contracts,
  * and domain models.
@@ -69,6 +69,7 @@ export interface BoothInfo {
   latitude: number;
   longitude: number;
   constituency: string;
+  lacNumber: number;
   ward: string;
   facilities: string[];
   accessibility: boolean;

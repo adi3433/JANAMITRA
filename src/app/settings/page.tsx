@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
 import { useLocale } from '@/hooks/useLocale';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 import {
   setMemoryConsent as apiSetMemoryConsent,
   exportMemory,
@@ -26,7 +26,7 @@ export default function SettingsPage() {
     setMemoryEnabled,
     setMemoryConsentGiven,
     userId,
-  } = useVaakkuStore();
+  } = useJanamitraStore();
 
   const isMl = locale === 'ml';
   const [exportLoading, setExportLoading] = useState(false);
@@ -56,7 +56,7 @@ export default function SettingsPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `vaakku-data-export-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `janamitra-data-export-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
       setStatusMessage(isMl ? 'ഡാറ്റ എക്‌സ്‌പോർട്ട് ചെയ്തു' : 'Data exported successfully');
@@ -138,8 +138,8 @@ export default function SettingsPage() {
                 </h2>
                 <p className={`mt-1 text-xs text-[var(--color-neutral-400)] ${isMl ? 'font-ml' : ''}`}>
                   {isMl
-                    ? 'നിങ്ങളുടെ മുൻഗണനകളും പ്രൊഫൈൽ വിവരങ്ങളും ഓർമ്മിക്കാൻ Vaakku-നെ അനുവദിക്കുക'
-                    : 'Allow Vaakku to remember your preferences and profile across sessions'}
+                    ? 'നിങ്ങളുടെ മുൻഗണനകളും പ്രൊഫൈൽ വിവരങ്ങളും ഓർമ്മിക്കാൻ Janamitra-നെ അനുവദിക്കുക'
+                    : 'Allow Janamitra to remember your preferences and profile across sessions'}
                 </p>
                 <div className="mt-3">
                   <ToggleRow

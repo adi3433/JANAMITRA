@@ -1,26 +1,27 @@
 /**
- * GET /api/booth — Polling Booth Locator (Kottayam LAC 97)
- * ──────────────────────────────────────────────────────────
+ * GET /api/booth — Polling Booth Locator (Kottayam District, LACs 93–101)
+ * ─────────────────────────────────────────────────────────────────────────
  * API Contract:
- *   Query params: q? (search text), station_number?, voter_id?, constituency?
+ *   Query params: q? (search text), station_number?, voter_id?, constituency?, lac?
  *   Response: { booths[], matchedVoter?, confidence, source }
  *
- * Uses real data from kottayam_booth_data.json (171 polling stations).
+ * Uses real data from 9 LAC JSON files (~1,560 polling stations).
  */
 import { NextRequest, NextResponse } from 'next/server';
 import type { BoothSearchResponse, BoothInfo, ChatSource } from '@/types';
-import { searchBooths, searchNearestBooths, getAllBooths, type BoothRecord } from '@/lib/booth-data';
+import { searchBooths, searchNearestBooths, getAllBooths, LAC_REGISTRY, type BoothRecord } from '@/lib/booth-data';
 
 function boothRecordToBoothInfo(record: BoothRecord): BoothInfo {
   return {
     boothId: record.id,
     boothName: record.title,
-    boothNameMl: record.title, // title is same; ML details in content_ml
-    address: `${record.landmark}, LAC 97-Kottayam`,
-    addressMl: record.areaMl ? `${record.areaMl}, LAC 97-കോട്ടയം` : `LAC 97-കോട്ടയം`,
+    boothNameMl: record.title,
+    address: `${record.landmark || record.title}, LAC ${record.lacNumber}-${record.lacNameEn}`,
+    addressMl: record.areaMl ? `${record.areaMl}, LAC ${record.lacNumber}-${record.lacNameMl}` : `LAC ${record.lacNumber}-${record.lacNameMl}`,
     latitude: record.lat,
     longitude: record.lng,
-    constituency: 'Kottayam',
+    constituency: record.lacNameEn,
+    lacNumber: record.lacNumber,
     ward: `Station ${record.stationNumber}`,
     facilities: ['Ramp', 'Drinking Water', 'Queue Management'],
     accessibility: true,
@@ -28,10 +29,10 @@ function boothRecordToBoothInfo(record: BoothRecord): BoothInfo {
 }
 
 const SOURCE: ChatSource = {
-  title: 'Election Commission of India — Official Booth List LAC 97-Kottayam',
+  title: 'Election Commission of India — Official Booth List, Kottayam District (LAC 93–101)',
   url: 'https://kottayam.nic.in/en/election/',
   lastUpdated: '2026-02-01',
-  excerpt: 'Official polling station data from District 10-Kottayam, LAC 97.',
+  excerpt: 'Official polling station data from District 10-Kottayam, covering all 9 LACs (93–101).',
 };
 
 export async function GET(request: NextRequest) {
@@ -42,6 +43,8 @@ export async function GET(request: NextRequest) {
   const constituency = searchParams.get('constituency');
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
+  const lacParam = searchParams.get('lac');
+  const lacFilter = lacParam ? parseInt(lacParam, 10) : undefined;
 
   let results: BoothRecord[] = [];
 
@@ -56,19 +59,19 @@ export async function GET(request: NextRequest) {
   // Search by station number
   else if (stationNumber) {
     const num = parseInt(stationNumber, 10);
-    results = getAllBooths().filter((b) => b.stationNumber === num);
+    results = getAllBooths(lacFilter).filter((b) => b.stationNumber === num);
   }
   // Search by text query
   else if (query) {
-    results = searchBooths(query, 5);
+    results = searchBooths(query, 5, lacFilter);
   }
   // Search by constituency (filters)
   else if (constituency) {
-    results = searchBooths(constituency, 10);
+    results = searchBooths(constituency, 10, lacFilter);
   }
   // No search params — return all booths (for map display)
   else {
-    results = getAllBooths();
+    results = getAllBooths(lacFilter);
   }
 
   const boothInfos: BoothInfo[] = results.map(boothRecordToBoothInfo);
@@ -80,7 +83,7 @@ export async function GET(request: NextRequest) {
           epicNumber: voterId,
           name: 'Voter',
           nameMl: 'വോട്ടർ',
-          constituency: 'Kottayam',
+          constituency: results[0]?.lacNameEn || 'Kottayam',
           boothId: results[0]?.id ?? 'unknown',
           status: 'active',
         }

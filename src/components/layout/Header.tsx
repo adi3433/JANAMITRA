@@ -13,13 +13,13 @@ import {
   MoonIcon,
 } from '@heroicons/react/24/outline';
 import { useLocale } from '@/hooks/useLocale';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 
 export function Header() {
   const { locale, toggle, t } = useLocale();
-  const toggleDarkMode = useVaakkuStore((s) => s.toggleDarkMode);
-  const setDarkMode = useVaakkuStore((s) => s.setDarkMode);
-  const darkMode = useVaakkuStore((s) => s.darkMode);
+  const toggleDarkMode = useJanamitraStore((s) => s.toggleDarkMode);
+  const setDarkMode = useJanamitraStore((s) => s.setDarkMode);
+  const darkMode = useJanamitraStore((s) => s.darkMode);
 
   // Hydration-safe mounted check using useSyncExternalStore
   const mounted = useSyncExternalStore(
@@ -30,7 +30,7 @@ export function Header() {
 
   // Sync persisted dark mode preference after hydration
   useEffect(() => {
-    const stored = localStorage.getItem('vaakku_darkMode');
+    const stored = localStorage.getItem('janamitra_darkMode');
     if (stored !== null) {
       setDarkMode(stored === 'true');
     } else if (window.matchMedia?.('(prefers-color-scheme: dark)')?.matches) {

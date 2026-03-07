@@ -13,10 +13,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useParallax } from '@/hooks/useParallax';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 
 export function ParallaxBackground() {
-  const motionEnabled = useVaakkuStore((s) => s.motionEnabled);
+  const motionEnabled = useJanamitraStore((s) => s.motionEnabled);
 
   const layer1 = useParallax({ intensity: 0.3, maxDisplacement: 15 });
   const layer2 = useParallax({ intensity: 0.6, maxDisplacement: 25 });

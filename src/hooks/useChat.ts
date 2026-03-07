@@ -8,7 +8,7 @@
 
 import { useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 import { sendChatMessage } from '@/lib/api-client';
 import type { ChatMessage } from '@/types';
 
@@ -23,7 +23,7 @@ export function useChat() {
     locale,
     userLatitude,
     userLongitude,
-  } = useVaakkuStore();
+  } = useJanamitraStore();
 
   const send = useCallback(
     async (text: string) => {

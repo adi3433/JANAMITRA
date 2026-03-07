@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vaakku
+  name: janamitra
   labels:
-    app: vaakku
+    app: janamitra
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: vaakku
+      app: janamitra
   template:
     metadata:
       labels:
-        app: vaakku
+        app: janamitra
     spec:
       containers:
-        - name: vaakku
-          image: ghcr.io/sveep-kottayam/vaakku:latest
+        - name: janamitra
+          image: ghcr.io/sveep-kottayam/janamitra:latest
           ports:
             - containerPort: 3000
           envFrom:
             - secretRef:
-                name: vaakku-secrets
+                name: janamitra-secrets
           resources:
             requests:
               cpu: 250m
@@ -45,10 +45,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: vaakku
+  name: janamitra
 spec:
   selector:
-    app: vaakku
+    app: janamitra
   ports:
     - port: 80
       targetPort: 3000
@@ -57,23 +57,23 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: vaakku
+  name: janamitra
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - vaakku.sveep-kottayam.gov.in
-      secretName: vaakku-tls
+        - janamitra.sveep-kottayam.gov.in
+      secretName: janamitra-tls
   rules:
-    - host: vaakku.sveep-kottayam.gov.in
+    - host: janamitra.sveep-kottayam.gov.in
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: vaakku
+                name: janamitra
                 port:
                   number: 80

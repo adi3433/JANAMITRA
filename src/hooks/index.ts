@@ -1,5 +1,5 @@
 /**
- * Vaakku — Custom Hooks
+ * Janamitra — Custom Hooks
  * ──────────────────────
  */
 export { useDeviceOrientation } from './useDeviceOrientation';

@@ -24,7 +24,7 @@ import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from '@heroicons/react/24/outline';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 import { useLocale } from '@/hooks/useLocale';
 import type { ConversationListItem } from '@/types';
 
@@ -45,7 +45,7 @@ export function ChatSidebar({ onSelectConversation, onNewConversation, onToggleS
     activeConversationId,
     incognitoMode,
     setIncognitoMode,
-  } = useVaakkuStore();
+  } = useJanamitraStore();
   const { locale } = useLocale();
   const isMl = locale === 'ml';
 
@@ -215,9 +215,9 @@ export function ChatSidebar({ onSelectConversation, onNewConversation, onToggleS
             const next = !incognitoMode;
             if (next) {
               // Entering incognito: save current state to sessionStorage, then start a blank session
-              const state = useVaakkuStore.getState();
+              const state = useJanamitraStore.getState();
               try {
-                sessionStorage.setItem('vaakku_preIncognito', JSON.stringify({
+                sessionStorage.setItem('janamitra_preIncognito', JSON.stringify({
                   sessionId: state.sessionId,
                   messages: state.messages,
                   activeConversationId: state.activeConversationId,
@@ -227,15 +227,15 @@ export function ChatSidebar({ onSelectConversation, onNewConversation, onToggleS
             } else {
               // Leaving incognito: restore previous session state from sessionStorage
               try {
-                const raw = sessionStorage.getItem('vaakku_preIncognito');
+                const raw = sessionStorage.getItem('janamitra_preIncognito');
                 if (raw) {
                   const prev = JSON.parse(raw);
-                  useVaakkuStore.setState({
+                  useJanamitraStore.setState({
                     sessionId: prev.sessionId,
                     messages: prev.messages || [],
                     activeConversationId: prev.activeConversationId ?? null,
                   });
-                  sessionStorage.removeItem('vaakku_preIncognito');
+                  sessionStorage.removeItem('janamitra_preIncognito');
                 }
               } catch { /* ignore */ }
             }

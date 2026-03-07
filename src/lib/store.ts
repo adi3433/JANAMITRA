@@ -1,5 +1,5 @@
 /**
- * Vaakku — Zustand Store V4
+ * Janamitra — Zustand Store V4
  * ──────────────────────────
  * Global client state: locale, session, messages, UI flags,
  * memory preferences, chat history sidebar, uploads, dark mode,
@@ -9,7 +9,7 @@ import { create } from 'zustand';
 import { v4 as uuid } from 'uuid';
 import type { ChatMessage, Locale, ActionItem, ConversationListItem } from '@/types';
 
-interface VaakkuState {
+interface JanamitraState {
   // ── Locale ──
   locale: Locale;
   setLocale: (l: Locale) => void;
@@ -92,17 +92,17 @@ interface PendingUpload {
 // Generate or retrieve persistent userId from localStorage
 function getPersistentUserId(): string {
   if (typeof window === 'undefined') return uuid();
-  const stored = localStorage.getItem('vaakku_userId');
+  const stored = localStorage.getItem('janamitra_userId');
   if (stored) return stored;
   const newId = uuid();
-  localStorage.setItem('vaakku_userId', newId);
+  localStorage.setItem('janamitra_userId', newId);
   return newId;
 }
 
 // Retrieve persisted sidebar state
 function getPersistedSidebar(): boolean {
   if (typeof window === 'undefined') return true;
-  const stored = localStorage.getItem('vaakku_sidebarOpen');
+  const stored = localStorage.getItem('janamitra_sidebarOpen');
   return stored !== null ? stored === 'true' : true;
 }
 
@@ -137,7 +137,7 @@ const DEFAULT_QUICK_ACTIONS: ActionItem[] = [
   },
 ];
 
-export const useVaakkuStore = create<VaakkuState>((set) => ({
+export const useJanamitraStore = create<JanamitraState>((set) => ({
   // Locale
   locale: 'en',
   setLocale: (locale) => set({ locale }),
@@ -203,18 +203,18 @@ export const useVaakkuStore = create<VaakkuState>((set) => ({
   // UI
   sidebarOpen: typeof window !== 'undefined' ? getPersistedSidebar() : true,
   setSidebarOpen: (sidebarOpen) => {
-    if (typeof window !== 'undefined') localStorage.setItem('vaakku_sidebarOpen', String(sidebarOpen));
+    if (typeof window !== 'undefined') localStorage.setItem('janamitra_sidebarOpen', String(sidebarOpen));
     set({ sidebarOpen });
   },
   toggleSidebar: () => set((s) => {
     const next = !s.sidebarOpen;
-    if (typeof window !== 'undefined') localStorage.setItem('vaakku_sidebarOpen', String(next));
+    if (typeof window !== 'undefined') localStorage.setItem('janamitra_sidebarOpen', String(next));
     return { sidebarOpen: next };
   }),
   darkMode: false,
   setDarkMode: (darkMode) => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('vaakku_darkMode', String(darkMode));
+      localStorage.setItem('janamitra_darkMode', String(darkMode));
       document.documentElement.classList.toggle('dark', darkMode);
     }
     set({ darkMode });
@@ -222,7 +222,7 @@ export const useVaakkuStore = create<VaakkuState>((set) => ({
   toggleDarkMode: () => set((s) => {
     const next = !s.darkMode;
     if (typeof window !== 'undefined') {
-      localStorage.setItem('vaakku_darkMode', String(next));
+      localStorage.setItem('janamitra_darkMode', String(next));
       document.documentElement.classList.toggle('dark', next);
     }
     return { darkMode: next };

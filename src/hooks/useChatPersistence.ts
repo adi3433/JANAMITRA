@@ -10,7 +10,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 import {
   saveConversation as saveToLocal,
   loadConversationList,
@@ -77,14 +77,14 @@ async function updateFlagsOnServer(conversationId: string, updates: Record<strin
 }
 
 export function useChatPersistence() {
-  const messages = useVaakkuStore((s) => s.messages);
-  const sessionId = useVaakkuStore((s) => s.sessionId);
-  const locale = useVaakkuStore((s) => s.locale);
-  const userId = useVaakkuStore((s) => s.userId);
-  const incognitoMode = useVaakkuStore((s) => s.incognitoMode);
-  const setConversations = useVaakkuStore((s) => s.setConversations);
-  const setMessages = useVaakkuStore((s) => s.setMessages);
-  const setActiveConversationId = useVaakkuStore((s) => s.setActiveConversationId);
+  const messages = useJanamitraStore((s) => s.messages);
+  const sessionId = useJanamitraStore((s) => s.sessionId);
+  const locale = useJanamitraStore((s) => s.locale);
+  const userId = useJanamitraStore((s) => s.userId);
+  const incognitoMode = useJanamitraStore((s) => s.incognitoMode);
+  const setConversations = useJanamitraStore((s) => s.setConversations);
+  const setMessages = useJanamitraStore((s) => s.setMessages);
+  const setActiveConversationId = useJanamitraStore((s) => s.setActiveConversationId);
 
   const prevSessionIdRef = useRef(sessionId);
 
@@ -132,7 +132,7 @@ export function useChatPersistence() {
       if (loaded) {
         setMessages(loaded);
         setActiveConversationId(conversationId);
-        useVaakkuStore.setState({ sessionId: conversationId });
+        useJanamitraStore.setState({ sessionId: conversationId });
         prevSessionIdRef.current = conversationId;
       }
     },
@@ -146,7 +146,7 @@ export function useChatPersistence() {
       deleteFromServer(conversationId);
       const list = loadConversationList();
       setConversations(list);
-      const state = useVaakkuStore.getState();
+      const state = useJanamitraStore.getState();
       if (state.activeConversationId === conversationId) {
         state.resetSession();
       }

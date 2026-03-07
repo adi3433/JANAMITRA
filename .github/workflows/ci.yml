@@ -1,4 +1,4 @@
-name: Vaakku CI
+name: Janamitra CI
 
 on:
   push:

@@ -4,7 +4,7 @@
     "version": "1.0",
     "district": "Kottayam",
     "state": "Kerala",
-    "system": "Vaakku V5",
+    "system": "Janamitra V5",
     "description": "ECI-standardised voting day rules, allowed ID documents, poll timings, EVM/VVPAT guidance, prohibited items, and PwD/elderly facilities.",
     "source": "Election Commission of India — https://ecisveep.nic.in/voters/how-to-vote/ | https://www.ceo.kerala.gov.in",
     "last_updated": "2026-02-23",
@@ -225,7 +225,7 @@
     "permanence": "The ink is permanent and cannot be washed off easily — it fades over several weeks"
   },
 
-  "vaakku_bot_behaviour": {
+  "janamitra_bot_behaviour": {
     "can_do": [
       "Tell voter their booth location",
       "List accepted ID documents",

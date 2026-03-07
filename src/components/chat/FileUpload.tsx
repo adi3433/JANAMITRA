@@ -26,7 +26,7 @@ import {
   ArrowUpTrayIcon,
   ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 import { useLocale } from '@/hooks/useLocale';
 
 interface FileUploadProps {
@@ -41,7 +41,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 export function FileUpload({ onUpload, disabled = false }: FileUploadProps) {
   const { locale } = useLocale();
   const isMl = locale === 'ml';
-  const { pendingUpload, setPendingUpload } = useVaakkuStore();
+  const { pendingUpload, setPendingUpload } = useJanamitraStore();
 
   const [isDragOver, setIsDragOver] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);

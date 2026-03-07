@@ -6,13 +6,13 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 import { useLocale } from '@/hooks/useLocale';
 import { SHORTCUTS } from '@/hooks/useKeyboardShortcuts';
 
 export function ShortcutHelp() {
-  const isOpen = useVaakkuStore((s) => s.shortcutHelpOpen);
-  const setOpen = useVaakkuStore((s) => s.setShortcutHelpOpen);
+  const isOpen = useJanamitraStore((s) => s.shortcutHelpOpen);
+  const setOpen = useJanamitraStore((s) => s.setShortcutHelpOpen);
   const { locale } = useLocale();
   const isMl = locale === 'ml';
 

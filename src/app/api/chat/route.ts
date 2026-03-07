@@ -174,12 +174,12 @@ export async function POST(request: NextRequest) {
 
       if (boothResults.length === 1) {
         responseText = boothLocale === 'ml'
-          ? `നിങ്ങളുടെ പോളിംഗ് സ്റ്റേഷൻ വിവരങ്ങൾ:\n\n${formatted[0]}\n\nLAC 97-Kottayam, District 10-Kottayam. സ്ഥിരീകരണത്തിന് [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/) സന്ദർശിക്കുക.`
-          : `Here are your polling station details:\n\n${formatted[0]}\n\nThis booth serves LAC 97-Kottayam, District 10-Kottayam. For verification, visit [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/).`;
+          ? `നിങ്ങളുടെ പോളിംഗ് സ്റ്റേഷൻ വിവരങ്ങൾ:\n\n${formatted[0]}\n\nKottayam ജില്ല, District 10-Kottayam. സ്ഥിരീകരണത്തിന് [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/) സന്ദർശിക്കുക.`
+          : `Here are your polling station details:\n\n${formatted[0]}\n\nKottayam District, District 10-Kottayam. For verification, visit [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/).`;
       } else {
         responseText = boothLocale === 'ml'
-          ? `${boothResults.length} പോളിംഗ് സ്റ്റേഷനുകൾ കണ്ടെത്തി:\n\n${formatted.join('\n\n')}\n\nLAC 97-Kottayam, District 10-Kottayam. സ്ഥിരീകരണത്തിന് [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/) സന്ദർശിക്കുക.`
-          : `Found ${boothResults.length} matching polling stations:\n\n${formatted.join('\n\n')}\n\nAll booths are in LAC 97-Kottayam, District 10-Kottayam. For verification, visit [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/).`;
+          ? `${boothResults.length} പോളിംഗ് സ്റ്റേഷനുകൾ കണ്ടെത്തി:\n\n${formatted.join('\n\n')}\n\nKottayam ജില്ല, District 10-Kottayam. സ്ഥിരീകരണത്തിന് [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/) സന്ദർശിക്കുക.`
+          : `Found ${boothResults.length} matching polling stations:\n\n${formatted.join('\n\n')}\n\nKottayam District, District 10-Kottayam. For verification, visit [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/).`;
       }
 
       confidence = 0.95; // High confidence — data is from official records
@@ -189,7 +189,7 @@ export async function POST(request: NextRequest) {
         text: responseText,
         confidence,
         sources: boothResults.slice(0, 3).map((b) => ({
-          title: `Election Commission of India - Official Booth List LAC 97`,
+          title: `Election Commission of India - Official Booth List, Kottayam District`,
           url: b.sourceUrl || 'https://electoralsearch.eci.gov.in/',
           lastUpdated: '2026-01-15',
           excerpt: `Polling Station ${b.stationNumber} is officially designated as ${b.title}. ${b.landmark ? `Near ${b.landmark}.` : ''}`,

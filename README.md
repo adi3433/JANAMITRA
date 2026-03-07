@@ -1,4 +1,4 @@
-# Vaakku — Bilingual AI Voter Assistant
+# Janamitra — Bilingual AI Voter Assistant
 
 > **SVEEP Kottayam · 2026 Kerala Elections**
 > A production-grade bilingual (English + Malayalam) AI chatbot that helps citizens find voter information, locate polling booths, check registration status, and report violations — powered by a 4-stage hybrid RAG pipeline on Fireworks AI.
@@ -31,7 +31,7 @@
 
 ## Overview
 
-**Vaakku** (വാക്ക്, meaning "word" / "voice" in Malayalam) is a conversational AI assistant that helps voters in Kottayam district with:
+**Janamitra** (വാക്ക്, meaning "word" / "voice" in Malayalam) is a conversational AI assistant that helps voters in Kottayam district with:
 
 - **Voter Registration** — Form guidance, status checks, corrections
 - **Polling Booth Locator** — Find your booth with accessibility info
@@ -113,7 +113,7 @@ The bot is strictly **non-partisan** — it will never recommend parties, candid
 ## Project Structure
 
 ```
-vaakku/
+janamitra/
 ├── src/
 │   ├── app/                        # Next.js App Router pages & API routes
 │   │   ├── page.tsx                # Landing page
@@ -218,7 +218,7 @@ vaakku/
 
 ## How the RAG Pipeline Works
 
-The RAG (Retrieval-Augmented Generation) pipeline is the brain of Vaakku. Every user question goes through 4 stages inside `src/lib/rag/`:
+The RAG (Retrieval-Augmented Generation) pipeline is the brain of Janamitra. Every user question goes through 4 stages inside `src/lib/rag/`:
 
 ### Stage 1 — Embed (`embeddings.ts`)
 
@@ -260,7 +260,7 @@ Cross-encoders are more accurate than embedding similarity because they see the 
 The top 3 passages are injected into a structured prompt (from `prompts.ts`) and sent to **qwen3-vl-30b-a3b-thinking**:
 
 ```
-System: You are Vaakku, an impartial voter information assistant for
+System: You are Janamitra, an impartial voter information assistant for
         SVEEP Kottayam 2026. You MUST cite sources as [Source 1],
         [Source 2]... Rate your confidence 0.0-1.0 in your answer.
 
@@ -397,7 +397,7 @@ Uses qwen3-vl-30b in multimodal mode (image + text prompt) to:
 
 ### `safety.ts` — Political Neutrality Enforcement
 
-**Critical for an election tool.** Detects mentions of BJP, Congress, LDF, UDF, CPI(M), IUML, NDA, and all major Kerala parties in English and Malayalam. When flagged, replaces the response with a neutral redirect to official sources. Ensures Vaakku never recommends candidates or expresses political opinions.
+**Critical for an election tool.** Detects mentions of BJP, Congress, LDF, UDF, CPI(M), IUML, NDA, and all major Kerala parties in English and Malayalam. When flagged, replaces the response with a neutral redirect to official sources. Ensures Janamitra never recommends candidates or expresses political opinions.
 
 ### `privacy.ts` — PII Protection
 
@@ -534,7 +534,7 @@ FIREWORKS_API_KEY=your-actual-key-here
 
 ### 2. The 4 Fireworks Models
 
-Vaakku uses these specific models (all available on Fireworks, no setup needed):
+Janamitra uses these specific models (all available on Fireworks, no setup needed):
 
 | Model | Model ID | Used For |
 |-------|----------|----------|
@@ -705,14 +705,14 @@ npx vitest run tests/safety.test.ts
 docker compose up -d
 
 # Or build standalone
-docker build -t vaakku .
-docker run -p 3000:3000 --env-file .env.local vaakku
+docker build -t janamitra .
+docker run -p 3000:3000 --env-file .env.local janamitra
 ```
 
 ### Kubernetes
 
 ```bash
-kubectl create secret generic vaakku-secrets --from-env-file=.env.local
+kubectl create secret generic janamitra-secrets --from-env-file=.env.local
 kubectl apply -f kubernetes/deployment.yaml
 ```
 

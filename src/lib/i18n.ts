@@ -1,5 +1,5 @@
 /**
- * Vaakku — i18n Strings
+ * Janamitra — i18n Strings
  * ──────────────────────
  * Bilingual string dictionary. Keys are English,
  * Malayalam translations are provided alongside.
@@ -7,9 +7,9 @@
 
 export const strings = {
   en: {
-    appName: 'Vaakku',
+    appName: 'Janamitra',
     tagline: 'Your Voter Information Assistant — Kottayam District',
-    welcome: 'Hello! I\'m Vaakku, your impartial voter information assistant for Kottayam district. How can I help you today?',
+    welcome: 'Hello! I\'m Janamitra, your impartial voter information assistant for Kottayam district. How can I help you today?',
     chatPlaceholder: 'Type your question or use voice...',
     send: 'Send',
     voiceInput: 'Voice Input',
@@ -57,9 +57,9 @@ export const strings = {
     dataDelete: 'Delete My Data',
   },
   ml: {
-    appName: 'വാക്ക്',
+    appName: 'ജനമിത്ര',
     tagline: 'നിങ്ങളുടെ വോട്ടർ വിവര സഹായി — കോട്ടയം ജില്ല',
-    welcome: 'നമസ്കാരം! ഞാൻ വാക്ക്, കോട്ടയം ജില്ലയിലെ നിങ്ങളുടെ നിഷ്പക്ഷ വോട്ടർ വിവര സഹായിയാണ്. ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കണം?',
+    welcome: 'നമസ്കാരം! ഞാൻ ജനമിത്ര, കോട്ടയം ജില്ലയിലെ നിങ്ങളുടെ നിഷ്പക്ഷ വോട്ടർ വിവര സഹായിയാണ്. ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കണം?',
     chatPlaceholder: 'നിങ്ങളുടെ ചോദ്യം ടൈപ്പ് ചെയ്യുക അല്ലെങ്കിൽ ശബ്ദം ഉപയോഗിക്കുക...',
     send: 'അയയ്ക്കുക',
     voiceInput: 'ശബ്ദ ഇൻപുട്ട്',

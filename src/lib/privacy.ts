@@ -13,7 +13,7 @@ import { createHash } from 'crypto';
  * Uses SHA-256 with a salt.
  */
 export function hashIdentifier(identifier: string): string {
-  const salt = process.env.HASH_SALT || 'vaakku-kottayam-sveep-2026';
+  const salt = process.env.HASH_SALT || 'janamitra-kottayam-sveep-2026';
   return createHash('sha256')
     .update(`${salt}:${identifier}`)
     .digest('hex')

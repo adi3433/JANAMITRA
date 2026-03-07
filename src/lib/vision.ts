@@ -294,7 +294,7 @@ export async function extractDocumentFields(
   try {
     const explResult = await chatCompletion({
       messages: [
-        { role: 'system', content: `You are Vaakku, a civic assistant. Respond in ${locale === 'ml' ? 'Malayalam' : 'English'}.` },
+        { role: 'system', content: `You are Janamitra, a civic assistant. Respond in ${locale === 'ml' ? 'Malayalam' : 'English'}.` },
         { role: 'user', content: explanationPrompt },
       ],
       maxTokens: 300,

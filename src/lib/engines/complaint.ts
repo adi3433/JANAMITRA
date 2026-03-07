@@ -146,8 +146,8 @@ function getTrackComplaint(locale: string): string {
   response += '2. Use your **Complaint ID** (received at submission)\n';
   response += `3. Or visit the portal: [cvigil.eci.gov.in](${complaintsData.cvigil_overview.portal})\n\n`;
   response += isMl
-    ? '⚠️ _Vaakku പരാതി നേരിട്ട് ട്രാക്ക് ചെയ്യാൻ കഴിയില്ല. ഔദ്യോഗിക ആപ്പ്/പോർട്ടൽ ഉപയോഗിക്കുക._'
-    : '⚠️ _Vaakku cannot track complaints directly. Please use the official app or portal._';
+    ? '⚠️ _Janamitra പരാതി നേരിട്ട് ട്രാക്ക് ചെയ്യാൻ കഴിയില്ല. ഔദ്യോഗിക ആപ്പ്/പോർട്ടൽ ഉപയോഗിക്കുക._'
+    : '⚠️ _Janamitra cannot track complaints directly. Please use the official app or portal._';
 
   return response;
 }

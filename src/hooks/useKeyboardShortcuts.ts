@@ -10,7 +10,7 @@
 'use client';
 
 import { useEffect, useCallback } from 'react';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 
 interface ShortcutHandlers {
   onNewChat?: () => void;
@@ -18,9 +18,9 @@ interface ShortcutHandlers {
 }
 
 export function useKeyboardShortcuts(handlers: ShortcutHandlers = {}) {
-  const toggleDarkMode = useVaakkuStore((s) => s.toggleDarkMode);
-  const toggleSidebar = useVaakkuStore((s) => s.toggleSidebar);
-  const setShortcutHelpOpen = useVaakkuStore((s) => s.setShortcutHelpOpen);
+  const toggleDarkMode = useJanamitraStore((s) => s.toggleDarkMode);
+  const toggleSidebar = useJanamitraStore((s) => s.toggleSidebar);
+  const setShortcutHelpOpen = useJanamitraStore((s) => s.setShortcutHelpOpen);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -44,7 +44,7 @@ export function useKeyboardShortcuts(handlers: ShortcutHandlers = {}) {
       // Ctrl+/ → Toggle shortcut help
       if (ctrl && e.key === '/') {
         e.preventDefault();
-        const current = useVaakkuStore.getState().shortcutHelpOpen;
+        const current = useJanamitraStore.getState().shortcutHelpOpen;
         setShortcutHelpOpen(!current);
         return;
       }
@@ -65,7 +65,7 @@ export function useKeyboardShortcuts(handlers: ShortcutHandlers = {}) {
 
       // Esc → Close shortcut help if open
       if (e.key === 'Escape' && !shift && !ctrl) {
-        const isOpen = useVaakkuStore.getState().shortcutHelpOpen;
+        const isOpen = useJanamitraStore.getState().shortcutHelpOpen;
         if (isOpen) {
           e.preventDefault();
           setShortcutHelpOpen(false);

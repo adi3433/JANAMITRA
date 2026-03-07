@@ -12,7 +12,7 @@ import { ShortcutHelp } from '@/components/ShortcutHelp';
 import { useChat } from '@/hooks/useChat';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 import { sendMultimodalChat } from '@/lib/api-client';
 import { exportChatJSON, exportChatText } from '@/lib/export';
 import type { ActionItem } from '@/types';
@@ -25,15 +25,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ChatPage() {
   const { messages, send, isTyping } = useChat();
-  const quickActions = useVaakkuStore((s) => s.quickActions);
-  const locale = useVaakkuStore((s) => s.locale);
-  const sessionId = useVaakkuStore((s) => s.sessionId);
-  const userId = useVaakkuStore((s) => s.userId);
-  const resetSession = useVaakkuStore((s) => s.resetSession);
-  const addMessage = useVaakkuStore((s) => s.addMessage);
-  const setTyping = useVaakkuStore((s) => s.setTyping);
-  const toggleSidebar = useVaakkuStore((s) => s.toggleSidebar);
-  const incognitoMode = useVaakkuStore((s) => s.incognitoMode);
+  const quickActions = useJanamitraStore((s) => s.quickActions);
+  const locale = useJanamitraStore((s) => s.locale);
+  const sessionId = useJanamitraStore((s) => s.sessionId);
+  const userId = useJanamitraStore((s) => s.userId);
+  const resetSession = useJanamitraStore((s) => s.resetSession);
+  const addMessage = useJanamitraStore((s) => s.addMessage);
+  const setTyping = useJanamitraStore((s) => s.setTyping);
+  const toggleSidebar = useJanamitraStore((s) => s.toggleSidebar);
+  const incognitoMode = useJanamitraStore((s) => s.incognitoMode);
 
   const inputRef = useRef<HTMLDivElement>(null);
   const [showExportMenu, setShowExportMenu] = useState(false);
@@ -227,7 +227,7 @@ export default function ChatPage() {
                   <SparklesIcon className="h-8 w-8 text-white" />
                 </div>
                 <h2 className={`text-2xl font-bold text-[var(--text-primary)] ${locale === 'ml' ? 'font-ml' : ''}`}>
-                  {locale === 'ml' ? 'വാക്കിലേക്ക് സ്വാഗതം!' : 'Welcome to Vaakku'}
+                  {locale === 'ml' ? 'വാക്കിലേക്ക് സ്വാഗതം!' : 'Welcome to Janamitra'}
                 </h2>
                 <p className={`mt-2 text-sm text-[var(--text-secondary)] leading-relaxed ${locale === 'ml' ? 'font-ml' : ''}`}>
                   {locale === 'ml'
@@ -264,7 +264,7 @@ export default function ChatPage() {
             <p className="mx-auto mt-1.5 max-w-3xl text-center text-[10px] text-[var(--text-tertiary)]">
               {locale === 'ml'
                 ? 'വാക്ക് നിഷ്പക്ഷ വോട്ടർ വിവരങ്ങൾ നൽകുന്നു. ഔദ്യോഗിക സൈറ്റുകളിൽ പരിശോധിക്കുക.'
-                : 'Vaakku provides impartial voter info. Verify on official sources.'}
+                : 'Janamitra provides impartial voter info. Verify on official sources.'}
             </p>
           </div>
         </div>

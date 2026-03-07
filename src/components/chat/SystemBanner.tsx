@@ -45,7 +45,7 @@ export function SystemBanner({ visible, onDismiss }: SystemBannerProps) {
                 </span>
               ) : (
                 <span>
-                  I&apos;m Vaakku, an impartial voter information assistant for Kottayam district.
+                  I&apos;m Janamitra, an impartial voter information assistant for Kottayam district.
                   Answers are sourced from official data — no political endorsements.
                 </span>
               )}

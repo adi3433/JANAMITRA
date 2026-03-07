@@ -5,7 +5,7 @@
     "election": "Kerala Legislative Assembly Election 2026",
     "district": "Kottayam",
     "state": "Kerala",
-    "system": "Vaakku V5",
+    "system": "Janamitra V5",
     "description": "Official election timeline for the 2026 Kerala Assembly Elections. Dates are pending official announcement by the Election Commission of India.",
     "status": "PENDING_OFFICIAL_ANNOUNCEMENT",
     "announcement_source": "https://www.eci.gov.in",
@@ -130,7 +130,7 @@
     "counting_date": "2021-05-02"
   },
 
-  "vaakku_bot_behaviour": {
+  "janamitra_bot_behaviour": {
     "when_dates_are_tba": "Clearly inform the user that official dates have not yet been announced by ECI. Direct them to https://www.eci.gov.in or https://www.ceo.kerala.gov.in for the latest updates.",
     "when_dates_are_announced": "Read from key_dates fields and provide structured response with dates, countdown if applicable, and any deadlines that are approaching.",
     "never_assume_dates": true,

@@ -125,7 +125,7 @@ export default function BoothPage() {
               </p>
               {totalCount > 0 && (
                 <p className="mt-1 text-xs text-[var(--color-neutral-400)]">
-                  {totalCount} {isMl ? 'പോളിംഗ് സ്റ്റേഷനുകൾ ലഭ്യമാണ്' : 'polling stations available'} — LAC 97, Kottayam
+                  {totalCount} {isMl ? 'പോളിംഗ് സ്റ്റേഷനുകൾ ലഭ്യമാണ്' : 'polling stations available'} — Kottayam District (LAC 93–101)
                 </p>
               )}
             </motion.div>

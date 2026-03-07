@@ -1,5 +1,5 @@
 /**
- * Vaakku — API Client V2.1
+ * Janamitra — API Client V2.1
  * ─────────────────────────
  * Typed fetch wrappers that hit Next.js API routes.
  * V2.1: multimodal chat, embeddings, rerank, transcribe, memory, registration-status.

@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useVaakkuStore } from '@/lib/store';
+import { useJanamitraStore } from '@/lib/store';
 
 /**
  * Syncs the Zustand darkMode state with the <html> class.
  * Runs once on mount and subscribes to store changes.
  */
 export function DarkModeInit() {
-  const darkMode = useVaakkuStore((s) => s.darkMode);
+  const darkMode = useJanamitraStore((s) => s.darkMode);
 
   useEffect(() => {
     const root = document.documentElement;

@@ -7,7 +7,7 @@
 
 import type { ChatMessage, ConversationListItem, Locale } from '@/types';
 
-const STORAGE_KEY = 'vaakku_conversations';
+const STORAGE_KEY = 'janamitra_conversations';
 const MAX_CONVERSATIONS = 50;
 
 export interface PersistedConversation {

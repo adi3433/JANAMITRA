@@ -1,5 +1,5 @@
 /**
- * Vaakku Design System — Design Tokens
+ * Janamitra Design System — Design Tokens
  * ──────────────────────────────────────
  * Single source of truth for colours, spacing, typography,
  * elevation, motion, and breakpoints.
@@ -9,7 +9,7 @@
  */
 
 // ── Colour Palette ────────────────────────────────────────────────
-// Figma group: "Vaakku / Colors"
+// Figma group: "Janamitra / Colors"
 export const colors = {
   // Primary — deep civic blue
   primary: {
@@ -76,7 +76,7 @@ export const colors = {
 } as const;
 
 // ── Spacing ───────────────────────────────────────────────────────
-// Figma group: "Vaakku / Spacing"
+// Figma group: "Janamitra / Spacing"
 // 4px base unit
 export const spacing = {
   0: '0px',
@@ -100,7 +100,7 @@ export const spacing = {
 } as const;
 
 // ── Typography ────────────────────────────────────────────────────
-// Figma group: "Vaakku / Typography"
+// Figma group: "Janamitra / Typography"
 export const typography = {
   fontFamily: {
     sans: '"Inter", "Noto Sans Malayalam", system-ui, sans-serif',
@@ -128,7 +128,7 @@ export const typography = {
 } as const;
 
 // ── Elevation / Shadows ──────────────────────────────────────────
-// Figma group: "Vaakku / Elevation"
+// Figma group: "Janamitra / Elevation"
 export const elevation = {
   none: 'none',
   xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
@@ -153,7 +153,7 @@ export const radius = {
 } as const;
 
 // ── Motion / Animation Specs ─────────────────────────────────────
-// Figma group: "Vaakku / Motion"
+// Figma group: "Janamitra / Motion"
 export const motion = {
   duration: {
     instant: 0.1,

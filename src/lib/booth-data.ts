@@ -1,15 +1,56 @@
 /**
- * Booth Data Service — Kottayam District LAC 97
- * ───────────────────────────────────────────────
- * Loads 171 official polling station records from kottayam_booth_data.json.
+ * Booth Data Service — Kottayam District (LACs 93–101)
+ * ─────────────────────────────────────────────────────
+ * Loads official polling station records for all 9 LACs in Kottayam district.
  * Provides:
  *   - Full-text fuzzy search by area, name, landmark, station number
- *   - GPS coordinate extraction for Google Maps links
+ *   - GPS coordinate extraction for Google Maps links (LAC 97 has GPS)
+ *   - LAC-aware filtering and display
  *   - Malayalam + English content
  *   - BM25-style search for direct queries
  */
 
-import boothDataRaw from '@/../kottayam_booth_data.json';
+import kottayamData from '@/../kottayam_booth_data.json';
+import ettumanoorData from '@/../ettumanoor_booth_data.json';
+import puthuppallyData from '@/../puthuppally_booth_data.json';
+import changanasseryData from '@/../changanassery_booth_data.json';
+import kanjirappally_data from '@/../kanjirappally_booth_data.json';
+import palaData from '@/../pala_booth_data.json';
+import kaduthuruthyData from '@/../kaduthuruthy_booth_data.json';
+import vaikomData from '@/../vaikom_booth_data.json';
+import erattupettaData from '@/../erattupetta_booth_data.json';
+
+// ── LAC metadata ─────────────────────────────────────────────────
+
+export interface LACInfo {
+  lacNumber: number;
+  nameEn: string;
+  nameMl: string;
+}
+
+export const LAC_REGISTRY: Record<number, LACInfo> = {
+  93:  { lacNumber: 93,  nameEn: 'Ettumanoor',    nameMl: 'എറ്റുമാനൂർ' },
+  94:  { lacNumber: 94,  nameEn: 'Puthuppally',   nameMl: 'പുതുപ്പള്ളി' },
+  95:  { lacNumber: 95,  nameEn: 'Changanassery',  nameMl: 'ചങ്ങനാശ്ശേരി' },
+  96:  { lacNumber: 96,  nameEn: 'Kanjirappally',  nameMl: 'കാഞ്ഞിരപ്പള്ളി' },
+  97:  { lacNumber: 97,  nameEn: 'Kottayam',      nameMl: 'കോട്ടയം' },
+  98:  { lacNumber: 98,  nameEn: 'Pala',           nameMl: 'പാലാ' },
+  99:  { lacNumber: 99,  nameEn: 'Kaduthuruthy',   nameMl: 'കടുത്തുരുത്തി' },
+  100: { lacNumber: 100, nameEn: 'Vaikom',         nameMl: 'വൈക്കം' },
+  101: { lacNumber: 101, nameEn: 'Erattupetta',    nameMl: 'ഈരാറ്റുപേട്ട' },
+};
+
+const LAC_DATA_MAP: Record<number, unknown[]> = {
+  93:  ettumanoorData as unknown[],
+  94:  puthuppallyData as unknown[],
+  95:  changanasseryData as unknown[],
+  96:  kanjirappally_data as unknown[],
+  97:  kottayamData as unknown[],
+  98:  palaData as unknown[],
+  99:  kaduthuruthyData as unknown[],
+  100: vaikomData as unknown[],
+  101: erattupettaData as unknown[],
+};
 
 // ── Types ────────────────────────────────────────────────────────
 
@@ -22,9 +63,15 @@ export interface BoothRecord {
   source: string;
   sourceUrl: string;
   tags: string[];
-  /** Latitude (decimal degrees) */
+  /** LAC number (93–101) */
+  lacNumber: number;
+  /** LAC name in English */
+  lacNameEn: string;
+  /** LAC name in Malayalam */
+  lacNameMl: string;
+  /** Latitude (decimal degrees) — 0 if unavailable */
   lat: number;
-  /** Longitude (decimal degrees) */
+  /** Longitude (decimal degrees) — 0 if unavailable */
   lng: number;
   /** Landmark near the polling station */
   landmark: string;
@@ -49,40 +96,79 @@ function parseLandmark(content: string): string {
   return match ? match[1].trim() : '';
 }
 
+function parseLACFromTags(tags: (string | number)[]): number {
+  for (const tag of tags) {
+    const tagStr = String(tag);
+    const m = tagStr.match(/^LAC\s*(\d+)$/i);
+    if (m) return parseInt(m[1], 10);
+  }
+  return 0;
+}
+
 let _booths: BoothRecord[] | null = null;
 
-export function getAllBooths(): BoothRecord[] {
-  if (_booths) return _booths;
+export function getAllBooths(lacFilter?: number): BoothRecord[] {
+  if (!_booths) {
+    _booths = [];
+    for (const [lacNumStr, rawData] of Object.entries(LAC_DATA_MAP)) {
+      const lacNum = parseInt(lacNumStr, 10);
+      const lacInfo = LAC_REGISTRY[lacNum];
+      if (!lacInfo) continue;
 
-  _booths = (boothDataRaw as Array<{
-    id: string;
-    title: string;
-    content: string;
-    content_ml: string;
-    source: string;
-    source_url: string;
-    tags: (string | number)[];
-  }>).map((raw) => {
-    const coords = parseCoordinates(raw.content);
-    const stationNumber = typeof raw.tags[0] === 'number' ? raw.tags[0] : parseInt(String(raw.tags[0]), 10);
+      const records = (rawData as Array<{
+        id: string;
+        title: string;
+        content: string;
+        content_ml: string;
+        source: string;
+        source_url: string;
+        tags: (string | number)[];
+      }>).map((raw) => {
+        const coords = parseCoordinates(raw.content);
+        const stationNumber = typeof raw.tags[0] === 'number' ? raw.tags[0] : parseInt(String(raw.tags[0]), 10);
+        const detectedLac = parseLACFromTags(raw.tags) || lacNum;
+        const lac = LAC_REGISTRY[detectedLac] || lacInfo;
 
-    return {
-      id: raw.id,
-      stationNumber,
-      title: raw.title,
-      content: raw.content,
-      contentMl: raw.content_ml,
-      source: raw.source,
-      sourceUrl: raw.source_url,
-      tags: raw.tags.map(String),
-      lat: coords.lat,
-      lng: coords.lng,
-      landmark: parseLandmark(raw.content),
-      areaMl: typeof raw.tags[3] === 'string' ? raw.tags[3] : '',
-    };
-  });
+        return {
+          id: raw.id,
+          stationNumber,
+          title: raw.title,
+          content: raw.content,
+          contentMl: raw.content_ml,
+          source: raw.source,
+          sourceUrl: raw.source_url,
+          tags: raw.tags.map(String),
+          lacNumber: lac.lacNumber,
+          lacNameEn: lac.nameEn,
+          lacNameMl: lac.nameMl,
+          lat: coords.lat,
+          lng: coords.lng,
+          landmark: parseLandmark(raw.content),
+          areaMl: typeof raw.tags[3] === 'string' ? raw.tags[3] : '',
+        };
+      });
+      _booths.push(...records);
+    }
+  }
 
+  if (lacFilter !== undefined) {
+    return _booths.filter((b) => b.lacNumber === lacFilter);
+  }
   return _booths;
+}
+
+/** Get total booth count across all LACs or for a specific LAC */
+export function getBoothCount(lacFilter?: number): number {
+  return getAllBooths(lacFilter).length;
+}
+
+/** Get summary of all LACs with their booth counts */
+export function getLACSummary(): Array<LACInfo & { boothCount: number }> {
+  const booths = getAllBooths();
+  return Object.values(LAC_REGISTRY).map((lac) => ({
+    ...lac,
+    boothCount: booths.filter((b) => b.lacNumber === lac.lacNumber).length,
+  }));
 }
 
 // ── Google Maps URL ──────────────────────────────────────────────
@@ -101,13 +187,14 @@ export function getGoogleMapsDirectionsUrl(lat: number, lng: number): string {
 /**
  * Search booths by query string. Uses multi-signal scoring:
  *   - Exact station number match (highest priority)
+ *   - LAC name match (filters or boosts)
  *   - Title / area name match
  *   - Landmark match
  *   - Tag match (includes Malayalam area names)
  *   - BM25-style content match
  */
-export function searchBooths(query: string, maxResults = 5): BoothRecord[] {
-  const booths = getAllBooths();
+export function searchBooths(query: string, maxResults = 5, lacFilter?: number): BoothRecord[] {
+  const booths = getAllBooths(lacFilter);
   const lowerQuery = query.toLowerCase().trim();
 
   // Check for station number query (e.g., "booth 5", "station 42", "booth number is 133", "ബൂത്ത് 133")
@@ -177,19 +264,29 @@ export function searchBooths(query: string, maxResults = 5): BoothRecord[] {
  * Format a booth result as a human-readable string with map link.
  */
 export function formatBoothResult(booth: BoothRecord, locale: 'en' | 'ml'): string {
-  const mapsUrl = getGoogleMapsDirectionsUrl(booth.lat, booth.lng);
+  const hasGps = booth.lat > 0 && booth.lng > 0;
+  const mapsUrl = hasGps ? getGoogleMapsDirectionsUrl(booth.lat, booth.lng) : '';
+  const lacLabel = `LAC ${booth.lacNumber}-${locale === 'ml' ? booth.lacNameMl : booth.lacNameEn}`;
 
   if (locale === 'ml') {
-    return `**പോളിംഗ് സ്റ്റേഷൻ ${booth.stationNumber}** — ${booth.title}
-- **ലാൻഡ്‌മാർക്ക്:** ${booth.landmark}
-- **GPS:** ${booth.lat}°N, ${booth.lng}°E
-- [Google Maps-ൽ വഴി കാണുക](${mapsUrl})`;
+    let result = `**പോളിംഗ് സ്റ്റേഷൻ ${booth.stationNumber}** — ${booth.title}
+- **നിയോജകമണ്ഡലം:** ${lacLabel}`;
+    if (booth.landmark) result += `\n- **ലാൻഡ്‌മാർക്ക്:** ${booth.landmark}`;
+    if (hasGps) {
+      result += `\n- **GPS:** ${booth.lat}°N, ${booth.lng}°E`;
+      result += `\n- [Google Maps-ൽ വഴി കാണുക](${mapsUrl})`;
+    }
+    return result;
   }
 
-  return `**Polling Station ${booth.stationNumber}** — ${booth.title}
-- **Landmark:** ${booth.landmark}
-- **GPS:** ${booth.lat}°N, ${booth.lng}°E
-- [Get Directions](${mapsUrl})`;
+  let result = `**Polling Station ${booth.stationNumber}** — ${booth.title}
+- **Constituency:** ${lacLabel}`;
+  if (booth.landmark) result += `\n- **Landmark:** ${booth.landmark}`;
+  if (hasGps) {
+    result += `\n- **GPS:** ${booth.lat}°N, ${booth.lng}°E`;
+    result += `\n- [Get Directions](${mapsUrl})`;
+  }
+  return result;
 }
 
 // ── GPS-based nearest booth search (Haversine) ────────────────────
@@ -243,22 +340,32 @@ export function formatNearestBoothResult(
   booth: BoothRecord & { distanceKm: number },
   locale: 'en' | 'ml'
 ): string {
-  const mapsUrl = getGoogleMapsDirectionsUrl(booth.lat, booth.lng);
+  const hasGps = booth.lat > 0 && booth.lng > 0;
+  const mapsUrl = hasGps ? getGoogleMapsDirectionsUrl(booth.lat, booth.lng) : '';
   const distStr = booth.distanceKm < 1
     ? `${Math.round(booth.distanceKm * 1000)}m`
     : `${booth.distanceKm.toFixed(1)}km`;
+  const lacLabel = `LAC ${booth.lacNumber}-${locale === 'ml' ? booth.lacNameMl : booth.lacNameEn}`;
 
   if (locale === 'ml') {
-    return `**പോളിംഗ് സ്റ്റേഷൻ ${booth.stationNumber}** — ${booth.title}
+    let result = `**പോളിംഗ് സ്റ്റേഷൻ ${booth.stationNumber}** — ${booth.title}
 - **ദൂരം:** 📍 ${distStr}
-- **ലാൻഡ്‌മാർക്ക്:** ${booth.landmark}
-- **GPS:** ${booth.lat}°N, ${booth.lng}°E
-- [Google Maps-ൽ വഴി കാണുക](${mapsUrl})`;
+- **നിയോജകമണ്ഡലം:** ${lacLabel}`;
+    if (booth.landmark) result += `\n- **ലാൻഡ്‌മാർക്ക്:** ${booth.landmark}`;
+    if (hasGps) {
+      result += `\n- **GPS:** ${booth.lat}°N, ${booth.lng}°E`;
+      result += `\n- [Google Maps-ൽ വഴി കാണുക](${mapsUrl})`;
+    }
+    return result;
   }
 
-  return `**Polling Station ${booth.stationNumber}** — ${booth.title}
+  let result = `**Polling Station ${booth.stationNumber}** — ${booth.title}
 - **Distance:** 📍 ${distStr}
-- **Landmark:** ${booth.landmark}
-- **GPS:** ${booth.lat}°N, ${booth.lng}°E
-- [Get Directions](${mapsUrl})`;
+- **Constituency:** ${lacLabel}`;
+  if (booth.landmark) result += `\n- **Landmark:** ${booth.landmark}`;
+  if (hasGps) {
+    result += `\n- **GPS:** ${booth.lat}°N, ${booth.lng}°E`;
+    result += `\n- [Get Directions](${mapsUrl})`;
+  }
+  return result;
 }

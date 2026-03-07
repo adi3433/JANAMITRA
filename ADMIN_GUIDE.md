@@ -1,4 +1,4 @@
-# Vaakku Admin Guide
+# Janamitra Admin Guide
 
 ## Dashboard Access
 

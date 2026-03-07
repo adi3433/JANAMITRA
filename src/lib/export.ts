@@ -21,20 +21,20 @@ export function exportChatJSON(messages: ChatMessage[], sessionId: string) {
   const blob = new Blob([JSON.stringify(data, null, 2)], {
     type: 'application/json',
   });
-  downloadBlob(blob, `vaakku-chat-${formatDate()}.json`);
+  downloadBlob(blob, `janamitra-chat-${formatDate()}.json`);
 }
 
 /** Export chat as plain text download */
 export function exportChatText(messages: ChatMessage[]) {
   const lines = messages.map((m) => {
-    const role = m.role === 'user' ? 'You' : 'Vaakku';
+    const role = m.role === 'user' ? 'You' : 'Janamitra';
     const time = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
     return `[${role}] ${time}\n${m.content}\n`;
   });
 
-  const text = `Vaakku Chat Export\n${new Date().toLocaleString()}\n${'─'.repeat(40)}\n\n${lines.join('\n')}`;
+  const text = `Janamitra Chat Export\n${new Date().toLocaleString()}\n${'─'.repeat(40)}\n\n${lines.join('\n')}`;
   const blob = new Blob([text], { type: 'text/plain' });
-  downloadBlob(blob, `vaakku-chat-${formatDate()}.txt`);
+  downloadBlob(blob, `janamitra-chat-${formatDate()}.txt`);
 }
 
 function downloadBlob(blob: Blob, filename: string) {

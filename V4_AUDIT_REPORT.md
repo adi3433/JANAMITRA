@@ -1,4 +1,4 @@
-# Vaakku V4 — System Integrity Audit Report
+# Janamitra V4 — System Integrity Audit Report
 
 **Date:** 2025-07-18  
 **Version:** 4.0.0  
@@ -89,7 +89,7 @@ src/
 ### 4.2 Dark Mode
 - [x] Full dark mode CSS tokens in `globals.css`
 - [x] Body transitions smoothly between modes
-- [x] Persisted to localStorage (`vaakku_darkMode`)
+- [x] Persisted to localStorage (`janamitra_darkMode`)
 - [x] System preference detection (`prefers-color-scheme: dark`)
 - [x] No flash on page load (inline `<script>` in `<head>`)
 - [x] Dark mode toggle in header (Sun/Moon icons)

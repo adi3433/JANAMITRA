@@ -16,7 +16,7 @@
 import { processVoiceInput, type VoiceResult } from '@/lib/voice';
 import { extractDocumentFields, type VisionExtractionResult } from '@/lib/vision';
 import { ragOrchestrate, type RAGOutput } from '@/lib/rag/orchestrator';
-import { searchBooths, searchNearestBooths, formatBoothResult, formatNearestBoothResult, type BoothRecord } from '@/lib/booth-data';
+import { searchBooths, searchNearestBooths, formatBoothResult, formatNearestBoothResult, getBoothCount, type BoothRecord } from '@/lib/booth-data';
 import {
   classifyQuery,
   getFormGuidance,
@@ -324,8 +324,8 @@ function tryEngineRoute(
                 ? `📍 **${boothResults.length} പോളിങ് സ്റ്റേഷനുകൾ കണ്ടെത്തി:**\n\n`
                 : `📍 **${boothResults.length} matching polling stations found:**\n\n`);
           const footer = isMl
-            ? '\n\nLAC 97-Kottayam, District 10-Kottayam. സ്ഥിരീകരണത്തിന് [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/) സന്ദർശിക്കുക.'
-            : '\n\nLAC 97-Kottayam, District 10-Kottayam. For verification, visit [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/).';
+            ? '\n\nKottayam ജില്ല, District 10-Kottayam. സ്ഥിരീകരണത്തിന് [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/) സന്ദർശിക്കുക.'
+            : '\n\nKottayam District, District 10-Kottayam. For verification, visit [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/).';
           return {
             engineName: 'booth-locator',
             classification,
@@ -334,12 +334,13 @@ function tryEngineRoute(
           };
         }
         // Number not found in our data
+        const totalBooths = getBoothCount();
         return {
           engineName: 'booth-locator',
           classification,
           formattedResponse: isMl
-            ? `😔 ബൂത്ത് നമ്പർ ${numberMatch[1]} ഞങ്ങളുടെ LAC 97-Kottayam ഡാറ്റയിൽ കണ്ടെത്താനായില്ല. ബൂത്ത് നമ്പറുകൾ 1–171 ശ്രേണിയിലാണ്. ദയവായി പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക. 📞 ഹെൽപ്‌ലൈൻ: 1950`
-            : `😔 Booth number ${numberMatch[1]} was not found in our LAC 97-Kottayam data. Booth numbers range from 1–171. Please verify and try again. 📞 Helpline: 1950`,
+            ? `😔 ബൂത്ത് നമ്പർ ${numberMatch[1]} ഞങ്ങളുടെ Kottayam ജില്ലാ ഡാറ്റയിൽ കണ്ടെത്താനായില്ല. ${totalBooths} ബൂത്തുകൾ 9 നിയോജകമണ്ഡലങ്ങളിലായി (LAC 93–101) ലഭ്യമാണ്. ദയവായി പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക. 📞 ഹെൽപ്‌ലൈൻ: 1950`
+            : `😔 Booth number ${numberMatch[1]} was not found in our Kottayam district data. We have ${totalBooths} booths across 9 constituencies (LAC 93–101). Please verify and try again. 📞 Helpline: 1950`,
           confidence: 0.9,
         };
       }

@@ -4,7 +4,7 @@
     "version": "1.0",
     "district": "Kottayam",
     "state": "Kerala",
-    "system": "Vaakku V5",
+    "system": "Janamitra V5",
     "description": "cVIGIL complaint guidance dataset — process steps, violation types, escalation paths, and helpline references.",
     "source": "Election Commission of India — https://eci.gov.in/cvigil/",
     "last_updated": "2026-02-23"
@@ -166,10 +166,10 @@
     "Do not submit false or frivolous complaints. Action may be taken against misuse.",
     "Video evidence gives the fastest response. Photo is also accepted.",
     "GPS location is mandatory for complaints — location spoofing invalidates the complaint.",
-    "Vaakku does not simulate or file complaints. It only provides guidance and redirects to official channels."
+    "Janamitra does not simulate or file complaints. It only provides guidance and redirects to official channels."
   ],
 
-  "vaakku_bot_behaviour": {
+  "janamitra_bot_behaviour": {
     "can_do": [
       "Explain cVIGIL steps clearly",
       "Identify the correct violation category",
