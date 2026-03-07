@@ -34,7 +34,14 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
   } = useSpeechRecognition(locale);
 
   const { locationShared, setUserLocation } = useJanamitraStore();
+  const promptHistory = useJanamitraStore((s) => s.promptHistory);
+  const pushPromptHistory = useJanamitraStore((s) => s.pushPromptHistory);
   const [locationLoading, setLocationLoading] = useState(false);
+
+  // ↑/↓ arrow prompt history navigation index (-1 = composing new)
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  // Saved draft when user starts navigating history
+  const draftRef = useRef('');
 
   const handleShareLocation = () => {
     if (locationShared || locationLoading) return;
@@ -64,8 +71,11 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
 
   const handleSend = () => {
     if (!text.trim() || disabled) return;
+    pushPromptHistory(text.trim());
     onSend(text.trim());
     setText('');
+    setHistoryIndex(-1);
+    draftRef.current = '';
     resetTranscript();
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
   };
@@ -74,6 +84,47 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
+      return;
+    }
+
+    // ↑ Arrow in empty input or while browsing history → recall previous prompt
+    if (e.key === 'ArrowUp' && promptHistory.length > 0) {
+      const ta = textareaRef.current;
+      // Only trigger when cursor is at the very start (or input is empty)
+      if (ta && (text === '' || (ta.selectionStart === 0 && ta.selectionEnd === 0))) {
+        e.preventDefault();
+        if (historyIndex === -1) {
+          // Save current draft before navigating
+          draftRef.current = text;
+          const idx = promptHistory.length - 1;
+          setHistoryIndex(idx);
+          setText(promptHistory[idx]);
+        } else if (historyIndex > 0) {
+          const idx = historyIndex - 1;
+          setHistoryIndex(idx);
+          setText(promptHistory[idx]);
+        }
+        return;
+      }
+    }
+
+    // ↓ Arrow → move forward in history or back to draft
+    if (e.key === 'ArrowDown' && historyIndex >= 0) {
+      const ta = textareaRef.current;
+      const atEnd = ta && ta.selectionStart === ta.value.length;
+      if (atEnd || text === promptHistory[historyIndex]) {
+        e.preventDefault();
+        if (historyIndex < promptHistory.length - 1) {
+          const idx = historyIndex + 1;
+          setHistoryIndex(idx);
+          setText(promptHistory[idx]);
+        } else {
+          // Back to draft
+          setHistoryIndex(-1);
+          setText(draftRef.current);
+        }
+        return;
+      }
     }
   };
 

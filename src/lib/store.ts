@@ -29,6 +29,11 @@ interface JanamitraState {
   clearMessages: () => void;
   setTyping: (v: boolean) => void;
 
+  // ── Prompt History (↑/↓ arrow recall) ──
+  promptHistory: string[];
+  pushPromptHistory: (text: string) => void;
+  clearPromptHistory: () => void;
+
   // ── Quick Actions ──
   quickActions: ActionItem[];
   setQuickActions: (actions: ActionItem[]) => void;
@@ -78,6 +83,13 @@ interface JanamitraState {
   setAccessibilityMode: (v: boolean) => void;
   shortcutHelpOpen: boolean;
   setShortcutHelpOpen: (v: boolean) => void;
+
+  // ── Keyboard shortcut handlers (set by pages) ──
+  _shortcutOnNewChat: (() => void) | null;
+  _shortcutOnFocusInput: (() => void) | null;
+  _shortcutOnStopGenerating: (() => void) | null;
+  setShortcutHandlers: (h: { onNewChat?: () => void; onFocusInput?: () => void; onStopGenerating?: () => void }) => void;
+  clearShortcutHandlers: () => void;
 }
 
 interface PendingUpload {
@@ -164,6 +176,15 @@ export const useJanamitraStore = create<JanamitraState>((set) => ({
   clearMessages: () => set({ messages: [] }),
   setTyping: (isTyping) => set({ isTyping }),
 
+  // Prompt History
+  promptHistory: [],
+  pushPromptHistory: (text) => set((s) => {
+    // Avoid duplicates of the last entry, cap at 50
+    if (s.promptHistory[s.promptHistory.length - 1] === text) return s;
+    return { promptHistory: [...s.promptHistory, text].slice(-50) };
+  }),
+  clearPromptHistory: () => set({ promptHistory: [] }),
+
   // Quick Actions
   quickActions: DEFAULT_QUICK_ACTIONS,
   setQuickActions: (quickActions) => set({ quickActions }),
@@ -233,4 +254,11 @@ export const useJanamitraStore = create<JanamitraState>((set) => ({
   setAccessibilityMode: (accessibilityMode) => set({ accessibilityMode }),
   shortcutHelpOpen: false,
   setShortcutHelpOpen: (shortcutHelpOpen) => set({ shortcutHelpOpen }),
+
+  // Keyboard shortcut handlers
+  _shortcutOnNewChat: null,
+  _shortcutOnFocusInput: null,
+  _shortcutOnStopGenerating: null,
+  setShortcutHandlers: (h) => set({ _shortcutOnNewChat: h.onNewChat ?? null, _shortcutOnFocusInput: h.onFocusInput ?? null, _shortcutOnStopGenerating: h.onStopGenerating ?? null }),
+  clearShortcutHandlers: () => set({ _shortcutOnNewChat: null, _shortcutOnFocusInput: null, _shortcutOnStopGenerating: null }),
 }));

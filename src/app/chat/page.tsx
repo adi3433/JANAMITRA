@@ -5,12 +5,10 @@
  */
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
 import { ChatInput, MessageList, QuickActions, ChatSidebar, FileUpload } from '@/components/chat';
-import { ShortcutHelp } from '@/components/ShortcutHelp';
 import { useChat } from '@/hooks/useChat';
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useJanamitraStore } from '@/lib/store';
 import { sendMultimodalChat } from '@/lib/api-client';
@@ -35,6 +33,8 @@ export default function ChatPage() {
   const setTyping = useJanamitraStore((s) => s.setTyping);
   const toggleSidebar = useJanamitraStore((s) => s.toggleSidebar);
   const incognitoMode = useJanamitraStore((s) => s.incognitoMode);
+  const setShortcutHandlers = useJanamitraStore((s) => s.setShortcutHandlers);
+  const clearShortcutHandlers = useJanamitraStore((s) => s.clearShortcutHandlers);
 
   const inputRef = useRef<HTMLDivElement>(null);
   const [showExportMenu, setShowExportMenu] = useState(false);
@@ -42,14 +42,21 @@ export default function ChatPage() {
   // Chat persistence — auto-save & load conversations
   const { selectConversation, removeConversation, toggleStar, togglePin } = useChatPersistence();
 
-  // Keyboard shortcuts
-  useKeyboardShortcuts({
-    onNewChat: () => resetSession(),
-    onFocusInput: () => {
-      const textarea = inputRef.current?.querySelector('textarea');
-      textarea?.focus();
-    },
-  });
+  // Register page-specific shortcut handlers
+  useEffect(() => {
+    setShortcutHandlers({
+      onNewChat: () => resetSession(),
+      onFocusInput: () => {
+        const textarea = inputRef.current?.querySelector('textarea');
+        textarea?.focus();
+      },
+      onStopGenerating: () => {
+        // Stop the typing indicator (API call abort is handled in useChat)
+        useJanamitraStore.getState().setTyping(false);
+      },
+    });
+    return () => clearShortcutHandlers();
+  }, [setShortcutHandlers, clearShortcutHandlers, resetSession]);
 
   const handleQuickAction = (action: ActionItem) => {
     const prompts: Record<string, Record<string, string>> = {
@@ -289,8 +296,6 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Shortcut Help Modal */}
-      <ShortcutHelp />
     </div>
   );
 }

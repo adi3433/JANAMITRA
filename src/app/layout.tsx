@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { DarkModeInit } from "@/components/DarkModeInit";
+import { GlobalShortcuts } from "@/components/GlobalShortcuts";
 
 export const metadata: Metadata = {
   title: "Janamitra — Voter Information Assistant | SVEEP Kottayam",
@@ -31,6 +32,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <DarkModeInit />
+        <GlobalShortcuts />
         {children}
       </body>
     </html>

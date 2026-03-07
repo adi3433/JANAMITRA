@@ -16,6 +16,36 @@ export function ShortcutHelp() {
   const { locale } = useLocale();
   const isMl = locale === 'ml';
 
+  const chatShortcuts = SHORTCUTS.filter((s) => s.group === 'chat');
+  const navShortcuts = SHORTCUTS.filter((s) => s.group === 'nav');
+
+  const renderGroup = (title: string, items: typeof SHORTCUTS[number][]) => (
+    <div>
+      <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+        {title}
+      </p>
+      <div className="space-y-1">
+        {items.map((s, i) => (
+          <div key={i} className="flex items-center justify-between py-1">
+            <span className={`text-sm text-[var(--text-secondary)] ${isMl ? 'font-ml' : ''}`}>
+              {isMl ? s.labelMl : s.label}
+            </span>
+            <div className="flex items-center gap-1">
+              {s.keys.map((key) => (
+                <kbd
+                  key={key}
+                  className="rounded-md border border-[var(--border-primary)] bg-[var(--surface-secondary)] px-2 py-0.5 text-xs font-mono text-[var(--text-secondary)] shadow-sm"
+                >
+                  {key}
+                </kbd>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -47,27 +77,9 @@ export function ShortcutHelp() {
                 </button>
               </div>
 
-              <div className="space-y-2">
-                {SHORTCUTS.map((s, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between py-1.5"
-                  >
-                    <span className={`text-sm text-[var(--text-secondary)] ${isMl ? 'font-ml' : ''}`}>
-                      {isMl ? s.labelMl : s.label}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      {s.keys.map((key) => (
-                        <kbd
-                          key={key}
-                          className="rounded-md border border-[var(--border-primary)] bg-[var(--surface-secondary)] px-2 py-0.5 text-xs font-mono text-[var(--text-secondary)] shadow-sm"
-                        >
-                          {key}
-                        </kbd>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+              <div className="space-y-4">
+                {renderGroup(isMl ? 'ചാറ്റ്' : 'Chat', chatShortcuts)}
+                {renderGroup(isMl ? 'നാവിഗേഷൻ' : 'Navigation', navShortcuts)}
               </div>
 
               <p className="mt-4 text-center text-[10px] text-[var(--text-tertiary)]">
