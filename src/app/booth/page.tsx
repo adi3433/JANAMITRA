@@ -13,6 +13,7 @@ import {
   MagnifyingGlassIcon,
   MapPinIcon,
   ArrowTopRightOnSquareIcon,
+  FunnelIcon,
 } from '@heroicons/react/24/outline';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
@@ -33,6 +34,18 @@ const BoothMap = dynamic(() => import('@/components/booth/BoothMap'), {
   ),
 });
 
+const CONSTITUENCIES = [
+  { lac: 93, en: 'Ettumanoor', ml: 'എറ്റുമാനൂർ' },
+  { lac: 94, en: 'Puthuppally', ml: 'പുതുപ്പള്ളി' },
+  { lac: 95, en: 'Changanassery', ml: 'ചങ്ങനാശ്ശേരി' },
+  { lac: 96, en: 'Kanjirappally', ml: 'കാഞ്ഞിരപ്പള്ളി' },
+  { lac: 97, en: 'Kottayam', ml: 'കോട്ടയം' },
+  { lac: 98, en: 'Pala', ml: 'പാലാ' },
+  { lac: 99, en: 'Kaduthuruthy', ml: 'കടുത്തുരുത്തി' },
+  { lac: 100, en: 'Vaikom', ml: 'വൈക്കം' },
+  { lac: 101, en: 'Erattupetta', ml: 'ഈരാറ്റുപേട്ട' },
+] as const;
+
 export default function BoothPage() {
   const { locale, t } = useLocale();
   const isMl = locale === 'ml';
@@ -43,6 +56,7 @@ export default function BoothPage() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+  const [activeLac, setActiveLac] = useState<number | null>(null);
   const mapRef = useRef<BoothMapHandle>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
@@ -101,6 +115,20 @@ export default function BoothPage() {
       window.open(url, '_blank', 'noopener,noreferrer');
     }
   }, []);
+
+  const handleConstituencyFilter = useCallback((lac: number | null) => {
+    setActiveLac(lac);
+    if (lac === null) {
+      setMapBooths(allBooths);
+      setResults([]);
+      setSearched(false);
+    } else {
+      const filtered = allBooths.filter((b) => b.lacNumber === lac);
+      setMapBooths(filtered);
+      setResults(filtered);
+      setSearched(true);
+    }
+  }, [allBooths]);
 
   return (
     <>
@@ -163,6 +191,41 @@ export default function BoothPage() {
                     ? (isMl ? 'തിരയുന്നു…' : 'Searching…')
                     : (isMl ? 'തിരയുക' : 'Search')}
                 </motion.button>
+              </div>
+            </motion.div>
+
+            {/* Constituency Filter Chips */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              className="mt-4"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <FunnelIcon className="h-3.5 w-3.5 text-[var(--color-neutral-400)]" />
+                <p className={`text-xs font-medium text-[var(--color-neutral-500)] ${isMl ? 'font-ml' : ''}`}>
+                  {isMl ? 'നിയോജകമണ്ഡലം അനുസരിച്ച് ഫിൽറ്റർ ചെയ്യുക' : 'Filter by Constituency'}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => handleConstituencyFilter(null)}
+                  data-active={activeLac === null}
+                  className="constituency-chip rounded-full border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-3 py-1.5 text-xs font-medium text-[var(--color-neutral-600)] shadow-sm"
+                >
+                  {isMl ? 'എല്ലാം' : 'All'}
+                </button>
+                {CONSTITUENCIES.map((c) => (
+                  <button
+                    key={c.lac}
+                    onClick={() => handleConstituencyFilter(c.lac)}
+                    data-active={activeLac === c.lac}
+                    className="constituency-chip rounded-full border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-3 py-1.5 text-xs font-medium text-[var(--color-neutral-600)] shadow-sm"
+                  >
+                    <span className="text-[10px] text-[var(--color-neutral-400)] mr-1">{c.lac}</span>
+                    {isMl ? c.ml : c.en}
+                  </button>
+                ))}
               </div>
             </motion.div>
 

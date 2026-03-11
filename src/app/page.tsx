@@ -8,8 +8,9 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ChatBubbleLeftRightIcon,
   MapPinIcon,
@@ -20,6 +21,9 @@ import {
   PhoneIcon,
   EnvelopeIcon,
   BuildingOffice2Icon,
+  CheckCircleIcon,
+  ClipboardDocumentCheckIcon,
+  HandRaisedIcon,
 } from '@heroicons/react/24/outline';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
@@ -189,22 +193,32 @@ export default function Home() {
               </Link>
             </motion.div>
 
-            {/* Trust badges */}
+            {/* Partnership Ribbon — Trust Logos */}
             <motion.div
               variants={fadeUp}
-              className="mt-8 flex flex-wrap items-center justify-center gap-4 text-[11px] text-[var(--color-neutral-400)]"
+              className="mt-10 flex flex-wrap items-center justify-center gap-6 sm:gap-8"
             >
-              <span className="flex items-center gap-1.5">
-                <ShieldCheckIcon className="h-3.5 w-3.5 text-emerald-500" />
-                {isMl ? 'സുരക്ഷിത വെബ്‌സൈറ്റ്' : 'Secure & Private'}
-              </span>
-              <span className="h-3 w-px bg-[var(--color-neutral-200)]" />
-              <span className="flex items-center gap-1.5">
-                <BuildingOffice2Icon className="h-3.5 w-3.5 text-[var(--color-primary-400)]" />
-                {isMl ? 'സർക്കാർ പരിശോധിച്ചത്' : 'Government Verified'}
-              </span>
-              <span className="h-3 w-px bg-[var(--color-neutral-200)]" />
-              <span>{isMl ? 'ഡാറ്റ സംരക്ഷണം ഉറപ്പ്' : 'Data Protection Compliant'}</span>
+              <div className="flex items-center gap-2.5 rounded-xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] px-4 py-2.5 shadow-sm">
+                <Image src="/ec-logo.png" alt="Election Commission of India" width={32} height={32} className="h-8 w-8 object-contain" />
+                <div className="text-left">
+                  <p className="text-[10px] font-semibold text-[var(--color-neutral-700)]">{isMl ? 'തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ' : 'Election Commission'}</p>
+                  <p className="text-[9px] text-[var(--color-neutral-400)]">{isMl ? 'ഇന്ത്യ' : 'of India'}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5 rounded-xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] px-4 py-2.5 shadow-sm">
+                <Image src="/sveep-logo.png" alt="SVEEP" width={32} height={32} className="h-8 w-8 object-contain" />
+                <div className="text-left">
+                  <p className="text-[10px] font-semibold text-[var(--color-neutral-700)]">SVEEP</p>
+                  <p className="text-[9px] text-[var(--color-neutral-400)]">{isMl ? 'കോട്ടയം ജില്ല' : 'Kottayam District'}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5 rounded-xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] px-4 py-2.5 shadow-sm">
+                <Image src="/iiit-kottayam-logo.png" alt="IIIT Kottayam" width={32} height={32} className="h-8 w-8 object-contain" />
+                <div className="text-left">
+                  <p className="text-[10px] font-semibold text-[var(--color-neutral-700)]">IIIT Kottayam</p>
+                  <p className="text-[9px] text-[var(--color-neutral-400)]">{isMl ? 'സാങ്കേതിക പങ്കാളി' : 'Technology Partner'}</p>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </section>
@@ -232,6 +246,9 @@ export default function Home() {
             </motion.div>
           </div>
         </section>
+
+        {/* Voter Journey — Process Path Animation */}
+        <VoterJourney isMl={isMl} />
 
         {/* Feature Cards */}
         <section className="mx-auto max-w-5xl px-4 py-16">
@@ -266,7 +283,7 @@ export default function Home() {
                   >
                     <Link
                       href={feature.href}
-                      className="group block rounded-2xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-[var(--color-primary-500)]/10 hover:border-[var(--color-primary-300)]"
+                      className="feature-card group block rounded-2xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] p-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-[var(--color-primary-300)]"
                     >
                       <div
                         className={`inline-flex rounded-xl p-3 transition-transform duration-300 group-hover:scale-110 ${feature.bgLight}`}
@@ -416,5 +433,112 @@ export default function Home() {
         </footer>
       </main>
     </>
+  );
+}
+
+/* ── Voter Journey Component ─────────────────────────────────── */
+
+const journeySteps = [
+  {
+    icon: ClipboardDocumentCheckIcon,
+    labelEn: 'Register',
+    labelMl: 'രജിസ്റ്റർ ചെയ്യുക',
+    descEn: 'Verify your voter registration or register as a new voter on the NVSP portal.',
+    descMl: 'NVSP പോർട്ടലിൽ നിങ്ങളുടെ വോട്ടർ രജിസ്ട്രേഷൻ പരിശോധിക്കുക.',
+    color: 'text-blue-500',
+    bg: 'bg-blue-50 dark:bg-blue-900/20',
+    ring: 'ring-blue-500/20',
+  },
+  {
+    icon: MapPinIcon,
+    labelEn: 'Find Your Booth',
+    labelMl: 'ബൂത്ത് കണ്ടെത്തുക',
+    descEn: 'Locate your polling booth on the interactive map and get directions.',
+    descMl: 'ഇന്ററാക്ടീവ് മാപ്പിൽ നിങ്ങളുടെ പോളിംഗ് ബൂത്ത് കണ്ടെത്തുക.',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+    ring: 'ring-emerald-500/20',
+  },
+  {
+    icon: HandRaisedIcon,
+    labelEn: 'Cast Your Vote',
+    labelMl: 'വോട്ട് ചെയ്യുക',
+    descEn: 'Exercise your democratic right on election day. Every vote counts!',
+    descMl: 'തിരഞ്ഞെടുപ്പ് ദിനത്തിൽ നിങ്ങളുടെ ജനാധിപത്യ അവകാശം വിനിയോഗിക്കുക!',
+    color: 'text-amber-500',
+    bg: 'bg-amber-50 dark:bg-amber-900/20',
+    ring: 'ring-amber-500/20',
+  },
+];
+
+function VoterJourney({ isMl }: { isMl: boolean }) {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start 0.85', 'end 0.5'],
+  });
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+
+  return (
+    <section ref={containerRef} className="mx-auto max-w-5xl px-4 py-16">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-center mb-12"
+      >
+        <h2 className={`text-2xl font-bold text-[var(--color-neutral-900)] ${isMl ? 'font-ml' : ''}`}>
+          {isMl ? 'നിങ്ങളുടെ വോട്ടിംഗ് യാത്ര' : 'Your Voting Journey'}
+        </h2>
+        <p className={`mt-2 text-sm text-[var(--color-neutral-500)] ${isMl ? 'font-ml' : ''}`}>
+          {isMl ? 'മൂന്ന് ലളിത ഘട്ടങ്ങളിൽ' : 'Three simple steps to make your voice heard'}
+        </p>
+      </motion.div>
+
+      <div className="relative mx-auto max-w-2xl">
+        {/* Vertical progress line */}
+        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-[var(--color-neutral-100)] sm:left-1/2 sm:-translate-x-px" />
+        <motion.div
+          className="absolute left-6 top-0 w-0.5 bg-gradient-to-b from-blue-500 via-emerald-500 to-amber-500 sm:left-1/2 sm:-translate-x-px"
+          style={{ height: lineHeight }}
+        />
+
+        {journeySteps.map((step, i) => {
+          const Icon = step.icon;
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.5, delay: i * 0.15 }}
+              className={`relative flex items-start gap-4 pb-12 sm:pb-16 ${
+                i % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'
+              }`}
+            >
+              {/* Step number circle */}
+              <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-4 border-[var(--surface-primary)] bg-[var(--surface-primary)] shadow-md ring-4 ${step.ring} sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+                <Icon className={`h-5 w-5 ${step.color}`} />
+              </div>
+
+              {/* Content card */}
+              <div className={`flex-1 rounded-xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] p-5 shadow-sm sm:w-[calc(50%-2.5rem)] ${
+                i % 2 === 0 ? 'sm:mr-auto sm:pr-8' : 'sm:ml-auto sm:pl-8'
+              }`}>
+                <span className={`inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${step.bg} ${step.color}`}>
+                  {isMl ? `ഘട്ടം ${i + 1}` : `Step ${i + 1}`}
+                </span>
+                <h3 className={`mt-2 text-base font-semibold text-[var(--color-neutral-800)] ${isMl ? 'font-ml' : ''}`}>
+                  {isMl ? step.labelMl : step.labelEn}
+                </h3>
+                <p className={`mt-1 text-sm text-[var(--color-neutral-500)] leading-relaxed ${isMl ? 'font-ml' : ''}`}>
+                  {isMl ? step.descMl : step.descEn}
+                </p>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </section>
   );
 }

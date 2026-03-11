@@ -247,6 +247,49 @@ textarea:focus {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* ── Feature Card Glow ─────────────────────────────────────────── */
+.feature-card {
+  position: relative;
+}
+
+.feature-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(245, 158, 11, 0.12));
+  box-shadow: 0 0 24px 0 rgba(37, 99, 235, 0.18), 0 0 48px 0 rgba(245, 158, 11, 0.08);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.feature-card:hover::after {
+  opacity: 1;
+}
+
+.dark .feature-card::after {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(245, 158, 11, 0.15));
+  box-shadow: 0 0 28px 0 rgba(37, 99, 235, 0.25), 0 0 56px 0 rgba(245, 158, 11, 0.12);
+}
+
+/* ── Constituency Chip ─────────────────────────────────────────── */
+.constituency-chip {
+  transition: all 0.2s ease;
+}
+
+.constituency-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px 0 rgba(37, 99, 235, 0.15);
+}
+
+.constituency-chip[data-active='true'] {
+  background: var(--color-primary-500);
+  color: white;
+  border-color: var(--color-primary-500);
+}
+
 /* ── Print ─────────────────────────────────────────────────────── */
 @media print {
   .no-print {
