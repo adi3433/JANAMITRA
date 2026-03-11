@@ -88,7 +88,7 @@ const ADVERSARIAL_PATTERNS = [
   /\b(f[u\*]+ck|sh[i\*]+t|b[i\*]+tch|a[s\*]+hole|bastard|damn|hell|crap|dick|ass)\b/i,
   /\b(idiot|moron|stupid|dumb|retard|loser|pathetic)\b/i,
   // Jailbreak / prompt injection
-  /\b(ignore\s+(previous|all|your|above)\s+(instructions?|rules?|prompt|system))\b/i,
+  /\b(ignore\s+(?:all\s+)?(?:previous|your|above)\s+(?:instructions?|rules?|prompt|system))\b/i,
   /\b(you\s+are\s+now|act\s+as\s+if|pretend\s+(to\s+be|you('re|\s+are)))\b/i,
   /\b(bypass|override|disable|turn\s+off)\s+(safety|filter|rules?|guardrails?|restrictions?)\b/i,
   /\b(dan\s+mode|developer\s+mode|jailbreak|unlock|unrestricted\s+mode)\b/i,
@@ -100,7 +100,10 @@ const ADVERSARIAL_PATTERNS = [
   /\b(i('m|\s+am)\s+(your|the)\s+(admin|developer|creator|master|owner))\b/i,
   /\b(roleplay|role\s*-?\s*play)\s+(as|being)\b/i,
   // Harmful content requests
-  /\b(hack|exploit|steal|phish|scam|fraud|illegal)\b/i,
+  // NOTE: "fraud", "illegal", "scam" are legitimate in election contexts (e.g.
+  // "report election fraud", "is booth capturing illegal?"). Only block when
+  // combined with clear malicious intent verbs, not in isolation.
+  /\b(hack|phish|steal)\s+(?:\w+\s+)?(voter|election|evm|ballot|data|system|password)/i,
   /\b(how\s+to\s+(hack|break|cheat|rig|tamper))\b/i,
   /\b(rig\s+(the\s+)?election|tamper\s+(with\s+)?(ballot|evm|vote))\b/i,
   /\b(fake\s+(vote|ballot|id)|impersonate\s+(a\s+)?voter)\b/i,
