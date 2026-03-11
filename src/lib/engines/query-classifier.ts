@@ -95,15 +95,17 @@ const CATEGORY_PATTERNS: Array<{
       /\b(new\s+voter|first\s+time\s+voter|register\s+as\s+voter)\b/i,
       ubRegex('(പുതിയ\\s*വോട്ടർ|ആദ്യമായി\\s*വോട്ട്)'),
       ubRegex('(രജിസ്റ്റർ\\s*ചെയ്യ|ഫോം\\s*\\d+)'),
-      /\b(name\s+correction|address\s+(change|correction|update))\b/i,
+      /\b(name\s+correction|correct(ion)?\s+(my\s+)?name|address\s+(change|correction|update))\b/i,
       /\b(shift(ed)?\s+(house|residence|address))\b/i,
-      /\b(moved\s+(house|city|state)|relocated)\b/i,
-      /\b(lost\s+(voter\s*id|epic)|damaged\s+(epic|card))\b/i,
+      /\b(moved\s+(house|city|state|to\s+a\s+new\s+address)|relocated|changed\s+(my\s+)?address)\b/i,
+      /\b(lost\s+(my\s+)?(voter\s*id|epic)|damaged\s+(my\s+)?(epic|card|voter\s*id))\b/i,
       /\b(delete\s+(name|voter)|remove\s+(deceased|dead)\s+voter)\b/i,
       /\b(overseas\s+voter|nri\s+voter|abroad\s+voting)\b/i,
       /\b(objection|deletion\s+request)\b/i,
       /\b(pwd\s+marking|disability\s+marking)\b/i,
-      /\b(document|documents\s+required|what\s+papers)\b/i,
+      /\b(documents?\s+(are\s+)?(required|needed|necessary))\b/i,
+      /\b(what\s+(documents?|papers)\s+(are\s+)?(required|needed|necessary))\b/i,
+      /\b(what\s+papers)\b/i,
       ubRegex('(രേഖകൾ|ഡോക്യുമെന്റ്|അപേക്ഷ)'),
       /\b(migrant\s+voter)\b/i,
     ],
@@ -127,8 +129,12 @@ const CATEGORY_PATTERNS: Array<{
       /\b(id\s+(proof|document)|photo\s+id|what\s+id)\b/i,
       /\b(poll(ing)?\s+tim(e|ing)|what\s+time|when\s+(does|do)\s+voting)\b/i,
       /\b(prohibited|not\s+allowed|banned|can\s+i\s+(bring|carry|take))\b/i,
+      /\b(what\s+is\s+(illegal|legal|allowed|permitted)\s+(during|in|at)\s+elections?)\b/i,
+      /\b(is\s+\w+\s+(illegal|legal|allowed|permitted)\s*(during|in|at)?\s*(elections?|voting|poll)?)\b/i,
       /\b(tender\s*vote|indelible\s*ink|ink\s+on\s+finger)\b/i,
       /\b(pwd\s+(facility|access|support)|elderly\s+(voter|support)|wheelchair)\b/i,
+      /\b(disab(?:led|ility)\s+voters?|disab(?:led|ility)\s+(?:facilit|access|support))\b/i,
+      /\b(facilit(?:y|ies)\s+for\s+(?:disabled|pwd|elderly|senior)\s+voters?)\b/i,
       /\b(braille|companion|home\s+voting|postal\s+ballot)\b/i,
       /\b(silence\s+period|campaign\s+ban)\b/i,
       /\b(mock\s+poll|last\s+voter\s+rule)\b/i,
@@ -157,6 +163,10 @@ const CATEGORY_PATTERNS: Array<{
       /\b(report\s+(a\s+)?violation|file\s+(a\s+)?complaint)\b/i,
       /\b(bribery|intimidation|malpractice|booth\s+capture)\b/i,
       /\b(cash\s+distribution|liquor\s+distribution)\b/i,
+      /\b(report\s+(?:a\s+|election\s+|voter\s+)?fraud)\b/i,
+      /\b(report\s+(?:a\s+|voter\s+)?scam)\b/i,
+      /\b(election\s+fraud|voter\s+fraud)\b/i,
+      /\b(fraud|scam)\s+(?:related|about|regarding|during|in)\b/i,
       /\b(paid\s+news|fake\s+news)\b/i,
       /\b(hoarding|banner|poster.*illegal)\b/i,
       /\b(weapon|firearm|arms\s+near\s+poll)\b/i,
@@ -216,20 +226,20 @@ const CATEGORY_PATTERNS: Array<{
       /\b(stock|market|crypto|bitcoin|investment|share\s+price)\b/i,
       /\b(homework|assignment|math\s+problem|solve\s+equation|essay)\b/i,
       /\b(health|doctor|medicine|hospital|symptom)\b/i,
-      /\b(code|programming|javascript|python|software)\b/i,
-      /\b(hotel|restaurant|travel|flight|booking|ticket)\b/i,
+      /\b(programming|javascript|python|software|source\s*code|write\s+code)\b/i,
+      /\b(hotel|restaurants?|travel|flight|bookings?|ticket)\b/i,
       /\b(loan|insurance|bank\s+account|credit\s+card)\b/i,
       // Adversarial / abuse / threats / jailbreak attempts
       /\b(destroy|kill|murder|attack|bomb)\s+(yourself|you|this|me)\b/i,
       /\b(shut\s*(up|down)|go\s+away|f[\*u]ck\s*(off|you|yourself)|screw\s+you)\b/i,
       /\b(hate\s+you|you('re|\s+are)\s+(stupid|useless|trash|garbage|worthless|dumb|idiot))\b/i,
       /\b(f[u\*]+ck|sh[i\*]+t|b[i\*]+tch|a[s\*]+hole|bastard|damn|idiot|moron|retard)\b/i,
-      /\b(ignore\s+(previous|all|your|above)\s+(instructions?|rules?|prompt|system))\b/i,
+      /\b(ignore\s+(?:all\s+)?(?:previous|your|above)\s+(?:instructions?|rules?|prompt|system))\b/i,
       /\b(pretend\s+(to\s+be|you('re|\s+are))|act\s+as\s+if|you\s+are\s+now)\b/i,
       /\b(bypass|override|disable)\s+(safety|filter|rules?|guardrails?|restrictions?)\b/i,
       /\b(dan\s+mode|jailbreak|developer\s+mode|unlock|unrestricted)\b/i,
       /\b(reveal|show|print|display)\s+(your|the|system)\s+(prompt|instructions?|rules?)\b/i,
-      /\b(hack|exploit|steal|phish|scam|fraud|illegal)\b/i,
+      /\b(hack|phish|steal)\s+(?:\w+\s+)?(voter|election|evm|ballot|data|system|password)/i,
       /\b(rig\s+(the\s+)?election|tamper|fake\s+(vote|ballot|id))\b/i,
       /\b(die|death\s+to|go\s+die|blow\s+up|set\s+fire)\b/i,
       // Malayalam non-election
@@ -288,6 +298,39 @@ export function classifyQuery(query: string): ClassificationResult {
         }
       }
     }
+  }
+
+  // Disambiguation: when a query matches both a civic category and out_of_scope,
+  // the civic category should win for NON-ADVERSARIAL topics (e.g. "report election
+  // fraud" matches complaint, "Model Code of Conduct" matches timeline).
+  // However, adversarial queries like "hack the EVM" should stay out_of_scope even
+  // though "EVM" matches voting_rules — safety catches these before the classifier
+  // but classifier should still classify correctly.
+  const civicCategories: QueryCategory[] = ['booth_query', 'roll_lookup', 'form_guidance', 'voting_rules', 'complaint', 'timeline'];
+  const hasCivicMatch = civicCategories.some(cat => scores[cat] > 0);
+  if (hasCivicMatch && scores.out_of_scope > 0) {
+    // Only suppress out_of_scope if a civic category scored higher or equal.
+    // This keeps adversarial queries (out_of_scope weight 12 > any civic weight)
+    // classified as out_of_scope even when a civic keyword also appears.
+    const maxCivicScore = Math.max(...civicCategories.map(c => scores[c]));
+    if (maxCivicScore >= scores.out_of_scope) {
+      scores.out_of_scope = 0;
+    }
+  }
+
+  // Disambiguation: when booth_query wins ONLY because of "polling station" / "booth"
+  // but another civic category also matched on a more specific signal, prefer the
+  // more specific category.
+  if (scores.booth_query > 0 && scores.voting_rules > 0) {
+    scores.voting_rules = Math.max(scores.voting_rules, scores.booth_query + 1);
+  }
+  if (scores.booth_query > 0 && scores.complaint > 0) {
+    scores.complaint = Math.max(scores.complaint, scores.booth_query + 1);
+  }
+
+  // Disambiguation: NRI/overseas voter queries should go to form_guidance, not roll_lookup
+  if (scores.roll_lookup > 0 && scores.form_guidance > 0) {
+    scores.form_guidance = Math.max(scores.form_guidance, scores.roll_lookup + 1);
   }
 
   // Find the winning category
