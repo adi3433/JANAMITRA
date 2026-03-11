@@ -11,20 +11,20 @@
 // ── Colour Palette ────────────────────────────────────────────────
 // Figma group: "Janamitra / Colors"
 export const colors = {
-  // Primary — deep civic blue
+  // Primary — Ashoka Blue (Election Commission Style)
   primary: {
-    50: '#EBF2FF',
-    100: '#D6E4FF',
-    200: '#ADC8FF',
-    300: '#84ABFF',
-    400: '#5B8EFF',
-    500: '#2563EB', // main
+    50: '#EFF6FF',
+    100: '#DBEAFE',
+    200: '#BFDBFE',
+    300: '#93C5FD',
+    400: '#60A5FA',
+    500: '#1E40AF', // main — Ashoka Blue
     600: '#1D4ED8',
-    700: '#1E40AF',
-    800: '#1E3A8A',
+    700: '#1E3A8A',
+    800: '#1E3080',
     900: '#172554',
   },
-  // Accent — Kerala gold
+  // Accent — Saffron (India Tricolor)
   accent: {
     50: '#FFFBEB',
     100: '#FEF3C7',
@@ -37,11 +37,16 @@ export const colors = {
     800: '#92400E',
     900: '#78350F',
   },
+  // India Green
+  green: {
+    500: '#16A34A',
+    600: '#15803D',
+  },
   // Success / Safe
   success: {
     50: '#ECFDF5',
     100: '#D1FAE5',
-    500: '#10B981',
+    500: '#16A34A',
     700: '#047857',
   },
   // Warning
@@ -58,20 +63,20 @@ export const colors = {
     500: '#EF4444',
     700: '#B91C1C',
   },
-  // Neutrals
+  // Neutrals — Slate scale
   neutral: {
     0: '#FFFFFF',
-    50: '#F9FAFB',
-    100: '#F3F4F6',
-    200: '#E5E7EB',
-    300: '#D1D5DB',
-    400: '#9CA3AF',
-    500: '#6B7280',
-    600: '#4B5563',
-    700: '#374151',
-    800: '#1F2937',
-    900: '#111827',
-    950: '#030712',
+    50: '#F8FAFC',
+    100: '#F1F5F9',
+    200: '#E2E8F0',
+    300: '#CBD5E1',
+    400: '#94A3B8',
+    500: '#64748B',
+    600: '#475569',
+    700: '#334155',
+    800: '#1E293B',
+    900: '#0F172A',
+    950: '#020617',
   },
 } as const;
 

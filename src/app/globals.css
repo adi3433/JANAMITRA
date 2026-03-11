@@ -4,40 +4,44 @@
 
 /* ── CSS Custom Properties (Design Tokens) ─────────────────────── */
 :root {
-  /* Primary */
-  --color-primary-50: #EBF2FF;
-  --color-primary-100: #D6E4FF;
-  --color-primary-200: #ADC8FF;
-  --color-primary-300: #84ABFF;
-  --color-primary-400: #5B8EFF;
-  --color-primary-500: #2563EB;
+  /* Primary — Ashoka Blue (Election Commission Style) */
+  --color-primary-50: #EFF6FF;
+  --color-primary-100: #DBEAFE;
+  --color-primary-200: #BFDBFE;
+  --color-primary-300: #93C5FD;
+  --color-primary-400: #60A5FA;
+  --color-primary-500: #1E40AF;
   --color-primary-600: #1D4ED8;
-  --color-primary-700: #1E40AF;
-  --color-primary-800: #1E3A8A;
+  --color-primary-700: #1E3A8A;
+  --color-primary-800: #1E3080;
   --color-primary-900: #172554;
 
-  /* Accent — Kerala Gold */
+  /* Accent — Saffron (India Tricolor) */
   --color-accent-50: #FFFBEB;
   --color-accent-100: #FEF3C7;
   --color-accent-400: #FBBF24;
   --color-accent-500: #F59E0B;
   --color-accent-700: #B45309;
 
+  /* Accent Secondary — India Green */
+  --color-green-500: #16A34A;
+  --color-green-600: #15803D;
+
   /* Neutrals */
   --color-neutral-0: #FFFFFF;
-  --color-neutral-50: #F9FAFB;
-  --color-neutral-100: #F3F4F6;
-  --color-neutral-200: #E5E7EB;
-  --color-neutral-300: #D1D5DB;
-  --color-neutral-400: #9CA3AF;
-  --color-neutral-500: #6B7280;
-  --color-neutral-600: #4B5563;
-  --color-neutral-700: #374151;
-  --color-neutral-800: #1F2937;
-  --color-neutral-900: #111827;
+  --color-neutral-50: #F8FAFC;
+  --color-neutral-100: #F1F5F9;
+  --color-neutral-200: #E2E8F0;
+  --color-neutral-300: #CBD5E1;
+  --color-neutral-400: #94A3B8;
+  --color-neutral-500: #64748B;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1E293B;
+  --color-neutral-900: #0F172A;
 
   /* Semantic */
-  --color-success: #10B981;
+  --color-success: #16A34A;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
 
@@ -58,7 +62,7 @@
   --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-glow: 0 0 20px 0 rgb(37 99 235 / 0.25);
+  --shadow-glow: 0 0 20px 0 rgb(30 64 175 / 0.25);
 
   /* Transitions */
   --transition-fast: 200ms cubic-bezier(0, 0, 0.2, 1);
@@ -67,58 +71,62 @@
 
   /* Surface colors (light mode defaults) */
   --surface-primary: #FFFFFF;
-  --surface-secondary: #F9FAFB;
-  --surface-tertiary: #F3F4F6;
+  --surface-secondary: #F8FAFC;
+  --surface-tertiary: #F1F5F9;
   --surface-elevated: #FFFFFF;
   --surface-overlay: rgba(0, 0, 0, 0.3);
-  --border-primary: #E5E7EB;
-  --border-secondary: #F3F4F6;
-  --text-primary: #111827;
-  --text-secondary: #4B5563;
-  --text-tertiary: #9CA3AF;
+  --border-primary: #E2E8F0;
+  --border-secondary: #F1F5F9;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-tertiary: #94A3B8;
   --text-inverted: #FFFFFF;
-  --badge-text: #1D4ED8;
+  --badge-text: #1E40AF;
 }
 
 /* ── Dark Mode ─────────────────────────────────────────────────── */
 .dark {
-  --color-neutral-0: #111827;
-  --color-neutral-50: #1F2937;
-  --color-neutral-100: #374151;
-  --color-neutral-200: #4B5563;
-  --color-neutral-300: #6B7280;
-  --color-neutral-400: #9CA3AF;
-  --color-neutral-500: #D1D5DB;
-  --color-neutral-600: #E5E7EB;
-  --color-neutral-700: #F3F4F6;
-  --color-neutral-800: #F9FAFB;
+  --color-neutral-0: #0F172A;
+  --color-neutral-50: #1E293B;
+  --color-neutral-100: #334155;
+  --color-neutral-200: #475569;
+  --color-neutral-300: #64748B;
+  --color-neutral-400: #94A3B8;
+  --color-neutral-500: #CBD5E1;
+  --color-neutral-600: #E2E8F0;
+  --color-neutral-700: #F1F5F9;
+  --color-neutral-800: #F8FAFC;
   --color-neutral-900: #FFFFFF;
 
   --color-primary-50: #172554;
   --color-primary-100: #1E3A8A;
   --color-primary-200: #1E40AF;
+  --color-primary-500: #1D4ED8;
 
   --color-accent-50: #451a03;
   --color-accent-100: #78350f;
 
-  --surface-primary: #1F2937;
-  --surface-secondary: #111827;
-  --surface-tertiary: #374151;
-  --surface-elevated: #374151;
+  --color-green-500: #22C55E;
+  --color-green-600: #16A34A;
+
+  --surface-primary: #1E293B;
+  --surface-secondary: #0F172A;
+  --surface-tertiary: #334155;
+  --surface-elevated: #334155;
   --surface-overlay: rgba(0, 0, 0, 0.6);
-  --border-primary: #4B5563;
-  --border-secondary: #374151;
-  --text-primary: #F9FAFB;
-  --text-secondary: #D1D5DB;
-  --text-tertiary: #9CA3AF;
-  --text-inverted: #111827;
+  --border-primary: #475569;
+  --border-secondary: #334155;
+  --text-primary: #E2E8F0;
+  --text-secondary: #CBD5E1;
+  --text-tertiary: #94A3B8;
+  --text-inverted: #0F172A;
   --badge-text: #FFFFFF;
 
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  --shadow-glow: 0 0 20px 0 rgb(37 99 235 / 0.35);
+  --shadow-glow: 0 0 20px 0 rgb(30 64 175 / 0.35);
 }
 
 @theme inline {
@@ -259,8 +267,8 @@ textarea:focus {
   border-radius: inherit;
   opacity: 0;
   transition: opacity 0.3s ease;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(245, 158, 11, 0.12));
-  box-shadow: 0 0 24px 0 rgba(37, 99, 235, 0.18), 0 0 48px 0 rgba(245, 158, 11, 0.08);
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.12), rgba(245, 158, 11, 0.08));
+  box-shadow: 0 0 24px 0 rgba(30, 64, 175, 0.15), 0 0 48px 0 rgba(245, 158, 11, 0.06);
   z-index: -1;
   pointer-events: none;
 }
@@ -270,24 +278,8 @@ textarea:focus {
 }
 
 .dark .feature-card::after {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(245, 158, 11, 0.15));
-  box-shadow: 0 0 28px 0 rgba(37, 99, 235, 0.25), 0 0 56px 0 rgba(245, 158, 11, 0.12);
-}
-
-/* ── Constituency Chip ─────────────────────────────────────────── */
-.constituency-chip {
-  transition: all 0.2s ease;
-}
-
-.constituency-chip:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px 0 rgba(37, 99, 235, 0.15);
-}
-
-.constituency-chip[data-active='true'] {
-  background: var(--color-primary-500);
-  color: white;
-  border-color: var(--color-primary-500);
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.25), rgba(245, 158, 11, 0.15));
+  box-shadow: 0 0 28px 0 rgba(30, 64, 175, 0.25), 0 0 56px 0 rgba(245, 158, 11, 0.12);
 }
 
 /* ── Print ─────────────────────────────────────────────────────── */

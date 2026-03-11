@@ -35,8 +35,8 @@ function getIdDocuments(locale: string): string {
   const data = votingRulesData.allowed_photo_id_documents;
   
   let response = isMl
-    ? `🪪 **വോട്ടിംഗ് സമയത്ത് അംഗീകൃത ഫോട്ടോ ഐഡി രേഖകൾ**\n\n`
-    : `🪪 **Accepted Photo ID Documents at Polling Station**\n\n`;
+    ? `**വോട്ടിംഗ് സമയത്ത് അംഗീകൃത ഫോട്ടോ ഐഡി രേഖകൾ**\n\n`
+    : `**Accepted Photo ID Documents at Polling Station**\n\n`;
 
   response += isMl
     ? `**പ്രാഥമിക ഐഡി:** ${data.primary_id.name}\n_${data.primary_id.note}_\n\n`
@@ -47,7 +47,7 @@ function getIdDocuments(locale: string): string {
     response += `${alt.id}. ${alt.document}\n`;
   }
 
-  response += `\n⚠️ _${data.important_note}_`;
+  response += `\n_${data.important_note}_`;
   return response;
 }
 
@@ -59,8 +59,8 @@ function getPollTiming(locale: string): string {
   const data = votingRulesData.poll_timings;
 
   let response = isMl
-    ? `🕐 **പോളിംഗ് സമയം**\n\n`
-    : `🕐 **Poll Timings**\n\n`;
+    ? `**പോളിംഗ് സമയം**\n\n`
+    : `**Poll Timings**\n\n`;
 
   response += isMl
     ? `- **ആരംഭം:** ${data.general.start}\n- **അവസാനം:** ${data.general.end}\n`
@@ -68,12 +68,12 @@ function getPollTiming(locale: string): string {
   response += `- _${data.general.note}_\n\n`;
 
   response += isMl
-    ? `📌 **അവസാന വോട്ടർ നിയമം:** ${data.last_voter_rule}\n\n`
-    : `📌 **Last Voter Rule:** ${data.last_voter_rule}\n\n`;
+    ? `**അവസാന വോട്ടർ നിയമം:** ${data.last_voter_rule}\n\n`
+    : `**Last Voter Rule:** ${data.last_voter_rule}\n\n`;
 
   response += isMl
-    ? `🔧 **മോക്ക് പോൾ:** ${data.mock_poll.time}\n_${data.mock_poll.purpose}_`
-    : `🔧 **Mock Poll:** ${data.mock_poll.time}\n_${data.mock_poll.purpose}_`;
+    ? `**മോക്ക് പോൾ:** ${data.mock_poll.time}\n_${data.mock_poll.purpose}_`
+    : `**Mock Poll:** ${data.mock_poll.time}\n_${data.mock_poll.purpose}_`;
 
   return response;
 }
@@ -86,8 +86,8 @@ function getVotingProcess(locale: string): string {
   const steps = votingRulesData.step_by_step_voting_process;
 
   let response = isMl
-    ? `🗳️ **വോട്ടിങ് പ്രക്രിയ — ഘട്ടം ഘട്ടമായി**\n\n`
-    : `🗳️ **Voting Process — Step by Step**\n\n`;
+    ? `**വോട്ടിങ് പ്രക്രിയ — ഘട്ടം ഘട്ടമായി**\n\n`
+    : `**Voting Process — Step by Step**\n\n`;
 
   for (const step of steps) {
     response += `**Step ${step.step}:** ${step.action}\n`;
@@ -106,19 +106,19 @@ function getEvmVvpat(locale: string): string {
   const vvpat = votingRulesData.evm_vvpat_explanation.vvpat;
 
   let response = isMl
-    ? `🖥️ **EVM & VVPAT വിശദീകരണം**\n\n`
-    : `🖥️ **EVM & VVPAT Explanation**\n\n`;
+    ? `**EVM & VVPAT വിശദീകരണം**\n\n`
+    : `**EVM & VVPAT Explanation**\n\n`;
 
   response += `**EVM (${evm.full_form})**\n`;
   response += `- Components: ${evm.components.join(', ')}\n`;
   response += `- ${evm.how_it_works}\n`;
-  response += `- 🔒 ${evm.tamper_proof}\n\n`;
+  response += `- ${evm.tamper_proof}\n\n`;
 
   response += `**VVPAT (${vvpat.full_form})**\n`;
   response += `- ${vvpat.purpose}\n`;
-  response += `- ⏱ ${isMl ? 'ദൃശ്യത' : 'Visibility'}: ${vvpat.visibility}\n`;
-  response += `- 📦 ${vvpat.storage}\n`;
-  response += `- ✅ ${vvpat.auditability}\n`;
+  response += `- ${isMl ? 'ദൃശ്യത' : 'Visibility'}: ${vvpat.visibility}\n`;
+  response += `- ${vvpat.storage}\n`;
+  response += `- ${vvpat.auditability}\n`;
 
   return response;
 }
@@ -130,21 +130,21 @@ function getProhibited(locale: string): string {
   const isMl = locale === 'ml';
 
   let response = isMl
-    ? `🚫 **പോളിങ് സ്റ്റേഷനിൽ നിരോധിത ഇനങ്ങളും പ്രവർത്തനങ്ങളും**\n\n`
-    : `🚫 **Prohibited Items & Activities at Polling Station**\n\n`;
+    ? `**പോളിങ് സ്റ്റേഷനിൽ നിരോധിത ഇനങ്ങളും പ്രവർത്തനങ്ങളും**\n\n`
+    : `**Prohibited Items & Activities at Polling Station**\n\n`;
 
   response += isMl ? '**നിരോധിത ഇനങ്ങൾ:**\n' : '**Prohibited Items:**\n';
   for (const item of votingRulesData.prohibited_items_at_polling_station) {
-    response += `- ❌ ${item}\n`;
+    response += `- ${item}\n`;
   }
 
   response += isMl ? '\n**നിരോധിത പ്രവർത്തനങ്ങൾ:**\n' : '\n**Prohibited Activities on Poll Day:**\n';
   for (const act of votingRulesData.prohibited_activities_on_poll_day) {
-    response += `- ❌ ${act}\n`;
+    response += `- ${act}\n`;
   }
 
   const sp = votingRulesData.silence_period;
-  response += `\n⏳ **${isMl ? 'നിശ്ശബ്ദ കാലാവധി' : 'Silence Period'}:** ${sp.duration}\n`;
+  response += `\n**${isMl ? 'നിശ്ശബ്ദ കാലാവധി' : 'Silence Period'}:** ${sp.duration}\n`;
   response += `_${sp.description}_`;
 
   return response;
@@ -158,14 +158,14 @@ function getPwdFacilities(locale: string): string {
   const data = votingRulesData.pwd_and_elderly_facilities;
 
   let response = isMl
-    ? `♿ **${data.title}**\n\n`
-    : `♿ **${data.title}**\n\n`;
+    ? `**${data.title}**\n\n`
+    : `**${data.title}**\n\n`;
 
   for (const fac of data.facilities) {
     response += `- **${fac.facility}:** ${fac.detail}\n`;
   }
 
-  response += `\n📞 ${isMl ? 'ഹെൽപ്‌ലൈൻ' : 'Helpline'}: **${data.helpline}**`;
+  response += `\n${isMl ? 'ഹെൽപ്‌ലൈൻ' : 'Helpline'}: **${data.helpline}**`;
   return response;
 }
 
@@ -177,12 +177,12 @@ function getTenderVote(locale: string): string {
   const data = votingRulesData.tender_vote;
 
   let response = isMl
-    ? `📝 **ടെൻഡർ വോട്ട്**\n\n`
-    : `📝 **Tender Vote**\n\n`;
+    ? `**ടെൻഡർ വോട്ട്**\n\n`
+    : `**Tender Vote**\n\n`;
 
   response += `${data.description}\n\n`;
   response += `**${isMl ? 'പ്രക്രിയ' : 'Process'}:** ${data.process}\n\n`;
-  response += `💡 _${data.note}_`;
+  response += `_${data.note}_`;
   return response;
 }
 
@@ -194,12 +194,12 @@ function getPollingSlip(locale: string): string {
   const data = votingRulesData.polling_slip;
 
   let response = isMl
-    ? `📄 **പോളിങ് സ്ലിപ്പ്**\n\n`
-    : `📄 **Polling Slip**\n\n`;
+    ? `**പോളിങ് സ്ലിപ്പ്**\n\n`
+    : `**Polling Slip**\n\n`;
 
   response += `${data.description}\n\n`;
   response += `**${isMl ? 'ഉദ്ദേശ്യം' : 'Purpose'}:** ${data.purpose}\n\n`;
-  response += `⚠️ _${data.note}_`;
+  response += `_${data.note}_`;
   return response;
 }
 
@@ -211,8 +211,8 @@ function getSilencePeriod(locale: string): string {
   const data = votingRulesData.silence_period;
 
   let response = isMl
-    ? `🤫 **നിശ്ശബ്ദ കാലാവധി**\n\n`
-    : `🤫 **Silence Period**\n\n`;
+    ? `**നിശ്ശബ്ദ കാലാവധി**\n\n`
+    : `**Silence Period**\n\n`;
 
   response += `**${isMl ? 'കാലാവധി' : 'Duration'}:** ${data.duration}\n`;
   response += `**${isMl ? 'ബാധകം' : 'Applies to'}:** ${data.applies_to}\n\n`;
@@ -225,7 +225,7 @@ function getSilencePeriod(locale: string): string {
  */
 function getIndelibleInk(_locale: string): string {
   const data = votingRulesData.indelible_ink_rules;
-  return `✍️ **Indelible Ink**\n\n- **Applied on:** ${data.applied_on}\n- **Purpose:** ${data.purpose}\n- **Permanence:** ${data.permanence}`;
+  return `**Indelible Ink**\n\n- **Applied on:** ${data.applied_on}\n- **Purpose:** ${data.purpose}\n- **Permanence:** ${data.permanence}`;
 }
 
 /**
@@ -270,8 +270,8 @@ export function getVotingRulesResponse(subIntent?: string, query?: string, local
 
   // Default: return a comprehensive voting day overview
   let response = locale === 'ml'
-    ? `🗳️ **വോട്ടിങ് ദിവസ വിവരങ്ങൾ**\n\n`
-    : `🗳️ **Voting Day Information**\n\n`;
+    ? `**വോട്ടിങ് ദിവസ വിവരങ്ങൾ**\n\n`
+    : `**Voting Day Information**\n\n`;
 
   response += getPollTiming(locale) + '\n\n---\n\n';
   response += getIdDocuments(locale) + '\n\n---\n\n';

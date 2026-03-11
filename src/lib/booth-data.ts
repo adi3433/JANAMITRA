@@ -349,7 +349,7 @@ export function formatNearestBoothResult(
 
   if (locale === 'ml') {
     let result = `**പോളിംഗ് സ്റ്റേഷൻ ${booth.stationNumber}** — ${booth.title}
-- **ദൂരം:** 📍 ${distStr}
+- **ദൂരം:** ${distStr}
 - **നിയോജകമണ്ഡലം:** ${lacLabel}`;
     if (booth.landmark) result += `\n- **ലാൻഡ്‌മാർക്ക്:** ${booth.landmark}`;
     if (hasGps) {
@@ -360,7 +360,7 @@ export function formatNearestBoothResult(
   }
 
   let result = `**Polling Station ${booth.stationNumber}** — ${booth.title}
-- **Distance:** 📍 ${distStr}
+- **Distance:** ${distStr}
 - **Constituency:** ${lacLabel}`;
   if (booth.landmark) result += `\n- **Landmark:** ${booth.landmark}`;
   if (hasGps) {

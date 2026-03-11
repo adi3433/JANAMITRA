@@ -155,11 +155,11 @@ export function getFormGuidance(subIntent?: string, query?: string, locale: stri
   // Build formatted response
   let response = '';
   if (isMl) {
-    response = `📋 **${rec.formNumber} — ${rec.title}**\n\n`;
+    response = `**${rec.formNumber} — ${rec.title}**\n\n`;
     response += `**ഉദ്ദേശ്യം:** ${rec.purpose}\n\n`;
     response += `**കാരണം:** ${rec.reason}\n\n`;
   } else {
-    response = `📋 **${rec.formNumber} — ${rec.title}**\n\n`;
+    response = `**${rec.formNumber} — ${rec.title}**\n\n`;
     response += `**Purpose:** ${rec.purpose}\n\n`;
     response += `**Why this form:** ${rec.reason}\n\n`;
   }
@@ -194,19 +194,19 @@ export function getFormGuidance(subIntent?: string, query?: string, locale: stri
   // Processing time & portal
   if (rec.estimatedProcessingTime) {
     response += isMl
-      ? `⏱ **പ്രോസസ്സിങ് സമയം:** ${rec.estimatedProcessingTime}\n`
-      : `⏱ **Est. Processing Time:** ${rec.estimatedProcessingTime}\n`;
+      ? `**പ്രോസസ്സിങ് സമയം:** ${rec.estimatedProcessingTime}\n`
+      : `**Est. Processing Time:** ${rec.estimatedProcessingTime}\n`;
   }
 
   if (rec.onlinePortal) {
     response += isMl
-      ? `🌐 **ഓൺലൈനായി സമർപ്പിക്കുക:** [${rec.onlinePortal}](${rec.onlinePortal})\n`
-      : `🌐 **Submit Online:** [${rec.onlinePortal}](${rec.onlinePortal})\n`;
+      ? `**ഓൺലൈനായി സമർപ്പിക്കുക:** [${rec.onlinePortal}](${rec.onlinePortal})\n`
+      : `**Submit Online:** [${rec.onlinePortal}](${rec.onlinePortal})\n`;
   }
 
   // Legal reference
   if (rec.legalReference) {
-    response += `\n📖 *${rec.legalReference}*\n`;
+    response += `\n*${rec.legalReference}*\n`;
   }
 
   // Common resources
@@ -228,5 +228,5 @@ export function getAllFormsSummary(): string {
     const f = form as Record<string, unknown>;
     return `- **${f.form_number}**: ${f.title} — ${f.purpose}`;
   });
-  return `📋 **Available ECI Voter Service Forms:**\n\n${formList.join('\n')}\n\nAll forms can be submitted online at [voters.eci.gov.in](https://voters.eci.gov.in) or [nvsp.in](https://www.nvsp.in).\n\nHelpline: **1950**`;
+  return `**Available ECI Voter Service Forms:**\n\n${formList.join('\n')}\n\nAll forms can be submitted online at [voters.eci.gov.in](https://voters.eci.gov.in) or [nvsp.in](https://www.nvsp.in).\n\nHelpline: **1950**`;
 }

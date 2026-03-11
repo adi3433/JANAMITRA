@@ -72,7 +72,7 @@ export function QuickActions({ actions, onAction }: QuickActionsProps) {
             whileTap={{ scale: 0.97 }}
             onClick={() => onAction(action)}
             className={`
-              flex items-center gap-2 rounded-xl border border-[var(--border-primary)]
+              flex items-center gap-2 rounded-md border border-[var(--border-primary)]
               bg-[var(--surface-primary)] px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)]
               shadow-sm transition-colors
               hover:border-[var(--color-primary-400)] hover:text-[var(--color-primary-500)]

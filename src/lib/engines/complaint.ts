@@ -35,8 +35,8 @@ function getCvigilSteps(locale: string): string {
   const process = complaintsData.complaint_process;
 
   let response = isMl
-    ? `📱 **cVIGIL — ${overview.full_name}**\n\n`
-    : `📱 **cVIGIL — ${overview.full_name}**\n\n`;
+    ? `**cVIGIL — ${overview.full_name}**\n\n`
+    : `**cVIGIL — ${overview.full_name}**\n\n`;
 
   response += `${overview.purpose}\n\n`;
 
@@ -49,7 +49,7 @@ function getCvigilSteps(locale: string): string {
     response += `  _${step.details}_\n\n`;
   }
 
-  response += `⏱ **${isMl ? 'ടാർഗെറ്റ് SLA' : 'Target SLA'}:** ${process.total_sla}\n`;
+  response += `**${isMl ? 'ടാർഗെറ്റ് SLA' : 'Target SLA'}:** ${process.total_sla}\n`;
   response += `_${process.note}_\n\n`;
 
   // App links
@@ -70,8 +70,8 @@ function getViolationTypes(locale: string): string {
   const data = complaintsData.violation_types;
 
   let response = isMl
-    ? `📋 **MCC ലംഘന വിഭാഗങ്ങൾ (cVIGIL)**\n\n`
-    : `📋 **MCC Violation Categories (cVIGIL)**\n\n`;
+    ? `**MCC ലംഘന വിഭാഗങ്ങൾ (cVIGIL)**\n\n`
+    : `**MCC Violation Categories (cVIGIL)**\n\n`;
 
   for (const cat of data.categories) {
     response += `- **${cat.id}: ${cat.name}**\n  _${cat.description}_\n`;
@@ -88,15 +88,15 @@ function getOfflineOptions(locale: string): string {
   const data = complaintsData.offline_complaint_options;
 
   let response = isMl
-    ? `📞 **ഓഫ്‌ലൈൻ പരാതി മാർഗങ്ങൾ**\n\n`
-    : `📞 **Alternative Complaint Methods (Without App)**\n\n`;
+    ? `**ഓഫ്‌ലൈൻ പരാതി മാർഗങ്ങൾ**\n\n`
+    : `**Alternative Complaint Methods (Without App)**\n\n`;
 
   for (const option of data.options) {
     response += `**${option.method}**\n`;
-    if ('contact' in option && option.contact) response += `  📞 ${option.contact}\n`;
+    if ('contact' in option && option.contact) response += `  Contact: ${option.contact}\n`;
     if ('description' in option && option.description) response += `  ${option.description}\n`;
     if ('note' in option && option.note) response += `  _${option.note}_\n`;
-    if ('portal' in option && option.portal) response += `  🌐 [${option.portal}](${option.portal})\n`;
+    if ('portal' in option && option.portal) response += `  [${option.portal}](${option.portal})\n`;
     response += '\n';
   }
 
@@ -111,8 +111,8 @@ function getResponseTime(locale: string): string {
   const sla = complaintsData.cvigil_overview.resolution_sla_minutes;
 
   let response = isMl
-    ? `⏱ **cVIGIL പ്രതികരണ സമയം**\n\n`
-    : `⏱ **cVIGIL Response Time**\n\n`;
+    ? `**cVIGIL പ്രതികരണ സമയം**\n\n`
+    : `**cVIGIL Response Time**\n\n`;
 
   response += isMl
     ? `ടാർഗെറ്റ് SLA: സമർപ്പണം മുതൽ പരിഹാരം വരെ **${sla} മിനിറ്റ്**\n\n`
@@ -123,7 +123,7 @@ function getResponseTime(locale: string): string {
     ? '**പ്രക്രിയ:**\n'
     : '**Process flow:**\n';
   response += `1. Citizen submits → 2. DCR assigns Flying Squad → 3. Field team investigates → 4. RO decides → 5. Status updated\n\n`;
-  response += `📞 Helpline: **1950**`;
+  response += `Helpline: **1950**`;
 
   return response;
 }
@@ -135,8 +135,8 @@ function getTrackComplaint(locale: string): string {
   const isMl = locale === 'ml';
 
   let response = isMl
-    ? `🔍 **പരാതി ട്രാക്കിങ്**\n\n`
-    : `🔍 **Complaint Tracking**\n\n`;
+    ? `**പരാതി ട്രാക്കിങ്**\n\n`
+    : `**Complaint Tracking**\n\n`;
 
   response += isMl
     ? 'നിങ്ങളുടെ cVIGIL പരാതിയുടെ സ്ഥിതി ട്രാക്ക് ചെയ്യാൻ:\n\n'
@@ -146,8 +146,8 @@ function getTrackComplaint(locale: string): string {
   response += '2. Use your **Complaint ID** (received at submission)\n';
   response += `3. Or visit the portal: [cvigil.eci.gov.in](${complaintsData.cvigil_overview.portal})\n\n`;
   response += isMl
-    ? '⚠️ _Janamitra പരാതി നേരിട്ട് ട്രാക്ക് ചെയ്യാൻ കഴിയില്ല. ഔദ്യോഗിക ആപ്പ്/പോർട്ടൽ ഉപയോഗിക്കുക._'
-    : '⚠️ _Janamitra cannot track complaints directly. Please use the official app or portal._';
+    ? '_Janamitra പരാതി നേരിട്ട് ട്രാക്ക് ചെയ്യാൻ കഴിയില്ല. ഔദ്യോഗിക ആപ്പ്/പോർട്ടൽ ഉപയോഗിക്കുക._'
+    : '_Janamitra cannot track complaints directly. Please use the official app or portal._';
 
   return response;
 }
@@ -159,8 +159,8 @@ function getImportantNotes(locale: string): string {
   const isMl = locale === 'ml';
 
   let response = isMl
-    ? `ℹ️ **cVIGIL — പ്രധാന കുറിപ്പുകൾ**\n\n`
-    : `ℹ️ **cVIGIL — Important Notes**\n\n`;
+    ? `**cVIGIL — പ്രധാന കുറിപ്പുകൾ**\n\n`
+    : `**cVIGIL — Important Notes**\n\n`;
 
   for (const note of complaintsData.important_notes) {
     response += `- ${note}\n`;
@@ -206,7 +206,7 @@ export function getComplaintResponse(subIntent?: string, query?: string, locale:
   response += getViolationTypes(locale);
   response += '\n\n---\n\n';
   response += getOfflineOptions(locale);
-  response += `\n📞 ${locale === 'ml' ? 'ഹെൽപ്‌ലൈൻ' : 'Helpline'}: **1950**`;
+  response += `\n${locale === 'ml' ? 'ഹെൽപ്‌ലൈൻ' : 'Helpline'}: **1950**`;
 
   return {
     subIntent: 'overview',

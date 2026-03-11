@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LanguageIcon,
@@ -64,18 +65,13 @@ export function Header() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: [0, 0, 0.2, 1] }}
-        className="sticky top-0 z-30 border-b border-[var(--border-primary)] bg-[var(--surface-primary)]/80 backdrop-blur-xl"
+        className="sticky top-0 z-30 bg-[var(--surface-primary)]/80 backdrop-blur-xl"
       >
         <div className="mx-auto flex h-14 items-center justify-between px-4">
           {/* Left: Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-primary-600)] shadow-sm transition-shadow duration-300 group-hover:shadow-md group-hover:shadow-[var(--color-primary-500)]/30">
-              <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
+            <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg shadow-sm transition-shadow duration-300 group-hover:shadow-md group-hover:shadow-[var(--color-primary-500)]/30">
+              <Image src="/janamitra.jpg" alt="Janamitra" width={32} height={32} className="h-8 w-8 object-cover" />
             </div>
             <div className="hidden sm:block">
               <h1 className={`text-base font-bold text-[var(--text-primary)] leading-tight ${isMl ? 'font-ml' : ''}`}>
@@ -198,6 +194,13 @@ export function Header() {
               {mobileMenuOpen ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
             </button>
           </div>
+        </div>
+
+        {/* Tricolor Divider — Indian national colors */}
+        <div className="flex">
+          <div className="h-[2px] flex-1 bg-[#FF9933]" />
+          <div className="h-[2px] flex-1 bg-white" />
+          <div className="h-[2px] flex-1 bg-[#138808]" />
         </div>
       </motion.header>
 

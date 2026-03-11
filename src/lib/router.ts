@@ -294,8 +294,8 @@ function tryEngineRoute(
         engineName: 'civic-boundary',
         classification,
         formattedResponse: isMl
-          ? 'ഞാൻ ഒരു നിഷ്പക്ഷ വോട്ടർ വിവര സഹായിയാണ്. രാഷ്ട്രീയ അഭിപ്രായങ്ങൾ, പാർട്ടി ശുപാർശകൾ, അല്ലെങ്കിൽ തിരഞ്ഞെടുപ്പ് പ്രവചനങ്ങൾ നൽകാൻ എനിക്ക് കഴിയില്ല. വോട്ടർ രജിസ്ട്രേഷൻ, ബൂത്ത് വിവരങ്ങൾ, വോട്ടിങ് പ്രക്രിയ, പരാതി നൽകൽ എന്നിവയെക്കുറിച്ച് ചോദിക്കാം. 📞 ഹെൽപ്‌ലൈൻ: 1950'
-          : 'I am an impartial voter information assistant. I cannot provide political opinions, party recommendations, or election predictions. I can help with voter registration, booth information, voting process, complaint filing, and election schedules. 📞 Helpline: 1950',
+          ? 'ഞാൻ ഒരു നിഷ്പക്ഷ വോട്ടർ വിവര സഹായിയാണ്. രാഷ്ട്രീയ അഭിപ്രായങ്ങൾ, പാർട്ടി ശുപാർശകൾ, അല്ലെങ്കിൽ തിരഞ്ഞെടുപ്പ് പ്രവചനങ്ങൾ നൽകാൻ എനിക്ക് കഴിയില്ല. വോട്ടർ രജിസ്ട്രേഷൻ, ബൂത്ത് വിവരങ്ങൾ, വോട്ടിങ് പ്രക്രിയ, പരാതി നൽകൽ എന്നിവയെക്കുറിച്ച് ചോദിക്കാം. ഹെൽപ്‌ലൈൻ: 1950'
+          : 'I am an impartial voter information assistant. I cannot provide political opinions, party recommendations, or election predictions. I can help with voter registration, booth information, voting process, complaint filing, and election schedules. Helpline: 1950',
         confidence: 0.99,
       };
     }
@@ -318,11 +318,11 @@ function tryEngineRoute(
             .join('\n\n---\n\n');
           const header = boothResults.length === 1
             ? (isMl
-                ? `📍 **പോളിങ് സ്റ്റേഷൻ ${boothResults[0].stationNumber} വിവരങ്ങൾ:**\n\n`
-                : `📍 **Polling Station ${boothResults[0].stationNumber} Details:**\n\n`)
+                ? `**പോളിങ് സ്റ്റേഷൻ ${boothResults[0].stationNumber} വിവരങ്ങൾ:**\n\n`
+                : `**Polling Station ${boothResults[0].stationNumber} Details:**\n\n`)
             : (isMl
-                ? `📍 **${boothResults.length} പോളിങ് സ്റ്റേഷനുകൾ കണ്ടെത്തി:**\n\n`
-                : `📍 **${boothResults.length} matching polling stations found:**\n\n`);
+                ? `**${boothResults.length} പോളിങ് സ്റ്റേഷനുകൾ കണ്ടെത്തി:**\n\n`
+                : `**${boothResults.length} matching polling stations found:**\n\n`);
           const footer = isMl
             ? '\n\nKottayam ജില്ല, District 10-Kottayam. സ്ഥിരീകരണത്തിന് [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/) സന്ദർശിക്കുക.'
             : '\n\nKottayam District, District 10-Kottayam. For verification, visit [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in/).';
@@ -339,8 +339,8 @@ function tryEngineRoute(
           engineName: 'booth-locator',
           classification,
           formattedResponse: isMl
-            ? `😔 ബൂത്ത് നമ്പർ ${numberMatch[1]} ഞങ്ങളുടെ Kottayam ജില്ലാ ഡാറ്റയിൽ കണ്ടെത്താനായില്ല. ${totalBooths} ബൂത്തുകൾ 9 നിയോജകമണ്ഡലങ്ങളിലായി (LAC 93–101) ലഭ്യമാണ്. ദയവായി പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക. 📞 ഹെൽപ്‌ലൈൻ: 1950`
-            : `😔 Booth number ${numberMatch[1]} was not found in our Kottayam district data. We have ${totalBooths} booths across 9 constituencies (LAC 93–101). Please verify and try again. 📞 Helpline: 1950`,
+            ? `ബൂത്ത് നമ്പർ ${numberMatch[1]} ഞങ്ങളുടെ Kottayam ജില്ലാ ഡാറ്റയിൽ കണ്ടെത്താനായില്ല. ${totalBooths} ബൂത്തുകൾ 9 നിയോജകമണ്ഡലങ്ങളിലായി (LAC 93–101) ലഭ്യമാണ്. ദയവായി പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക. ഹെൽപ്‌ലൈൻ: 1950`
+            : `Booth number ${numberMatch[1]} was not found in our Kottayam district data. We have ${totalBooths} booths across 9 constituencies (LAC 93–101). Please verify and try again. Helpline: 1950`,
           confidence: 0.9,
         };
       }
@@ -353,14 +353,14 @@ function tryEngineRoute(
             engineName: 'booth-locator',
             classification,
             formattedResponse: isMl
-              ? '😔 നിങ്ങളുടെ സ്ഥാനത്തിന് 10 കിലോമീറ്റർ ചുറ്റളവിൽ പോളിങ് ബൂത്തുകൾ കണ്ടെത്താനായില്ല. ദയവായി നിങ്ങളുടെ ബൂത്ത് നമ്പർ അല്ലെങ്കിൽ സ്ഥലപ്പേര് നൽകുക. 📞 ഹെൽപ്‌ലൈൻ: 1950'
-              : '😔 No polling booths found within 10 km of your location. Please try providing your booth number or area name for a more specific search. 📞 Helpline: 1950',
+              ? 'നിങ്ങളുടെ സ്ഥാനത്തിന് 10 കിലോമീറ്റർ ചുറ്റളവിൽ പോളിങ് ബൂത്തുകൾ കണ്ടെത്താനായില്ല. ദയവായി നിങ്ങളുടെ ബൂത്ത് നമ്പർ അല്ലെങ്കിൽ സ്ഥലപ്പേര് നൽകുക. ഹെൽപ്‌ലൈൻ: 1950'
+              : 'No polling booths found within 10 km of your location. Please try providing your booth number or area name for a more specific search. Helpline: 1950',
             confidence: 0.9,
           };
         }
         const header = isMl
-          ? `📍 **നിങ്ങളുടെ സമീപത്തുള്ള ${nearestBooths.length} പോളിങ് ബൂത്തുകൾ:**\n\n`
-          : `📍 **${nearestBooths.length} nearest polling booths to your location:**\n\n`;
+          ? `**നിങ്ങളുടെ സമീപത്തുള്ള ${nearestBooths.length} പോളിങ് ബൂത്തുകൾ:**\n\n`
+          : `**${nearestBooths.length} nearest polling booths to your location:**\n\n`;
         const boothCards = nearestBooths
           .map((b) => formatNearestBoothResult(b, isMl ? 'ml' : 'en'))
           .join('\n\n---\n\n');
@@ -376,8 +376,8 @@ function tryEngineRoute(
         engineName: 'booth-locator',
         classification,
         formattedResponse: isMl
-          ? '📍 നിങ്ങളുടെ അടുത്തുള്ള പോളിങ് ബൂത്ത് കണ്ടെത്താൻ, ദയവായി **ലൊക്കേഷൻ ഷെയർ ചെയ്യുക** (📍 ബട്ടൺ അമർത്തുക) അല്ലെങ്കിൽ നിങ്ങളുടെ ബൂത്ത് നമ്പർ / സ്ഥലപ്പേര് ടൈപ്പ് ചെയ്യുക.'
-          : '📍 To find your nearest polling booth, please **share your location** (tap the 📍 button) or type your booth number / area name.',
+          ? 'നിങ്ങളുടെ അടുത്തുള്ള പോളിങ് ബൂത്ത് കണ്ടെത്താൻ, ദയവായി **ലൊക്കേഷൻ ഷെയർ ചെയ്യുക** അല്ലെങ്കിൽ നിങ്ങളുടെ ബൂത്ത് നമ്പർ / സ്ഥലപ്പേര് ടൈപ്പ് ചെയ്യുക.'
+          : 'To find your nearest polling booth, please **share your location** or type your booth number / area name.',
         confidence: 0.9,
       };
     }

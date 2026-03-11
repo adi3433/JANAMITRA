@@ -137,7 +137,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
     <div className="w-full">
       <div
         className={`
-          flex items-end gap-2 rounded-2xl border bg-[var(--surface-primary)] p-2 shadow-sm
+          flex items-end gap-2 rounded-xl border bg-[var(--surface-primary)] p-2 shadow-sm
           transition-all duration-200
           ${disabled ? 'opacity-60' : ''}
           border-[var(--border-primary)]

@@ -33,7 +33,7 @@ function isDateAnnounced(): boolean {
 }
 
 function formatDate(dateStr: string): string {
-  if (dateStr === 'TBA') return '📅 TBA (To Be Announced)';
+  if (dateStr === 'TBA') return 'TBA (To Be Announced)';
   try {
     return new Date(dateStr).toLocaleDateString('en-IN', {
       weekday: 'long',
@@ -48,8 +48,8 @@ function formatDate(dateStr: string): string {
 
 function getTbaNotice(locale: string): string {
   return locale === 'ml'
-    ? '⚠️ _ഔദ്യോഗിക തീയതികൾ ECI ഇതുവരെ പ്രഖ്യാപിച്ചിട്ടില്ല. ഏറ്റവും പുതിയ വിവരങ്ങൾക്കായി [eci.gov.in](https://www.eci.gov.in) അല്ലെങ്കിൽ [CEO Kerala](https://www.ceo.kerala.gov.in) സന്ദർശിക്കുക._'
-    : '⚠️ _Official dates have not yet been announced by the Election Commission of India. Visit [eci.gov.in](https://www.eci.gov.in) or [CEO Kerala](https://www.ceo.kerala.gov.in) for the latest updates._';
+    ? '_ഔദ്യോഗിക തീയതികൾ ECI ഇതുവരെ പ്രഖ്യാപിച്ചിട്ടില്ല. ഏറ്റവും പുതിയ വിവരങ്ങൾക്കായി [eci.gov.in](https://www.eci.gov.in) അല്ലെങ്കിൽ [CEO Kerala](https://www.ceo.kerala.gov.in) സന്ദർശിക്കുക._'
+    : '_Official dates have not yet been announced by the Election Commission of India. Visit [eci.gov.in](https://www.eci.gov.in) or [CEO Kerala](https://www.ceo.kerala.gov.in) for the latest updates._';
 }
 
 // ── Engine functions ─────────────────────────────────────────────
@@ -62,8 +62,8 @@ function getPollDate(locale: string): string {
   const pollDate = timelineData.key_dates.poll_date;
 
   let response = isMl
-    ? `🗳️ **വോട്ടെടുപ്പ് തീയതി — Kerala Assembly Election 2026**\n\n`
-    : `🗳️ **Poll Date — Kerala Legislative Assembly Election 2026**\n\n`;
+    ? `**വോട്ടെടുപ്പ് തീയതി — Kerala Assembly Election 2026**\n\n`
+    : `**Poll Date — Kerala Legislative Assembly Election 2026**\n\n`;
 
   response += `**${pollDate.label}:** ${formatDate(pollDate.date)}\n`;
   if (pollDate.date !== 'TBA') {
@@ -85,8 +85,8 @@ function getAllDates(locale: string): string {
   const dates = timelineData.key_dates;
 
   let response = isMl
-    ? `📅 **2026 കേരള നിയമസഭാ തിരഞ്ഞെടുപ്പ് — പ്രധാന തീയതികൾ**\n\n`
-    : `📅 **2026 Kerala Assembly Election — Key Dates**\n\n`;
+    ? `**2026 കേരള നിയമസഭാ തിരഞ്ഞെടുപ്പ് — പ്രധാന തീയതികൾ**\n\n`
+    : `**2026 Kerala Assembly Election — Key Dates**\n\n`;
 
   const dateEntries = [
     dates.election_notification_date,
@@ -99,7 +99,7 @@ function getAllDates(locale: string): string {
   ];
 
   for (const entry of dateEntries) {
-    const status = entry.date === 'TBA' ? '⏳' : '✅';
+    const status = entry.date === 'TBA' ? '[Pending]' : '[Confirmed]';
     response += `${status} **${entry.label}:** ${formatDate(entry.date)}\n`;
     response += `  _${entry.description}_\n\n`;
   }
@@ -119,10 +119,10 @@ function getMccStatus(locale: string): string {
   const mcc = timelineData.model_code_of_conduct;
 
   let response = isMl
-    ? `⚖️ **മാതൃകാ പെരുമാറ്റ ചട്ടം (MCC)**\n\n`
-    : `⚖️ **Model Code of Conduct (MCC)**\n\n`;
+    ? `**മാതൃകാ പെരുമാറ്റ ചട്ടം (MCC)**\n\n`
+    : `**Model Code of Conduct (MCC)**\n\n`;
 
-  response += `**Status:** ${mcc.status === 'NOT_IN_EFFECT' ? '🔴 Not in effect' : '🟢 In effect'}\n\n`;
+  response += `**Status:** ${mcc.status === 'NOT_IN_EFFECT' ? 'Not in effect' : 'In effect'}\n\n`;
   response += `${mcc.description}\n\n`;
   response += `- **Comes into effect:** ${formatDate(mcc.comes_into_effect)}\n`;
   response += `- **Lifted on:** ${formatDate(mcc.lifted_on)}\n`;
@@ -142,8 +142,8 @@ function getConstituencies(locale: string): string {
   const data = timelineData.assembly_constituencies_kottayam;
 
   let response = isMl
-    ? `🗺️ **കോട്ടയം ജില്ല — നിയമസഭാ മണ്ഡലങ്ങൾ**\n\n`
-    : `🗺️ **Kottayam District — Assembly Constituencies**\n\n`;
+    ? `**കോട്ടയം ജില്ല — നിയമസഭാ മണ്ഡലങ്ങൾ**\n\n`
+    : `**Kottayam District — Assembly Constituencies**\n\n`;
 
   for (const c of data.constituencies) {
     response += `- **${c.no}.** ${c.name}\n`;
@@ -163,8 +163,8 @@ function getDeadlines(locale: string): string {
   const deadlines = timelineData.voter_service_deadlines;
 
   let response = isMl
-    ? `📋 **വോട്ടർ സേവന അവസാന തീയതികൾ**\n\n`
-    : `📋 **Voter Service Deadlines**\n\n`;
+    ? `**വോട്ടർ സേവന അവസാന തീയതികൾ**\n\n`
+    : `**Voter Service Deadlines**\n\n`;
 
   const entries = [
     deadlines.form_6_new_registration,
@@ -174,7 +174,7 @@ function getDeadlines(locale: string): string {
   ];
 
   for (const entry of entries) {
-    const status = entry.deadline === 'TBA' ? '⏳' : (entry.deadline === 'Closed' ? '🔴' : '🟢');
+    const status = entry.deadline === 'TBA' ? '[Pending]' : (entry.deadline === 'Closed' ? '[Closed]' : '[Open]');
     response += `${status} **${entry.label}:** ${entry.deadline === 'TBA' ? 'TBA' : entry.deadline}\n`;
     response += `  _${entry.reference}_\n\n`;
   }
@@ -205,7 +205,7 @@ function getSpecificDate(dateKey: string, locale: string): string {
 
   const entry = timelineData.key_dates[key];
 
-  let response = `📅 **${entry.label}:** ${formatDate(entry.date)}\n\n`;
+  let response = `**${entry.label}:** ${formatDate(entry.date)}\n\n`;
   response += `${entry.description}\n`;
 
   if (entry.date === 'TBA') {
@@ -258,7 +258,7 @@ export function getTimelineResponse(subIntent?: string, query?: string, locale: 
   let response = getAllDates(locale);
   response += '\n\n---\n\n';
   response += getConstituencies(locale);
-  response += `\n\n📞 ${locale === 'ml' ? 'ഹെൽപ്‌ലൈൻ' : 'Helpline'}: **1950** | [eci.gov.in](https://www.eci.gov.in) | [CEO Kerala](https://www.ceo.kerala.gov.in)`;
+  response += `\n\n${locale === 'ml' ? 'ഹെൽപ്‌ലൈൻ' : 'Helpline'}: **1950** | [eci.gov.in](https://www.eci.gov.in) | [CEO Kerala](https://www.ceo.kerala.gov.in)`;
 
   return {
     subIntent: 'overview',

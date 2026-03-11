@@ -53,7 +53,7 @@ export default function RegistrationPage() {
             </motion.div>
 
             {/* Tabs */}
-            <div className="mt-6 flex rounded-xl border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-1">
+            <div className="mt-6 flex rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-1">
               {[
                 { key: 'voterId' as TabType, label: isMl ? 'വോട്ടർ ഐഡി' : 'Voter ID' },
                 { key: 'details' as TabType, label: isMl ? 'വിശദാംശങ്ങൾ' : 'By Details' },
@@ -90,7 +90,7 @@ export default function RegistrationPage() {
                     value={voterId}
                     onChange={(e) => setVoterId(e.target.value.toUpperCase())}
                     placeholder="e.g., ABC1234567"
-                    className="mt-1 w-full rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
+                    className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
                   />
                 </div>
               ) : (
@@ -103,7 +103,7 @@ export default function RegistrationPage() {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="mt-1 w-full rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
+                      className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
                     />
                   </div>
                   <div>
@@ -114,7 +114,7 @@ export default function RegistrationPage() {
                       type="date"
                       value={dob}
                       onChange={(e) => setDob(e.target.value)}
-                      className="mt-1 w-full rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
+                      className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
                     />
                   </div>
                   <div>
@@ -125,7 +125,7 @@ export default function RegistrationPage() {
                       type="text"
                       value={constituency}
                       onChange={(e) => setConstituency(e.target.value)}
-                      className="mt-1 w-full rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
+                      className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
                     />
                   </div>
                 </>
@@ -135,7 +135,7 @@ export default function RegistrationPage() {
                 whileTap={{ scale: 0.97 }}
                 onClick={handleCheck}
                 disabled={loading}
-                className="w-full rounded-xl bg-[var(--color-primary-500)] py-3 text-sm font-semibold text-white shadow-sm hover:bg-[var(--color-primary-600)] transition-colors disabled:opacity-60"
+                className="w-full rounded-md bg-[var(--color-primary-500)] py-3 text-sm font-semibold text-white shadow-sm hover:bg-[var(--color-primary-600)] transition-colors disabled:opacity-60"
               >
                 {loading
                   ? (isMl ? 'പരിശോധിക്കുന്നു...' : 'Checking...')
@@ -151,7 +151,7 @@ export default function RegistrationPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
-                  className={`mt-6 rounded-2xl border p-5 ${
+                  className={`mt-6 rounded-xl border p-5 ${
                     result === 'found'
                       ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/30'
                       : 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/30'
@@ -160,7 +160,7 @@ export default function RegistrationPage() {
                   {result === 'found' ? (
                     <div>
                       <p className={`font-semibold text-emerald-700 dark:text-emerald-400 ${isMl ? 'font-ml' : ''}`}>
-                        ✅ {isMl ? 'രജിസ്ട്രേഷൻ കണ്ടെത്തി!' : 'Registration Found!'}
+                        {isMl ? 'രജിസ്ട്രേഷൻ കണ്ടെത്തി!' : 'Registration Found!'}
                       </p>
                       <div className="mt-3 space-y-1.5 text-sm text-emerald-600 dark:text-emerald-400">
                         <p><strong>{isMl ? 'പേര്' : 'Name'}:</strong> Demo Voter</p>
@@ -175,7 +175,7 @@ export default function RegistrationPage() {
                   ) : (
                     <div>
                       <p className={`font-semibold text-red-700 dark:text-red-400 ${isMl ? 'font-ml' : ''}`}>
-                        ❌ {isMl ? 'രജിസ്ട്രേഷൻ കണ്ടെത്തിയില്ല' : 'Registration Not Found'}
+                        {isMl ? 'രജിസ്ട്രേഷൻ കണ്ടെത്തിയില്ല' : 'Registration Not Found'}
                       </p>
                       <p className={`mt-2 text-sm text-red-600 dark:text-red-400 ${isMl ? 'font-ml' : ''}`}>
                         {isMl

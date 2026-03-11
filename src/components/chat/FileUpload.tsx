@@ -138,7 +138,7 @@ export function FileUpload({ onUpload, disabled = false }: FileUploadProps) {
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${
+        className={`flex h-10 w-10 items-center justify-center rounded-md transition-colors ${
           isOpen
             ? 'bg-[var(--color-primary-100)] text-[var(--color-primary-600)]'
             : 'text-[var(--color-neutral-400)] hover:bg-[var(--color-neutral-100)] hover:text-[var(--color-neutral-600)]'
@@ -156,7 +156,7 @@ export function FileUpload({ onUpload, disabled = false }: FileUploadProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="absolute bottom-14 left-0 z-20 w-72 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] p-4 shadow-lg"
+            className="absolute bottom-14 left-0 z-20 w-72 rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] p-4 shadow-lg"
           >
             {!pendingUpload ? (
               <>

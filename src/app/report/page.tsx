@@ -74,7 +74,7 @@ export default function ReportPage() {
                   ? 'നിങ്ങളുടെ റിപ്പോർട്ട് വിജയകരമായി സമർപ്പിച്ചു. ഞങ്ങൾ ഇത് പരിശോധിക്കും.'
                   : 'Your report has been submitted successfully. We will review it shortly.'}
               </p>
-              <div className="mt-4 rounded-xl bg-[var(--color-neutral-50)] p-4 text-center">
+              <div className="mt-4 rounded-md bg-[var(--color-neutral-50)] p-4 text-center">
                 <p className="text-xs text-[var(--color-neutral-400)]">{t.referenceNumber}</p>
                 <p className="mt-1 text-lg font-bold text-[var(--color-primary-600)]">{refNumber}</p>
               </div>
@@ -139,7 +139,7 @@ export default function ReportPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
-                  className={`mt-1 w-full rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition resize-none ${isMl ? 'font-ml' : ''}`}
+                  className={`mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition resize-none ${isMl ? 'font-ml' : ''}`}
                   placeholder={isMl ? 'എന്താണ് സംഭവിച്ചത് വിവരിക്കുക...' : 'Describe what happened...'}
                 />
               </div>
@@ -156,7 +156,7 @@ export default function ReportPage() {
                 />
                 <button
                   onClick={() => fileRef.current?.click()}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[var(--color-neutral-200)] bg-[var(--surface-primary)] py-4 text-sm text-[var(--color-neutral-500)] hover:border-[var(--color-primary-300)] hover:text-[var(--color-primary-500)] transition-colors"
+                  className="flex w-full items-center justify-center gap-2 rounded-md border-2 border-dashed border-[var(--color-neutral-200)] bg-[var(--surface-primary)] py-4 text-sm text-[var(--color-neutral-500)] hover:border-[var(--color-primary-300)] hover:text-[var(--color-primary-500)] transition-colors"
                 >
                   <CameraIcon className="h-5 w-5" />
                   {t.uploadMedia}
@@ -169,7 +169,7 @@ export default function ReportPage() {
               </div>
 
               {/* Location */}
-              <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] p-3">
+              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] p-3">
                 <input
                   type="checkbox"
                   checked={useLocation}
@@ -187,7 +187,7 @@ export default function ReportPage() {
                 whileTap={{ scale: 0.97 }}
                 onClick={handleSubmit}
                 disabled={loading || !description.trim()}
-                className="w-full rounded-xl bg-red-600 py-3 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition-colors disabled:opacity-60"
+                className="w-full rounded-md bg-red-600 py-3 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition-colors disabled:opacity-60"
               >
                 {loading
                   ? (isMl ? 'സമർപ്പിക്കുന്നു...' : 'Submitting...')

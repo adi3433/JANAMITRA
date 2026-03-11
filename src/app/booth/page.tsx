@@ -13,8 +13,9 @@ import {
   MagnifyingGlassIcon,
   MapPinIcon,
   ArrowTopRightOnSquareIcon,
-  FunnelIcon,
+  ChevronDownIcon,
 } from '@heroicons/react/24/outline';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
 import { useLocale } from '@/hooks/useLocale';
@@ -25,7 +26,7 @@ import type { BoothMapHandle } from '@/components/booth/BoothMap';
 const BoothMap = dynamic(() => import('@/components/booth/BoothMap'), {
   ssr: false,
   loading: () => (
-    <div className="h-full w-full flex items-center justify-center rounded-2xl bg-[var(--color-neutral-100)]">
+    <div className="h-full w-full flex items-center justify-center rounded-xl bg-[var(--color-neutral-100)]">
       <div className="text-center text-[var(--color-neutral-400)]">
         <MapPinIcon className="mx-auto h-10 w-10 mb-2 animate-pulse" />
         <p className="text-sm">Loading map…</p>
@@ -178,14 +179,14 @@ export default function BoothPage() {
                         ? 'ബൂത്ത് പേര് / സ്റ്റേഷൻ നമ്പർ / പ്രദേശം'
                         : 'Booth name / Station number / Area / Landmark'
                     }
-                    className="w-full rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] py-3 pl-10 pr-4 text-sm text-[var(--text-primary)] shadow-sm focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] outline-none transition"
+                    className="w-full rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] py-3 pl-10 pr-4 text-sm text-[var(--text-primary)] shadow-sm focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] outline-none transition"
                   />
                 </div>
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={handleSearch}
                   disabled={loading}
-                  className="rounded-xl bg-[var(--color-primary-500)] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[var(--color-primary-600)] transition-colors disabled:opacity-50"
+                  className="rounded-md bg-[var(--color-primary-500)] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[var(--color-primary-600)] transition-colors disabled:opacity-50"
                 >
                   {loading
                     ? (isMl ? 'തിരയുന്നു…' : 'Searching…')
@@ -194,38 +195,31 @@ export default function BoothPage() {
               </div>
             </motion.div>
 
-            {/* Constituency Filter Chips */}
+            {/* Constituency Dropdown */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
               className="mt-4"
             >
-              <div className="flex items-center gap-2 mb-2">
-                <FunnelIcon className="h-3.5 w-3.5 text-[var(--color-neutral-400)]" />
-                <p className={`text-xs font-medium text-[var(--color-neutral-500)] ${isMl ? 'font-ml' : ''}`}>
-                  {isMl ? 'നിയോജകമണ്ഡലം അനുസരിച്ച് ഫിൽറ്റർ ചെയ്യുക' : 'Filter by Constituency'}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => handleConstituencyFilter(null)}
-                  data-active={activeLac === null}
-                  className="constituency-chip rounded-full border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-3 py-1.5 text-xs font-medium text-[var(--color-neutral-600)] shadow-sm"
+              <label htmlFor="constituency-select" className={`block text-xs font-medium text-[var(--color-neutral-500)] mb-1.5 ${isMl ? 'font-ml' : ''}`}>
+                {isMl ? 'നിയോജകമണ്ഡലം തിരഞ്ഞെടുക്കുക' : 'Select Constituency'}
+              </label>
+              <div className="relative w-full sm:w-72">
+                <select
+                  id="constituency-select"
+                  value={activeLac ?? ''}
+                  onChange={(e) => handleConstituencyFilter(e.target.value ? Number(e.target.value) : null)}
+                  className="w-full appearance-none rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] py-2.5 pl-4 pr-10 text-sm text-[var(--text-primary)] shadow-sm focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] outline-none transition cursor-pointer"
                 >
-                  {isMl ? 'എല്ലാം' : 'All'}
-                </button>
-                {CONSTITUENCIES.map((c) => (
-                  <button
-                    key={c.lac}
-                    onClick={() => handleConstituencyFilter(c.lac)}
-                    data-active={activeLac === c.lac}
-                    className="constituency-chip rounded-full border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-3 py-1.5 text-xs font-medium text-[var(--color-neutral-600)] shadow-sm"
-                  >
-                    <span className="text-[10px] text-[var(--color-neutral-400)] mr-1">{c.lac}</span>
-                    {isMl ? c.ml : c.en}
-                  </button>
-                ))}
+                  <option value="">{isMl ? 'എല്ലാ നിയോജകമണ്ഡലങ്ങളും (93–101)' : 'All Constituencies (LAC 93–101)'}</option>
+                  {CONSTITUENCIES.map((c) => (
+                    <option key={c.lac} value={c.lac}>
+                      LAC {c.lac} — {isMl ? c.ml : c.en}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDownIcon className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-neutral-400)]" />
               </div>
             </motion.div>
 
@@ -235,7 +229,7 @@ export default function BoothPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.3 }}
-              className="mt-6 h-[400px] rounded-2xl border border-[var(--color-neutral-200)] overflow-hidden shadow-sm"
+              className="mt-6 h-[400px] rounded-xl border border-[var(--color-neutral-200)] overflow-hidden shadow-sm"
             >
               <BoothMap
                 ref={mapRef}
@@ -259,7 +253,7 @@ export default function BoothPage() {
                   </h2>
 
                   {results.length === 0 && !loading && (
-                    <div className="rounded-xl border border-dashed border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-6 text-center">
+                    <div className="rounded-md border border-dashed border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-6 text-center">
                       <MapPinIcon className="mx-auto h-8 w-8 text-[var(--color-neutral-300)] mb-2" />
                       <p className={`text-sm text-[var(--color-neutral-500)] ${isMl ? 'font-ml' : ''}`}>
                         {isMl
@@ -275,7 +269,7 @@ export default function BoothPage() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="rounded-xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] p-4 shadow-sm hover:shadow-md transition-shadow"
+                      className="rounded-xl border border-[var(--color-neutral-100)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-4 shadow-sm hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
@@ -295,14 +289,16 @@ export default function BoothPage() {
                             {isMl ? booth.addressMl : booth.address}
                           </p>
                           {booth.latitude > 0 && (
-                            <p className="mt-1 text-xs text-[var(--color-neutral-400)]">
-                              📍 {booth.latitude.toFixed(4)}°N, {booth.longitude.toFixed(4)}°E
+                            <p className="mt-1 text-xs text-[var(--color-neutral-400)] flex items-center gap-1">
+                              <MapPinIcon className="h-3 w-3" />
+                              {booth.latitude.toFixed(4)}°N, {booth.longitude.toFixed(4)}°E
                             </p>
                           )}
                         </div>
                         {booth.accessibility && (
-                          <span className="ml-2 shrink-0 rounded-full bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                            ♿ {isMl ? 'പ്രവേശനക്ഷമം' : 'Accessible'}
+                          <span className="ml-2 shrink-0 flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                            <CheckCircleIcon className="h-3 w-3" />
+                            {isMl ? 'പ്രവേശനക്ഷമം' : 'Accessible'}
                           </span>
                         )}
                       </div>

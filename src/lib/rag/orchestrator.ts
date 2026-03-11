@@ -144,8 +144,8 @@ export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {
     const fallbackLocale = locale === 'ml' ? 'ml' : 'en';
     const bestSource = topPassages[0];
     cleanText = fallbackLocale === 'ml'
-      ? `ഈ വിഷയത്തിൽ ലഭ്യമായ വിവരങ്ങൾ:\n\n${bestSource.content.substring(0, 500)}\n\n[Source 1: ${bestSource.metadata.source}]\n\nകൂടുതൽ വിവരങ്ങൾക്ക് ${bestSource.metadata.url} സന്ദർശിക്കുക. 📞 ഹെൽപ്‌ലൈൻ: 1950`
-      : `Here is the relevant information:\n\n${bestSource.content.substring(0, 500)}\n\n[Source 1: ${bestSource.metadata.source}]\n\nFor more details, visit ${bestSource.metadata.url}. 📞 Helpline: 1950`;
+      ? `ഈ വിഷയത്തിൽ ലഭ്യമായ വിവരങ്ങൾ:\n\n${bestSource.content.substring(0, 500)}\n\n[Source 1: ${bestSource.metadata.source}]\n\nകൂടുതൽ വിവരങ്ങൾക്ക് ${bestSource.metadata.url} സന്ദർശിക്കുക. ഹെൽപ്‌ലൈൻ: 1950`
+      : `Here is the relevant information:\n\n${bestSource.content.substring(0, 500)}\n\n[Source 1: ${bestSource.metadata.source}]\n\nFor more details, visit ${bestSource.metadata.url}. Helpline: 1950`;
     modelSelfScore = 0.6; // Lower confidence for fallback
   }
 

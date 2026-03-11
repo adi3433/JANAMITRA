@@ -21,7 +21,6 @@ import {
   PhoneIcon,
   EnvelopeIcon,
   BuildingOffice2Icon,
-  CheckCircleIcon,
   ClipboardDocumentCheckIcon,
   HandRaisedIcon,
 } from '@heroicons/react/24/outline';
@@ -179,14 +178,14 @@ export default function Home() {
             >
               <Link
                 href="/chat"
-                className="inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-[var(--color-primary-500)] to-[var(--color-primary-600)] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[var(--color-primary-500)]/25 transition-all hover:shadow-xl hover:shadow-[var(--color-primary-500)]/30 hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2.5 rounded-md bg-[var(--color-primary-500)] px-7 py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[var(--color-primary-600)] hover:shadow-lg hover:-translate-y-0.5"
               >
                 <ChatBubbleLeftRightIcon className="h-5 w-5" />
                 {isMl ? 'ചാറ്റ് ആരംഭിക്കുക' : 'Start Chat'}
               </Link>
               <Link
                 href="/booth"
-                className="inline-flex items-center gap-2.5 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-7 py-3.5 text-sm font-semibold text-[var(--color-neutral-700)] shadow-sm transition-all hover:bg-[var(--color-neutral-50)] hover:shadow-md hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2.5 rounded-md border border-[var(--color-primary-500)] bg-transparent px-7 py-3.5 text-sm font-semibold text-[var(--color-primary-500)] transition-all hover:bg-[var(--color-primary-500)]/5 hover:shadow-md hover:-translate-y-0.5"
               >
                 <MapPinIcon className="h-5 w-5" />
                 {isMl ? 'ബൂത്ത് കണ്ടെത്തുക' : 'Find Booth'}
@@ -283,7 +282,7 @@ export default function Home() {
                   >
                     <Link
                       href={feature.href}
-                      className="feature-card group block rounded-2xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] p-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-[var(--color-primary-300)]"
+                      className="feature-card group block rounded-xl border border-[var(--color-neutral-200)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-[var(--color-primary-300)]"
                     >
                       <div
                         className={`inline-flex rounded-xl p-3 transition-transform duration-300 group-hover:scale-110 ${feature.bgLight}`}
@@ -344,13 +343,8 @@ export default function Home() {
               {/* Branding */}
               <div>
                 <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--color-primary-500)]">
-                    <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                      <circle cx="9" cy="7" r="4" />
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
+                  <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg">
+                    <Image src="/janamitra.jpg" alt="Janamitra" width={32} height={32} className="h-8 w-8 object-cover" />
                   </div>
                   <div>
                     <p className="text-sm font-bold text-[var(--text-primary)]">{t.appName}</p>
@@ -517,7 +511,7 @@ function VoterJourney({ isMl }: { isMl: boolean }) {
               }`}
             >
               {/* Step number circle */}
-              <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-4 border-[var(--surface-primary)] bg-[var(--surface-primary)] shadow-md ring-4 ${step.ring} sm:absolute sm:left-1/2 sm:-translate-x-1/2">
+              <div className={`relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-4 border-[var(--surface-primary)] bg-[var(--surface-primary)] shadow-md ring-4 ${step.ring} sm:absolute sm:left-1/2 sm:-translate-x-1/2`}>
                 <Icon className={`h-5 w-5 ${step.color}`} />
               </div>
 

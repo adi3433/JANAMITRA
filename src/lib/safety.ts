@@ -110,13 +110,13 @@ const ADVERSARIAL_PATTERNS = [
 ];
 
 const ADVERSARIAL_RESPONSES: Record<string, string> = {
-  en: "I'm Janamitra, a civic information assistant for Kottayam district elections. I'm here to help with voter registration, booth details, voting rules, and complaint filing. Let me know how I can assist you with election-related queries. 📞 Helpline: 1950",
+  en: "I'm Janamitra, a civic information assistant for Kottayam district elections. I'm here to help with voter registration, booth details, voting rules, and complaint filing. Let me know how I can assist you with election-related queries. Helpline: 1950",
   ml: '\u0d1e\u0d3e\u0d7b \u0d35\u0d3e\u0d15\u0d4d\u0d15\u0d4d, \u0d15\u0d4b\u0d1f\u0d4d\u0d1f\u0d2f\u0d02 \u0d1c\u0d3f\u0d32\u0d4d\u0d32 \u0d24\u0d3f\u0d30\u0d1e\u0d4d\u0d1e\u0d46\u0d1f\u0d41\u0d2a\u0d4d\u0d2a\u0d4d \u0d35\u0d3f\u0d35\u0d30 \u0d38\u0d39\u0d3e\u0d2f\u0d3f \u0d06\u0d23\u0d4d. \u0d35\u0d4b\u0d1f\u0d4d\u0d1f\u0d7c \u0d30\u0d1c\u0d3f\u0d38\u0d4d\u0d1f\u0d4d\u0d30\u0d47\u0d37\u0d7b, \u0d2c\u0d42\u0d24\u0d4d\u0d24\u0d4d \u0d35\u0d3f\u0d35\u0d30\u0d19\u0d4d\u0d19\u0d7e, \u0d35\u0d4b\u0d1f\u0d4d\u0d1f\u0d3f\u0d19\u0d4d \u0d28\u0d3f\u0d2f\u0d2e\u0d19\u0d4d\u0d19\u0d7e, \u0d2a\u0d30\u0d3e\u0d24\u0d3f \u0d28\u0d7d\u0d15\u0d7d \u0d0e\u0d28\u0d4d\u0d28\u0d3f\u0d35\u0d2f\u0d3f\u0d7d \u0d38\u0d39\u0d3e\u0d2f\u0d3f\u0d15\u0d4d\u0d15\u0d3e\u0d02. \ud83d\udcde \u0d39\u0d46\u0d7d\u0d2a\u0d4d\u200c\u0d32\u0d48\u0d7b: 1950',
 };
 
 const OUT_OF_SCOPE_RESPONSES: Record<string, string> = {
-  en: "I'm Janamitra, a voter information assistant for Kottayam district elections. I can only help with election-related topics: voter registration, booth information, voting rules, election schedule, and complaint filing. For other queries, please use a general-purpose assistant. 📞 Election Helpline: 1950",
-  ml: 'ഞാൻ ജനമിത്ര, കോട്ടയം ജില്ല തിരഞ്ഞെടുപ്പ് വിവര സഹായി ആണ്. വോട്ടർ രജിസ്ട്രേഷൻ, ബൂത്ത് വിവരങ്ങൾ, വോട്ടിങ് നിയമങ്ങൾ, തിരഞ്ഞെടുപ്പ് ഷെഡ്യൂൾ, പരാതി നൽകൽ എന്നിവയിൽ മാത്രമേ സഹായിക്കാൻ കഴിയൂ. 📞 ഹെൽപ്‌ലൈൻ: 1950',
+  en: "I'm Janamitra, a voter information assistant for Kottayam district elections. I can only help with election-related topics: voter registration, booth information, voting rules, election schedule, and complaint filing. For other queries, please use a general-purpose assistant. Election Helpline: 1950",
+  ml: 'ഞാൻ ജനമിത്ര, കോട്ടയം ജില്ല തിരഞ്ഞെടുപ്പ് വിവര സഹായി ആണ്. വോട്ടർ രജിസ്ട്രേഷൻ, ബൂത്ത് വിവരങ്ങൾ, വോട്ടിങ് നിയമങ്ങൾ, തിരഞ്ഞെടുപ്പ് ഷെഡ്യൂൾ, പരാതി നൽകൽ എന്നിവയിൽ മാത്രമേ സഹായിക്കാൻ കഴിയൂ. ഹെൽപ്‌ലൈൻ: 1950',
 };
 
 /**
