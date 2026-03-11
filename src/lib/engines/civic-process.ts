@@ -141,9 +141,105 @@ export function getDocumentChecklist(formNumber: string): DocumentChecklist | nu
 }
 
 /**
+ * Build a generic document requirements overview when no specific form is identified
+ */
+function buildGenericDocumentResponse(locale: string): string {
+  const isMl = locale === 'ml';
+
+  let response = isMl
+    ? '**വോട്ടർ സേവനങ്ങൾക്ക് ആവശ്യമായ രേഖകൾ**\n\n'
+    : '**Documents Required for Voter Services**\n\n';
+
+  // General documents for registration (Form 6)
+  response += isMl
+    ? '**1. പുതിയ വോട്ടർ രജിസ്ട്രേഷൻ (ഫോം 6):**\n'
+    : '**1. New Voter Registration (Form 6):**\n';
+  response += isMl
+    ? '- **പ്രായ തെളിവ്:** (ഏതെങ്കിലും ഒന്ന്)\n  - ജനന സർട്ടിഫിക്കറ്റ്\n  - സ്‌കൂൾ വിടുതൽ സർട്ടിഫിക്കറ്റ്\n  - പാസ്‌പോർട്ട്\n  - PAN കാർഡ്\n  - ആധാർ കാർഡ്\n'
+    : '- **Proof of Age:** (any one)\n  - Birth certificate\n  - School leaving certificate\n  - Passport\n  - PAN card\n  - Aadhaar card\n';
+  response += isMl
+    ? '- **വിലാസ തെളിവ്:** (ഏതെങ്കിലും ഒന്ന്)\n  - ആധാർ കാർഡ്\n  - യൂട്ടിലിറ്റി ബിൽ\n  - ബാങ്ക് പാസ്‌ബുക്ക്\n  - വാടക കരാർ\n'
+    : '- **Proof of Address:** (any one)\n  - Aadhaar card\n  - Utility bill\n  - Bank passbook\n  - Rent agreement\n';
+  response += isMl
+    ? '- **പാസ്‌പോർട്ട് സൈസ് ഫോട്ടോ:** 1 എണ്ണം\n\n'
+    : '- **Passport-size Photograph:** 1 copy\n\n';
+
+  // ID documents at polling booth
+  response += isMl
+    ? '**2. വോട്ടിങ് ദിവസം അംഗീകൃത ഫോട്ടോ ഐഡി (12 രേഖകൾ):**\n'
+    : '**2. Accepted Photo ID at the Polling Booth (12 documents):**\n';
+  const ids = [
+    isMl ? 'EPIC / വോട്ടർ ഐഡി കാർഡ്' : 'EPIC / Voter ID Card',
+    isMl ? 'ആധാർ കാർഡ്' : 'Aadhaar Card',
+    isMl ? 'പാസ്‌പോർട്ട്' : 'Passport',
+    isMl ? 'ഡ്രൈവിങ് ലൈസൻസ്' : 'Driving License',
+    isMl ? 'PAN കാർഡ്' : 'PAN Card',
+    isMl ? 'NPR സ്‌മാർട്ട് കാർഡ്' : 'NPR Smart Card',
+    isMl ? 'MNREGA ജോബ് കാർഡ്' : 'MNREGA Job Card',
+    isMl ? 'RSBY ഹെൽത്ത് ഇൻഷുറൻസ് കാർഡ്' : 'RSBY Health Insurance Smart Card',
+    isMl ? 'ബാങ്ക്/പോസ്‌റ്റ് ഓഫീസ് പാസ്‌ബുക്ക് (ഫോട്ടോ ഉള്ളത്)' : 'Bank/Post Office Passbook with Photo',
+    isMl ? 'PSU/സർക്കാർ സർവീസ് ഐഡി' : 'PSU/Government Service ID',
+    isMl ? 'പെൻഷൻ ഡോക്യുമെന്റ് (ഫോട്ടോ ഉള്ളത്)' : 'Pension Document with Photo',
+    isMl ? 'MP/MLA/MLC ഐഡന്റിറ്റി കാർഡ്' : 'MP/MLA/MLC Identity Card',
+  ];
+  for (const id of ids) {
+    response += `- ${id}\n`;
+  }
+
+  response += '\n';
+
+  // Other forms summary
+  response += isMl
+    ? '**3. മറ്റ് ഫോമുകൾ:**\n'
+    : '**3. Other Forms:**\n';
+  response += isMl
+    ? '- **ഫോം 6A** (NRI വോട്ടർ): സാധുവായ ഇന്ത്യൻ പാസ്‌പോർട്ട് + വിദേശ വിലാസ തെളിവ്\n'
+    : '- **Form 6A** (NRI Voter): Valid Indian passport + overseas address proof\n';
+  response += isMl
+    ? '- **ഫോം 7** (നീക്കം/ആക്ഷേപം): ആക്ഷേപിക്കേണ്ട EPIC നമ്പർ + തെളിവ്\n'
+    : '- **Form 7** (Deletion/Objection): EPIC of entry to be objected + supporting evidence\n';
+  response += isMl
+    ? '- **ഫോം 8** (തിരുത്തൽ/മാറ്റം): നിലവിലെ EPIC + ശരിയായ വിവരങ്ങളുടെ തെളിവ്\n'
+    : '- **Form 8** (Correction/Update): Current EPIC + proof of correct details\n';
+  response += isMl
+    ? '- **ഫോം 12C** (സർക്കാർ ജീവനക്കാർ): സർവീസ് ഐഡി + പോസ്‌റ്റിങ് ഓർഡർ\n\n'
+    : '- **Form 12C** (Government Employees): Service ID + posting order\n\n';
+
+  response += isMl
+    ? 'ഒരു പ്രത്യേക ഫോമിനെക്കുറിച്ച് കൂടുതൽ വിവരങ്ങൾ ആവശ്യമെങ്കിൽ, "Form 6 രേഖകൾ" അല്ലെങ്കിൽ "Form 8 documents" എന്ന് ചോദിക്കുക.\n\n'
+    : 'For detailed requirements for a specific form, ask "Form 6 documents" or "Form 8 requirements".\n\n';
+
+  response += `${isMl ? 'ഹെൽപ്പ്‌ലൈൻ' : 'Helpline'}: **1950** | [voters.eci.gov.in](https://voters.eci.gov.in) | [CEO Kerala](https://www.ceo.kerala.gov.in)`;
+
+  return response;
+}
+
+/**
  * Full form guidance response — combines recommendation + checklist
  */
 export function getFormGuidance(subIntent?: string, query?: string, locale: string = 'en'): FormGuidanceResult | null {
+  // Handle generic "documents required" / "checklist" queries that don't
+  // reference a specific form — return a combined overview of all forms
+  // and their document requirements instead of falling through to RAG.
+  if (subIntent === 'checklist') {
+    const rec = recommendForm(subIntent, query);
+    if (!rec) {
+      // No specific form matched — provide a general document summary
+      return {
+        recommendation: {
+          formNumber: 'General',
+          title: locale === 'ml' ? 'വോട്ടർ സേവനങ്ങൾക്ക് ആവശ്യമായ രേഖകൾ' : 'Documents Required for Voter Services',
+          purpose: locale === 'ml' ? 'വോട്ടർ രജിസ്ട്രേഷൻ, തിരുത്തൽ, മാറ്റം എന്നിവയ്ക്ക് ആവശ്യമായ പൊതു രേഖകൾ' : 'Common documents needed for voter registration and related services',
+          whoShouldUse: [],
+          reason: '',
+        },
+        checklist: { formNumber: 'General', required: {} },
+        formattedResponse: buildGenericDocumentResponse(locale),
+        confidence: 0.93,
+      };
+    }
+  }
+
   const rec = recommendForm(subIntent, query);
   if (!rec) return null;
 

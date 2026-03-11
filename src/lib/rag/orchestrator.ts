@@ -66,7 +66,7 @@ const PROMPT_VERSION = getTemplateVersion('rag-system');
 
 // Max token budgets
 const MAX_CONTEXT_TOKENS = 3000;
-const MAX_PROMPT_TOKENS = 1500;
+const MAX_PROMPT_TOKENS = 4000;
 const ESCALATION_THRESHOLD = 0.55;
 
 export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {

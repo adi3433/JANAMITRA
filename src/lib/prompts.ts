@@ -100,25 +100,27 @@ export function ragUserPrompt(input: RAGUserPromptInput): string {
     ? `\nRETRIEVAL TRACE (for audit — do not include in response):\n${retrievalTrace.map((t) => `  chunk=${t.chunkId} sim=${t.similarityScore.toFixed(3)} rerank=${t.rerankerScore.toFixed(3)}`).join('\n')}`
     : '';
 
-  return `CONTEXT (official sources, reranked by relevance):
-${contextBlock || 'No relevant sources found.'}
-
-CONVERSATION HISTORY:
-${conversationBlock || 'None'}
-${memoryBlock}${traceBlock}
-
-USER QUESTION (locale: ${locale}):
+  // CRITICAL: User question and instructions come FIRST so they are never
+  // truncated when the prompt is trimmed to fit the token budget.
+  return `USER QUESTION (locale: ${locale}):
 ${query}
 
 INSTRUCTIONS:
-- Answer in ${lang} with proper detail and structure.
+- Answer the USER QUESTION above in ${lang} with proper detail and structure.
 - Cite sources using [Source N] references.
 - Use **bold** for key terms, bullet points for lists, and include relevant links.
 - If unsure, state uncertainty and suggest checking an official source.
 - Never recommend any political party or candidate.
 - Be civic, empathetic, and thorough — provide actionable step-by-step guidance where applicable.
 - Include helpline numbers (1950) and official website links when relevant.
-- End with CONFIDENCE_SCORE: <float>`;
+- End with CONFIDENCE_SCORE: <float>
+
+CONVERSATION HISTORY:
+${conversationBlock || 'None'}
+${memoryBlock}${traceBlock}
+
+CONTEXT (official sources, reranked by relevance):
+${contextBlock || 'No relevant sources found.'}`;
 }
 
 // ── Vision Extraction Prompt (JSON-only) ─────────────────────────
