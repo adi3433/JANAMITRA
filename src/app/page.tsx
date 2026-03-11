@@ -23,6 +23,8 @@ import {
   BuildingOffice2Icon,
   ClipboardDocumentCheckIcon,
   HandRaisedIcon,
+  GlobeAltIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
@@ -337,41 +339,58 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-[var(--color-neutral-100)] bg-[var(--surface-primary)]">
-          <div className="mx-auto max-w-5xl px-4 py-8">
-            <div className="grid gap-8 sm:grid-cols-3">
-              {/* Branding */}
+        <footer className="bg-[var(--color-neutral-900)] text-[var(--color-neutral-300)]">
+          {/* Tricolor Top Border */}
+          <div className="flex h-1">
+            <div className="flex-1 bg-[#FF9933]" />
+            <div className="flex-1 bg-white" />
+            <div className="flex-1 bg-[#138808]" />
+          </div>
+
+          {/* Main Footer Content */}
+          <div className="mx-auto max-w-6xl px-4 pt-10 pb-6">
+            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+
+              {/* Column 1: About */}
               <div>
-                <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg">
-                    <Image src="/janamitra.jpg" alt="Janamitra" width={32} height={32} className="h-8 w-8 object-cover" />
+                <div className="flex items-center gap-2.5 mb-4">
+                  <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-[var(--color-neutral-700)]">
+                    <Image src="/janamitra.jpg" alt="Janamitra" width={40} height={40} className="h-10 w-10 object-cover" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-[var(--text-primary)]">{t.appName}</p>
-                    <p className="text-[10px] text-[var(--text-tertiary)]">SVEEP Kottayam</p>
+                    <p className="text-sm font-bold text-white">{t.appName}</p>
+                    <p className="text-[10px] text-[var(--color-neutral-400)]">SVEEP Kottayam District</p>
                   </div>
                 </div>
-                <p className={`mt-3 text-xs text-[var(--color-neutral-400)] leading-relaxed ${isMl ? 'font-ml' : ''}`}>
+                <p className={`text-xs leading-relaxed text-[var(--color-neutral-400)] ${isMl ? 'font-ml' : ''}`}>
                   {isMl
-                    ? 'ഇന്ത്യൻ തിരഞ്ഞെടുപ്പ് കമ്മീഷന്റെ SVEEP ഇനിഷ്യേറ്റീവ്. ജനാധിപത്യ ശാക്തീകരണം, ഓരോ വോട്ടിലും.'
-                    : 'Election Commission of India — SVEEP Initiative. Empowering Democracy, One Vote at a Time.'}
+                    ? 'കോട്ടയം ജില്ലയിലെ വോട്ടർമാർക്കായുള്ള AI അധിഷ്ഠിത ദ്വിഭാഷാ വിവര സഹായി. ഇന്ത്യൻ തിരഞ്ഞെടുപ്പ് കമ്മീഷന്റെ SVEEP പദ്ധതിയുടെ ഭാഗമായി IIIT കോട്ടയം വികസിപ്പിച്ചത്.'
+                    : 'AI-powered bilingual voter information assistant for Kottayam district. Developed by IIIT Kottayam under the SVEEP initiative of the Election Commission of India.'}
                 </p>
+                {/* Partner Logos */}
+                <div className="mt-4 flex items-center gap-3">
+                  <Image src="/ec-logo.png" alt="Election Commission of India" width={28} height={28} className="h-7 w-7 object-contain opacity-70" />
+                  <Image src="/sveep-logo.png" alt="SVEEP" width={28} height={28} className="h-7 w-7 object-contain opacity-70" />
+                  <Image src="/iiit-kottayam-logo.png" alt="IIIT Kottayam" width={28} height={28} className="h-7 w-7 object-contain opacity-70" />
+                </div>
               </div>
 
-              {/* Quick Links */}
+              {/* Column 2: Quick Links */}
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-neutral-500)] mb-4">
                   {isMl ? 'ക്വിക്ക് ലിങ്കുകൾ' : 'Quick Links'}
                 </p>
-                <ul className="mt-3 space-y-2">
+                <ul className="space-y-2.5">
                   {[
                     { href: '/chat', label: isMl ? 'AI ചാറ്റ്' : 'AI Chat' },
                     { href: '/booth', label: isMl ? 'ബൂത്ത് ലൊക്കേറ്റർ' : 'Booth Locator' },
-                    { href: '/registration', label: isMl ? 'രജിസ്ട്രേഷൻ' : 'Registration' },
-                    { href: '/faq', label: isMl ? 'FAQ' : 'FAQ' },
+                    { href: '/registration', label: isMl ? 'രജിസ്ട്രേഷൻ പരിശോധന' : 'Registration Check' },
+                    { href: '/report', label: isMl ? 'ലംഘനം റിപ്പോർട്ട്' : 'Report Violation' },
+                    { href: '/faq', label: isMl ? 'പതിവ് ചോദ്യങ്ങൾ' : 'FAQ' },
+                    { href: '/settings', label: isMl ? 'ക്രമീകരണങ്ങൾ' : 'Settings' },
                   ].map((link) => (
                     <li key={link.href}>
-                      <Link href={link.href} className={`text-xs text-[var(--color-neutral-500)] hover:text-[var(--color-primary-500)] transition-colors ${isMl ? 'font-ml' : ''}`}>
+                      <Link href={link.href} className={`text-xs text-[var(--color-neutral-400)] hover:text-white transition-colors ${isMl ? 'font-ml' : ''}`}>
                         {link.label}
                       </Link>
                     </li>
@@ -379,50 +398,105 @@ export default function Home() {
                 </ul>
               </div>
 
-              {/* Contact */}
+              {/* Column 3: Official Resources */}
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-                  {isMl ? 'ബന്ധപ്പെടുക' : 'Contact'}
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-neutral-500)] mb-4">
+                  {isMl ? 'ഔദ്യോഗിക ഉറവിടങ്ങൾ' : 'Official Resources'}
                 </p>
-                <ul className="mt-3 space-y-2 text-xs text-[var(--color-neutral-500)]">
-                  <li className="flex items-center gap-2">
-                    <BuildingOffice2Icon className="h-3.5 w-3.5 text-[var(--color-neutral-400)]" />
-                    <span>{isMl ? 'ജില്ലാ കളക്ട്രേറ്റ്, കോട്ടയം' : 'District Collectorate, Kottayam'}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <PhoneIcon className="h-3.5 w-3.5 text-[var(--color-neutral-400)]" />
-                    <a href="tel:1950" className="hover:text-[var(--color-primary-500)] transition-colors">1950 ({isMl ? 'വോട്ടർ ഹെൽപ്ലൈൻ' : 'Voter Helpline'})</a>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <EnvelopeIcon className="h-3.5 w-3.5 text-[var(--color-neutral-400)]" />
-                    <a href="mailto:ceo@kerala.gov.in" className="hover:text-[var(--color-primary-500)] transition-colors">ceo@kerala.gov.in</a>
-                  </li>
+                <ul className="space-y-2.5">
+                  {[
+                    { href: 'https://eci.gov.in', label: isMl ? 'ഇന്ത്യൻ തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ' : 'Election Commission of India' },
+                    { href: 'https://www.nvsp.in', label: isMl ? 'ദേശീയ വോട്ടർ സേവന പോർട്ടൽ' : 'National Voter Service Portal' },
+                    { href: 'https://ceokerala.gov.in', label: isMl ? 'CEO കേരള' : 'CEO Kerala' },
+                    { href: 'https://voters.eci.gov.in', label: isMl ? 'വോട്ടർ പോർട്ടൽ' : 'Voter Portal' },
+                    { href: 'https://electoralsearch.eci.gov.in', label: isMl ? 'വോട്ടർ തിരയൽ' : 'Electoral Search' },
+                  ].map((link) => (
+                    <li key={link.href}>
+                      <a href={link.href} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-1.5 text-xs text-[var(--color-neutral-400)] hover:text-white transition-colors ${isMl ? 'font-ml' : ''}`}>
+                        <GlobeAltIcon className="h-3 w-3 shrink-0" />
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
-            </div>
 
-            {/* Bottom bar */}
-            <div className="mt-8 border-t border-[var(--color-neutral-100)] pt-6">
-              <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-                <p className="text-[11px] text-[var(--color-neutral-400)]">
-                  &copy; {new Date().getFullYear()} SVEEP Kottayam District | Election Commission of India
+              {/* Column 4: Contact */}
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-neutral-500)] mb-4">
+                  {isMl ? 'ബന്ധപ്പെടുക' : 'Contact'}
                 </p>
-                <div className="flex items-center gap-4 text-[11px] text-[var(--color-neutral-400)]">
-                  <a href="https://eci.gov.in" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-primary-500)] transition-colors">
-                    {isMl ? 'ECI' : 'Election Commission'}
-                  </a>
-                  <a href="https://nvsp.in" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-primary-500)] transition-colors">
-                    NVSP
-                  </a>
-                  <Link href="/settings" className="hover:text-[var(--color-primary-500)] transition-colors">
-                    {isMl ? 'സ്വകാര്യത' : 'Privacy'}
-                  </Link>
+                <ul className="space-y-3 text-xs">
+                  <li className="flex items-start gap-2">
+                    <BuildingOffice2Icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--color-neutral-500)]" />
+                    <span className={isMl ? 'font-ml' : ''}>{isMl ? 'ജില്ലാ കളക്ട്രേറ്റ്, കോട്ടയം, കേരള 686001' : 'District Collectorate, Kottayam, Kerala 686001'}</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <PhoneIcon className="h-3.5 w-3.5 shrink-0 text-[var(--color-neutral-500)]" />
+                    <div>
+                      <a href="tel:1950" className="hover:text-white transition-colors">1950</a>
+                      <span className="text-[var(--color-neutral-500)]"> | </span>
+                      <a href="tel:18004251950" className="hover:text-white transition-colors">1800-425-1950</a>
+                      <span className="text-[var(--color-neutral-600)] text-[10px]"> ({isMl ? 'ടോൾ ഫ്രീ' : 'Toll Free'})</span>
+                    </div>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <EnvelopeIcon className="h-3.5 w-3.5 shrink-0 text-[var(--color-neutral-500)]" />
+                    <a href="mailto:ceo@kerala.gov.in" className="hover:text-white transition-colors">ceo@kerala.gov.in</a>
+                  </li>
+                </ul>
+
+                {/* Policy Links */}
+                <div className="mt-5 pt-4 border-t border-[var(--color-neutral-800)]">
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-neutral-500)] mb-3">
+                    {isMl ? 'നയങ്ങൾ' : 'Policies'}
+                  </p>
+                  <ul className="space-y-2">
+                    {[
+                      { href: '/settings', label: isMl ? 'സ്വകാര്യതാ നയം' : 'Privacy Policy' },
+                      { href: '/faq', label: isMl ? 'ഉപയോഗ നിബന്ധനകൾ' : 'Terms of Use' },
+                      { href: '/settings', label: isMl ? 'പ്രവേശനക്ഷമത' : 'Accessibility' },
+                    ].map((link) => (
+                      <li key={link.label}>
+                        <Link href={link.href} className={`flex items-center gap-1.5 text-[11px] text-[var(--color-neutral-500)] hover:text-white transition-colors ${isMl ? 'font-ml' : ''}`}>
+                          <DocumentTextIcon className="h-3 w-3 shrink-0" />
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
-              <p className="mt-3 text-center text-[10px] text-[var(--color-neutral-300)]">
-                Powered by IIIT Kottayam
-              </p>
+
             </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-[var(--color-neutral-800)]">
+            <div className="mx-auto max-w-6xl px-4 py-4">
+              <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+                <div className="text-center sm:text-left">
+                  <p className="text-[11px] text-[var(--color-neutral-500)]">
+                    &copy; {new Date().getFullYear()} {isMl ? 'SVEEP കോട്ടയം ജില്ല' : 'SVEEP Kottayam District'} | {isMl ? 'ഇന്ത്യൻ തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ' : 'Election Commission of India'}
+                  </p>
+                </div>
+                <div className="flex flex-col items-center gap-0.5 sm:items-end">
+                  <p className="text-[11px] text-[var(--color-neutral-500)]">
+                    {isMl ? 'സാങ്കേതിക സഹായം:' : 'Powered by'} <span className="font-medium text-[var(--color-neutral-400)]">IIIT Kottayam</span>
+                  </p>
+                  <p className="text-[10px] text-[var(--color-neutral-600)]">
+                    {isMl ? 'SVEEP ഇനിഷ്യേറ്റീവിന് കീഴിൽ' : 'Under SVEEP Initiative'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tricolor Bottom Border */}
+          <div className="flex h-1">
+            <div className="flex-1 bg-[#FF9933]" />
+            <div className="flex-1 bg-white" />
+            <div className="flex-1 bg-[#138808]" />
           </div>
         </footer>
       </main>
