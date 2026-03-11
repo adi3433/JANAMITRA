@@ -79,10 +79,10 @@ export function recommendForm(subIntent?: string, query?: string): FormRecommend
   // Keyword-based fallback
   if (!formKey && query) {
     const lq = query.toLowerCase();
-    if (/\b(new\s+voter|first\s+time|register|turn(ing)?\s+18)\b/i.test(lq) || /പുതിയ\s*വോട്ടർ|രജിസ്റ്റർ\s*ചെയ്യ/i.test(lq)) formKey = 'Form-6';
+    if (/\b(new\s+voter|first\s+time|register|turn(ing)?\s+18)\b/i.test(lq) || /പുതിയ\s*വോട്ടർ|രജിസ്റ്റർ\s*ചെയ്യ|അപേക്ഷി|ഓൺലൈ/i.test(lq)) formKey = 'Form-6';
     else if (/\b(overseas|nri|abroad)\b/i.test(lq) || /വിദേശ\s*വോട്ടർ|എൻആർഐ|പ്രവാസി/i.test(lq)) formKey = 'Form-6A';
     else if (/\b(delete|remove|deceased|dead|objection)\b/i.test(lq) || /നീക്കം\s*ചെയ്യ|മരണപ്പെട്ട/i.test(lq)) formKey = 'Form-7';
-    else if (/\b(correct|shift|replace|lost|damaged|pwd|address\s+(change|update))\b/i.test(lq) || /തിരുത്തൽ|വിലാസം\s*മാറ്റം|നഷ്ടപ്പെട്ട/i.test(lq)) formKey = 'Form-8';
+    else if (/\b(correct|shift|replace|lost|damaged|pwd|address\s+(change|update)|relocat(ed|e|ion)|transfer)\b/i.test(lq) || /തിരുത്ത|വിലാസം\s*(മാറ്റം|തെറ്റ)|തെറ്റായ\s*വിലാസ|നഷ്ടപ്പെട്ട|കേടായ|മാറ്റിസ്ഥാപി|വീട്\s*മാറ|ട്രാൻസ്ഫർ|അപ്ഡേറ്റ്/i.test(lq)) formKey = 'Form-8';
     else if (/\b(migrant|form[\s-]*m)\b/i.test(lq) || /കുടിയേറ്റ\s*വോട്ടർ/i.test(lq)) formKey = 'Form-M';
     else if (/\b(notified|government\s+employee|form[\s-]*12c)\b/i.test(lq) || /സർക്കാർ\s*ജീവനക്കാർ/i.test(lq)) formKey = 'Form-12C';
     else if (/ഫോം\s*(\d+[a-zA-Z]?)/i.test(lq)) {

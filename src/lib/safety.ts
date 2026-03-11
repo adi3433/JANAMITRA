@@ -39,6 +39,11 @@ const POLITICAL_PATTERNS = [
   /(ldf|udf|bjp|congress|cpi|iuml|nda).*(പ്രകടന\s*പത്രിക|manifesto)/i,
   /സർക്കാരിന്റെ\s*പ്രകടനം/i,
   /government\s+perform/i,
+  // Malayalam: "who will win", "vote for them ... best"
+  /ആര്\s*ജയിക്കും/i,
+  /ആരാണ്\s*ജയിക്ക/i,
+  /വോട്ട്\s*ചെയ്യൂ.*ഏറ്റവും\s*നല്ല/i,
+  /ഏറ്റവും\s*നല്ല.*പാർട്ടി/i,
 ];
 
 // PII patterns to redact
@@ -107,6 +112,13 @@ const ADVERSARIAL_PATTERNS = [
   /\b(how\s+to\s+(hack|break|cheat|rig|tamper))\b/i,
   /\b(rig\s+(the\s+)?election|tamper\s+(with\s+)?(ballot|evm|vote))\b/i,
   /\b(fake\s+(vote|ballot|id)|impersonate\s+(a\s+)?voter)\b/i,
+  // Malayalam adversarial / harmful patterns
+  /ഉപയോഗശൂന്യ(മായ|ൻ)/i,          // useless
+  /മണ്ടൻ|വിഡ്ഢി|പോടാ|പോടീ/i,    // insults
+  /ഹാക്ക്\s*ചെയ്യ/i,              // hack
+  /റിഗ്\s*ചെയ്യ/i,               // rig
+  /ടാംപർ\s*ചെയ്യ|tamper\s*ചെയ്യ/i, // tamper
+  /വ്യാജ\s*(ബാലറ്റ്|വോട്ട്|ഐഡി)/i, // fake ballot/vote/ID
   // Random nonsense / gibberish tests
   /^[\s\W]{0,5}(ha){3,}/i,
   /^[!@#$%^&*()]{3,}$/,
@@ -117,7 +129,7 @@ const ADVERSARIAL_RESPONSES: Record<string, string> = {
   ml: '\u0d1e\u0d3e\u0d7b \u0d35\u0d3e\u0d15\u0d4d\u0d15\u0d4d, \u0d15\u0d4b\u0d1f\u0d4d\u0d1f\u0d2f\u0d02 \u0d1c\u0d3f\u0d32\u0d4d\u0d32 \u0d24\u0d3f\u0d30\u0d1e\u0d4d\u0d1e\u0d46\u0d1f\u0d41\u0d2a\u0d4d\u0d2a\u0d4d \u0d35\u0d3f\u0d35\u0d30 \u0d38\u0d39\u0d3e\u0d2f\u0d3f \u0d06\u0d23\u0d4d. \u0d35\u0d4b\u0d1f\u0d4d\u0d1f\u0d7c \u0d30\u0d1c\u0d3f\u0d38\u0d4d\u0d1f\u0d4d\u0d30\u0d47\u0d37\u0d7b, \u0d2c\u0d42\u0d24\u0d4d\u0d24\u0d4d \u0d35\u0d3f\u0d35\u0d30\u0d19\u0d4d\u0d19\u0d7e, \u0d35\u0d4b\u0d1f\u0d4d\u0d1f\u0d3f\u0d19\u0d4d \u0d28\u0d3f\u0d2f\u0d2e\u0d19\u0d4d\u0d19\u0d7e, \u0d2a\u0d30\u0d3e\u0d24\u0d3f \u0d28\u0d7d\u0d15\u0d7d \u0d0e\u0d28\u0d4d\u0d28\u0d3f\u0d35\u0d2f\u0d3f\u0d7d \u0d38\u0d39\u0d3e\u0d2f\u0d3f\u0d15\u0d4d\u0d15\u0d3e\u0d02. \ud83d\udcde \u0d39\u0d46\u0d7d\u0d2a\u0d4d\u200c\u0d32\u0d48\u0d7b: 1950',
 };
 
-const OUT_OF_SCOPE_RESPONSES: Record<string, string> = {
+const _OUT_OF_SCOPE_RESPONSES: Record<string, string> = {
   en: "I'm Janamitra, a voter information assistant for Kottayam district elections. I can only help with election-related topics: voter registration, booth information, voting rules, election schedule, and complaint filing. For other queries, please use a general-purpose assistant. Election Helpline: 1950",
   ml: 'ഞാൻ ജനമിത്ര, കോട്ടയം ജില്ല തിരഞ്ഞെടുപ്പ് വിവര സഹായി ആണ്. വോട്ടർ രജിസ്ട്രേഷൻ, ബൂത്ത് വിവരങ്ങൾ, വോട്ടിങ് നിയമങ്ങൾ, തിരഞ്ഞെടുപ്പ് ഷെഡ്യൂൾ, പരാതി നൽകൽ എന്നിവയിൽ മാത്രമേ സഹായിക്കാൻ കഴിയൂ. ഹെൽപ്‌ലൈൻ: 1950',
 };
@@ -144,29 +156,23 @@ export function safetyCheck(
   let redactedPII = false;
 
   // Check user query for political intent
-  for (const pattern of POLITICAL_PATTERNS) {
-    if (pattern.test(userQuery)) {
-      flagged = true;
-      reason = 'Political persuasion detected in query';
-      // Detect locale from text
-      const isMalayalam = /[\u0D00-\u0D7F]/.test(userQuery);
-      safeText = NEUTRAL_RESPONSES[isMalayalam ? 'ml' : 'en'];
-      break;
-    }
-  }
-
-  // V5: Check for out-of-scope topics
-  if (!flagged) {
-    for (const pattern of OUT_OF_SCOPE_PATTERNS) {
+  // Exception: if the query also contains complaint-context words (e.g. "someone
+  // threatened me to vote for their candidate"), it's a complaint, not political advocacy.
+  const isComplaintContext = /\b(threaten(ed)?|forced?|pressur(ed|e)|intimidat(ed|e|ion)|coerce[d]?|report|complaint|grievance)\b/i.test(userQuery);
+  if (!isComplaintContext) {
+    for (const pattern of POLITICAL_PATTERNS) {
       if (pattern.test(userQuery)) {
         flagged = true;
-        reason = 'Out-of-scope topic detected';
+        reason = 'Political persuasion detected in query';
         const isMalayalam = /[\u0D00-\u0D7F]/.test(userQuery);
-        safeText = OUT_OF_SCOPE_RESPONSES[isMalayalam ? 'ml' : 'en'];
+        safeText = NEUTRAL_RESPONSES[isMalayalam ? 'ml' : 'en'];
         break;
       }
     }
   }
+
+  // V5: Out-of-scope topics are handled by the classifier + civic-boundary engine,
+  // NOT by safety blocking. Safety should only block genuinely harmful content.
 
   // V5: Check for adversarial / abusive / threatening / jailbreak attempts
   if (!flagged) {
