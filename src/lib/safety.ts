@@ -44,6 +44,16 @@ const POLITICAL_PATTERNS = [
   /ആരാണ്\s*ജയിക്ക/i,
   /വോട്ട്\s*ചെയ്യൂ.*ഏറ്റവും\s*നല്ല/i,
   /ഏറ്റവും\s*നല്ല.*പാർട്ടി/i,
+  // Malayalam: party seat predictions / election results
+  /(ldf|udf|bjp|congress|cpi|iuml|nda).*(സീറ്റ്|സീറ്റുകൾ|ജയിക്ക)/i,
+  /(സീറ്റ്|സീറ്റുകൾ).*(ldf|udf|bjp|congress|cpi|iuml|nda)/i,
+  /എത്ര\s*സീറ്റ്.*(ldf|udf|bjp|congress|cpi|iuml|nda)/i,
+  /(bjp|congress|ldf|udf|cpi|iuml|nda).*കിട്ടും/i,
+  // English party seat predictions
+  /(bjp|congress|ldf|udf|cpi|iuml|nda).*(seats?|win|lose|majority)/i,
+  /how\s+many\s+seats?.*(bjp|congress|ldf|udf|cpi|iuml|nda)/i,
+  /predict.*(election|results?|seats?|outcome)/i,
+  /exit\s*poll/i,
 ];
 
 // PII patterns to redact
@@ -111,7 +121,7 @@ const ADVERSARIAL_PATTERNS = [
   /\b(hack|phish|steal)\s+(?:\w+\s+)?(voter|election|evm|ballot|data|system|password)/i,
   /\b(how\s+to\s+(hack|break|cheat|rig|tamper))\b/i,
   /\b(rig\s+(the\s+)?election|tamper\s+(with\s+)?(ballot|evm|vote))\b/i,
-  /\b(fake\s+(vote|ballot|id)|impersonate\s+(a\s+)?voter)\b/i,
+  /\b(fake\s+(vote|ballot|id)|fake\s+voter\s*(id|card)|impersonate\s+(a\s+)?voter)\b/i,
   // Malayalam adversarial / harmful patterns
   /ഉപയോഗശൂന്യ(മായ|ൻ)/i,          // useless
   /മണ്ടൻ|വിഡ്ഢി|പോടാ|പോടീ/i,    // insults
@@ -119,6 +129,16 @@ const ADVERSARIAL_PATTERNS = [
   /റിഗ്\s*ചെയ്യ/i,               // rig
   /ടാംപർ\s*ചെയ്യ|tamper\s*ചെയ്യ/i, // tamper
   /വ്യാജ\s*(ബാലറ്റ്|വോട്ട്|ഐഡി)/i, // fake ballot/vote/ID
+  // Injection attacks (XSS, SQL, template, prototype pollution)
+  /<script[\s>]/i,
+  /javascript\s*:/i,
+  /on(error|load|click|mouseover)\s*=/i,
+  /\b(DROP|DELETE|INSERT|UPDATE|ALTER|TRUNCATE)\s+(TABLE|FROM|INTO|DATABASE)/i,
+  /(['"`;])\s*(--)\s*/,
+  /\b(UNION\s+SELECT|OR\s+1\s*=\s*1)\b/i,
+  /\{\{.*constructor/i,
+  /\b__proto__\b/i,
+  /\bconstructor\s*\[/i,
   // Random nonsense / gibberish tests
   /^[\s\W]{0,5}(ha){3,}/i,
   /^[!@#$%^&*()]{3,}$/,

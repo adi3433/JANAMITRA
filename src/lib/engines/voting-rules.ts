@@ -90,7 +90,9 @@ function getVotingProcess(locale: string): string {
     : `**Voting Process — Step by Step**\n\n`;
 
   for (const step of steps) {
-    response += `**Step ${step.step}:** ${step.action}\n`;
+    response += isMl
+      ? `**ഘട്ടം ${step.step}:** ${step.action}\n`
+      : `**Step ${step.step}:** ${step.action}\n`;
     response += `  _${step.detail}_\n\n`;
   }
 
@@ -110,7 +112,7 @@ function getEvmVvpat(locale: string): string {
     : `**EVM & VVPAT Explanation**\n\n`;
 
   response += `**EVM (${evm.full_form})**\n`;
-  response += `- Components: ${evm.components.join(', ')}\n`;
+  response += `- ${isMl ? 'ഘടകങ്ങൾ' : 'Components'}: ${evm.components.join(', ')}\n`;
   response += `- ${evm.how_it_works}\n`;
   response += `- ${evm.tamper_proof}\n\n`;
 
@@ -224,8 +226,11 @@ function getSilencePeriod(locale: string): string {
  * Get indelible ink rules
  */
 function getIndelibleInk(_locale: string): string {
+  const isMl = _locale === 'ml';
   const data = votingRulesData.indelible_ink_rules;
-  return `**Indelible Ink**\n\n- **Applied on:** ${data.applied_on}\n- **Purpose:** ${data.purpose}\n- **Permanence:** ${data.permanence}`;
+  return isMl
+    ? `**അഴിച്ചുകളയാത്ത മഷി**\n\n- **പുരട്ടുന്ന സ്ഥലം:** ${data.applied_on}\n- **ഉദ്ദേശ്യം:** ${data.purpose}\n- **സ്ഥായിത്വം:** ${data.permanence}`
+    : `**Indelible Ink**\n\n- **Applied on:** ${data.applied_on}\n- **Purpose:** ${data.purpose}\n- **Permanence:** ${data.permanence}`;
 }
 
 /**

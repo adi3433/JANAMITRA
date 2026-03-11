@@ -122,10 +122,10 @@ function getMccStatus(locale: string): string {
     ? `**മാതൃകാ പെരുമാറ്റ ചട്ടം (MCC)**\n\n`
     : `**Model Code of Conduct (MCC)**\n\n`;
 
-  response += `**Status:** ${mcc.status === 'NOT_IN_EFFECT' ? 'Not in effect' : 'In effect'}\n\n`;
+  response += `**${isMl ? 'സ്ഥിതി' : 'Status'}:** ${mcc.status === 'NOT_IN_EFFECT' ? (isMl ? 'പ്രാബല്യത്തിലല്ല' : 'Not in effect') : (isMl ? 'പ്രാബല്യത്തിലാണ്' : 'In effect')}\n\n`;
   response += `${mcc.description}\n\n`;
-  response += `- **Comes into effect:** ${formatDate(mcc.comes_into_effect)}\n`;
-  response += `- **Lifted on:** ${formatDate(mcc.lifted_on)}\n`;
+  response += `- **${isMl ? 'പ്രാബല്യത്തിലാകുന്നത്' : 'Comes into effect'}:** ${formatDate(mcc.comes_into_effect)}\n`;
+  response += `- **${isMl ? 'നീക്കുന്നത്' : 'Lifted on'}:** ${formatDate(mcc.lifted_on)}\n`;
 
   if (!isDateAnnounced()) {
     response += '\n\n' + getTbaNotice(locale);

@@ -106,7 +106,7 @@ export function ragUserPrompt(input: RAGUserPromptInput): string {
 ${query}
 
 INSTRUCTIONS:
-- Answer the USER QUESTION above in ${lang} with proper detail and structure.
+- CRITICAL: You MUST answer the USER QUESTION above ENTIRELY in ${lang}. ${locale === 'ml' ? 'Even if the source context is in English, your response text, headings, labels, and explanations must all be in Malayalam (മലയാളം). Official names, form numbers, URLs, and technical acronyms (EVM, VVPAT, EPIC, cVIGIL) may remain in English.' : 'Respond fully in English.'}
 - Cite sources using [Source N] references.
 - Use **bold** for key terms, bullet points for lists, and include relevant links.
 - If unsure, state uncertainty and suggest checking an official source.

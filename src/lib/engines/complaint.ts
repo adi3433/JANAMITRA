@@ -45,7 +45,9 @@ function getCvigilSteps(locale: string): string {
     : `**Step-by-Step Process:**\n\n`;
 
   for (const step of process.steps) {
-    response += `**Step ${step.step}** (${step.actor}): ${step.action}\n`;
+    response += isMl
+      ? `**ഘട്ടം ${step.step}** (${step.actor}): ${step.action}\n`
+      : `**Step ${step.step}** (${step.actor}): ${step.action}\n`;
     response += `  _${step.details}_\n\n`;
   }
 
@@ -93,7 +95,7 @@ function getOfflineOptions(locale: string): string {
 
   for (const option of data.options) {
     response += `**${option.method}**\n`;
-    if ('contact' in option && option.contact) response += `  Contact: ${option.contact}\n`;
+    if ('contact' in option && option.contact) response += `  ${isMl ? 'ബന്ധപ്പെടുക' : 'Contact'}: ${option.contact}\n`;
     if ('description' in option && option.description) response += `  ${option.description}\n`;
     if ('note' in option && option.note) response += `  _${option.note}_\n`;
     if ('portal' in option && option.portal) response += `  [${option.portal}](${option.portal})\n`;
@@ -122,8 +124,10 @@ function getResponseTime(locale: string): string {
   response += isMl
     ? '**പ്രക്രിയ:**\n'
     : '**Process flow:**\n';
-  response += `1. Citizen submits → 2. DCR assigns Flying Squad → 3. Field team investigates → 4. RO decides → 5. Status updated\n\n`;
-  response += `Helpline: **1950**`;
+  response += isMl
+    ? `1. പൗരൻ സമർപ്പിക്കുന്നു → 2. DCR ഫ്ലൈയിംഗ് സ്ക്വാഡിനെ നിയോഗിക്കുന്നു → 3. ഫീൽഡ് ടീം അന്വേഷിക്കുന്നു → 4. RO തീരുമാനിക്കുന്നു → 5. സ്ഥിതി അപ്‌ഡേറ്റ് ചെയ്യുന്നു\n\n`
+    : `1. Citizen submits → 2. DCR assigns Flying Squad → 3. Field team investigates → 4. RO decides → 5. Status updated\n\n`;
+  response += `${isMl ? 'ഹെൽപ്‌ലൈൻ' : 'Helpline'}: **1950**`;
 
   return response;
 }
@@ -142,12 +146,17 @@ function getTrackComplaint(locale: string): string {
     ? 'നിങ്ങളുടെ cVIGIL പരാതിയുടെ സ്ഥിതി ട്രാക്ക് ചെയ്യാൻ:\n\n'
     : 'To track your cVIGIL complaint status:\n\n';
 
-  response += '1. Open the **cVIGIL app** on your phone\n';
-  response += '2. Use your **Complaint ID** (received at submission)\n';
-  response += `3. Or visit the portal: [cvigil.eci.gov.in](${complaintsData.cvigil_overview.portal})\n\n`;
-  response += isMl
-    ? '_Janamitra പരാതി നേരിട്ട് ട്രാക്ക് ചെയ്യാൻ കഴിയില്ല. ഔദ്യോഗിക ആപ്പ്/പോർട്ടൽ ഉപയോഗിക്കുക._'
-    : '_Janamitra cannot track complaints directly. Please use the official app or portal._';
+  if (isMl) {
+    response += '1. നിങ്ങളുടെ ഫോണിൽ **cVIGIL ആപ്പ്** തുറക്കുക\n';
+    response += '2. നിങ്ങളുടെ **പരാതി ഐഡി** ഉപയോഗിക്കുക (സമർപ്പണ സമയത്ത് ലഭിച്ചത്)\n';
+    response += `3. അല്ലെങ്കിൽ പോർട്ടൽ സന്ദർശിക്കുക: [cvigil.eci.gov.in](${complaintsData.cvigil_overview.portal})\n\n`;
+    response += '_Janamitra പരാതി നേരിട്ട് ട്രാക്ക് ചെയ്യാൻ കഴിയില്ല. ഔദ്യോഗിക ആപ്പ്/പോർട്ടൽ ഉപയോഗിക്കുക._';
+  } else {
+    response += '1. Open the **cVIGIL app** on your phone\n';
+    response += '2. Use your **Complaint ID** (received at submission)\n';
+    response += `3. Or visit the portal: [cvigil.eci.gov.in](${complaintsData.cvigil_overview.portal})\n\n`;
+    response += '_Janamitra cannot track complaints directly. Please use the official app or portal._';
+  }
 
   return response;
 }

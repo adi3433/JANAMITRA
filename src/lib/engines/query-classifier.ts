@@ -147,7 +147,7 @@ const CATEGORY_PATTERNS: Array<{
     category: 'voting_rules',
     weight: 8,
     patterns: [
-      /\b(how\s+to\s+vote|voting\s+process|step.*(by|to)\s*step)\b/i,
+      /\b(how\s+(to|do\s+i)\s+vote|voting\s+process|step.*(by|to)\s*step)\b/i,
       /\b(evm|vvpat|voting\s+machine|electronic\s+voting)\b/i,
       /\b(id\s+(proof|document)|photo\s+id|what\s+id)\b/i,
       /\b(poll(ing)?\s+tim(e|ing)|what\s+time|when\s+(does|do)\s+voting)\b/i,
