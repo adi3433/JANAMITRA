@@ -269,7 +269,7 @@ export default function BoothPage() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="rounded-xl border border-[var(--color-neutral-100)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-4 shadow-sm hover:shadow-md transition-shadow"
+                      className="rounded-xl border border-[var(--border-primary)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-4 shadow-sm hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">

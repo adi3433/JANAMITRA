@@ -190,7 +190,7 @@ function OverviewTab() {
           return (
             <div
               key={stat.label}
-              className="rounded-md border border-[var(--color-neutral-100)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5"
+              className="rounded-xl border border-[var(--border-primary)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5 shadow-sm"
             >
               <div className={`inline-flex rounded-lg p-2 ${colorClasses[stat.color]}`}>
                 <Icon className="h-5 w-5" />
@@ -205,7 +205,7 @@ function OverviewTab() {
       </motion.div>
 
       {/* Modality breakdown */}
-      <div className="rounded-md border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] p-5">
+      <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] p-5 shadow-sm">
         <h3 className="text-sm font-semibold text-[var(--color-neutral-700)]">Queries by Modality</h3>
         <div className="mt-3 flex gap-4">
           {modalityStats.map((m) => (
@@ -235,7 +235,7 @@ function OverviewTab() {
       </div>
 
       {/* Prompt versions */}
-      <div className="rounded-md border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] p-5">
+      <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] p-5 shadow-sm">
         <h3 className="text-sm font-semibold text-[var(--color-neutral-700)]">Active Prompt Versions</h3>
         <div className="mt-2 flex items-center gap-2">
           <ShieldCheckIcon className="h-4 w-4 text-emerald-500" />
@@ -275,7 +275,7 @@ function QueriesTab({
         />
       </div>
 
-      <div className="overflow-hidden rounded-md border border-[var(--color-neutral-100)] bg-[var(--surface-primary)]">
+      <div className="overflow-hidden rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] shadow-sm">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[var(--color-neutral-100)] bg-[var(--color-neutral-50)]">
@@ -365,7 +365,7 @@ function TracesTab() {
       {SAMPLE_TRACES.map((trace) => (
         <div
           key={trace.queryId}
-          className="rounded-md border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] overflow-hidden"
+          className="rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] overflow-hidden shadow-sm"
         >
           <button
             onClick={() => setExpandedTrace(expandedTrace === trace.queryId ? null : trace.queryId)}

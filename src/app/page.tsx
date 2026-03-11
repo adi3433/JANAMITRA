@@ -199,25 +199,25 @@ export default function Home() {
               variants={fadeUp}
               className="mt-10 flex flex-wrap items-center justify-center gap-6 sm:gap-8"
             >
-              <div className="flex items-center gap-2.5 rounded-xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] px-4 py-2.5 shadow-sm">
+              <div className="flex items-center gap-2.5 rounded-[10px] border border-[var(--border-primary)] bg-[var(--surface-primary)] px-4 py-3 shadow-sm">
                 <Image src="/ec-logo.png" alt="Election Commission of India" width={32} height={32} className="h-8 w-8 object-contain" />
                 <div className="text-left">
-                  <p className="text-[10px] font-semibold text-[var(--color-neutral-700)]">{isMl ? 'തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ' : 'Election Commission'}</p>
-                  <p className="text-[9px] text-[var(--color-neutral-400)]">{isMl ? 'ഇന്ത്യ' : 'of India'}</p>
+                  <p className="text-[10px] font-semibold text-[var(--text-primary)]">{isMl ? 'തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ' : 'Election Commission'}</p>
+                  <p className="text-[9px] text-[var(--text-tertiary)]">{isMl ? 'ഇന്ത്യ' : 'of India'}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2.5 rounded-xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] px-4 py-2.5 shadow-sm">
+              <div className="flex items-center gap-2.5 rounded-[10px] border border-[var(--border-primary)] bg-[var(--surface-primary)] px-4 py-3 shadow-sm">
                 <Image src="/sveep-logo.png" alt="SVEEP" width={32} height={32} className="h-8 w-8 object-contain" />
                 <div className="text-left">
-                  <p className="text-[10px] font-semibold text-[var(--color-neutral-700)]">SVEEP</p>
-                  <p className="text-[9px] text-[var(--color-neutral-400)]">{isMl ? 'കോട്ടയം ജില്ല' : 'Kottayam District'}</p>
+                  <p className="text-[10px] font-semibold text-[var(--text-primary)]">SVEEP</p>
+                  <p className="text-[9px] text-[var(--text-tertiary)]">{isMl ? 'കോട്ടയം ജില്ല' : 'Kottayam District'}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2.5 rounded-xl border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] px-4 py-2.5 shadow-sm">
+              <div className="flex items-center gap-2.5 rounded-[10px] border border-[var(--border-primary)] bg-[var(--surface-primary)] px-4 py-3 shadow-sm">
                 <Image src="/iiit-kottayam-logo.png" alt="IIIT Kottayam" width={32} height={32} className="h-8 w-8 object-contain" />
                 <div className="text-left">
-                  <p className="text-[10px] font-semibold text-[var(--color-neutral-700)]">IIIT Kottayam</p>
-                  <p className="text-[9px] text-[var(--color-neutral-400)]">{isMl ? 'സാങ്കേതിക പങ്കാളി' : 'Technology Partner'}</p>
+                  <p className="text-[10px] font-semibold text-[var(--text-primary)]">IIIT Kottayam</p>
+                  <p className="text-[9px] text-[var(--text-tertiary)]">{isMl ? 'സാങ്കേതിക പങ്കാളി' : 'Technology Partner'}</p>
                 </div>
               </div>
             </motion.div>
@@ -225,21 +225,21 @@ export default function Home() {
         </section>
 
         {/* Stats Section */}
-        <section className="border-y border-[var(--color-neutral-100)] bg-[var(--surface-primary)]/60 backdrop-blur-sm">
-          <div className="mx-auto max-w-5xl px-4 py-8">
+        <section className="border-y border-[var(--border-primary)] bg-[var(--surface-tertiary)]">
+          <div className="mx-auto max-w-5xl px-4 py-10">
             <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: '-50px' }}
               variants={staggerContainer}
-              className="grid grid-cols-2 gap-6 sm:grid-cols-4"
+              className="grid grid-cols-2 gap-4 sm:grid-cols-4"
             >
               {stats.map((stat, i) => (
-                <motion.div key={i} variants={fadeUp} className="text-center">
-                  <p className="text-2xl font-extrabold text-[var(--color-primary-500)] sm:text-3xl">
+                <motion.div key={i} variants={fadeUp} className="rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] p-5 text-center shadow-sm">
+                  <p className="text-3xl font-extrabold text-[var(--color-primary-500)] sm:text-4xl">
                     {isMl ? stat.valueMl : stat.valueEn}
                   </p>
-                  <p className={`mt-1 text-xs font-medium text-[var(--color-neutral-500)] ${isMl ? 'font-ml' : ''}`}>
+                  <p className={`mt-2 text-xs font-medium text-[var(--text-secondary)] ${isMl ? 'font-ml' : ''}`}>
                     {isMl ? stat.labelMl : stat.labelEn}
                   </p>
                 </motion.div>
@@ -284,7 +284,7 @@ export default function Home() {
                   >
                     <Link
                       href={feature.href}
-                      className="feature-card group block rounded-xl border border-[var(--color-neutral-200)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-[var(--color-primary-300)]"
+                      className="feature-card group block rounded-xl border border-[var(--border-primary)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[var(--color-primary-300)]"
                     >
                       <div
                         className={`inline-flex rounded-xl p-3 transition-transform duration-300 group-hover:scale-110 ${feature.bgLight}`}
@@ -306,7 +306,7 @@ export default function Home() {
         </section>
 
         {/* Helpline Section */}
-        <section className="border-t border-[var(--color-neutral-100)] bg-[var(--color-primary-50)]/50">
+        <section className="border-t border-[var(--border-primary)] bg-[var(--color-primary-50)]">
           <div className="mx-auto max-w-5xl px-4 py-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -320,7 +320,7 @@ export default function Home() {
               <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm">
                 <a
                   href="tel:1950"
-                  className="flex items-center gap-2 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-5 py-3 font-medium text-[var(--color-neutral-700)] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5"
+                  className="flex items-center gap-2 rounded-[10px] border border-[var(--border-primary)] bg-[var(--surface-primary)] px-5 py-3 font-medium text-[var(--text-primary)] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5"
                 >
                   <PhoneIcon className="h-4 w-4 text-emerald-500" />
                   <span>1950</span>
@@ -328,7 +328,7 @@ export default function Home() {
                 </a>
                 <a
                   href="mailto:ceo@kerala.gov.in"
-                  className="flex items-center gap-2 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-5 py-3 font-medium text-[var(--color-neutral-700)] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5"
+                  className="flex items-center gap-2 rounded-[10px] border border-[var(--border-primary)] bg-[var(--surface-primary)] px-5 py-3 font-medium text-[var(--text-primary)] shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5"
                 >
                   <EnvelopeIcon className="h-4 w-4 text-[var(--color-primary-500)]" />
                   <span>ceo@kerala.gov.in</span>
@@ -339,7 +339,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-[var(--color-neutral-900)] text-[var(--color-neutral-300)]">
+        <footer className="bg-[var(--color-neutral-800)] text-[var(--color-neutral-300)]">
           {/* Tricolor Top Border */}
           <div className="flex h-1">
             <div className="flex-1 bg-[#FF9933]" />

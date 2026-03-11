@@ -65,7 +65,7 @@ export function Header() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: [0, 0, 0.2, 1] }}
-        className="sticky top-0 z-30 bg-[var(--surface-primary)]/80 backdrop-blur-xl"
+        className="sticky top-0 z-30 bg-[var(--surface-primary)] border-b border-[var(--border-primary)]"
       >
         <div className="mx-auto flex h-14 items-center justify-between px-4">
           {/* Left: Logo */}
@@ -91,8 +91,8 @@ export function Header() {
                     href={item.href}
                     className={`relative block rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors duration-200 ${
                       isActive
-                        ? 'text-[var(--color-primary-500)] bg-[var(--color-primary-500)]/8'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--color-primary-500)] hover:bg-[var(--color-primary-500)]/5'
+                        ? 'text-[var(--color-primary-500)] bg-[var(--surface-tertiary)]'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--color-primary-500)] hover:bg-[var(--surface-tertiary)]'
                     } ${isMl ? 'font-ml' : ''}`}
                   >
                     {isMl ? item.labelMl : item.labelEn}
@@ -198,9 +198,9 @@ export function Header() {
 
         {/* Tricolor Divider — Indian national colors */}
         <div className="flex">
-          <div className="h-[2px] flex-1 bg-[#FF9933]" />
-          <div className="h-[2px] flex-1 bg-white" />
-          <div className="h-[2px] flex-1 bg-[#138808]" />
+          <div className="h-[3px] flex-1 bg-[#FF9933]" />
+          <div className="h-[3px] flex-1 bg-white" />
+          <div className="h-[3px] flex-1 bg-[#138808]" />
         </div>
       </motion.header>
 

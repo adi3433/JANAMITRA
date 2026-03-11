@@ -103,7 +103,7 @@ export default function SettingsPage() {
 
             <div className="mt-6 space-y-4">
               {/* Language */}
-              <div className="rounded-md border border-[var(--color-neutral-100)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5">
+              <div className="rounded-xl border border-[var(--border-primary)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5 shadow-sm">
                 <h2 className={`text-sm font-semibold text-[var(--color-neutral-700)] ${isMl ? 'font-ml' : ''}`}>
                   {t.language}
                 </h2>
@@ -132,7 +132,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Memory */}
-              <div className="rounded-md border border-[var(--color-neutral-100)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5">
+              <div className="rounded-xl border border-[var(--border-primary)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5 shadow-sm">
                 <h2 className={`text-sm font-semibold text-[var(--color-neutral-700)] ${isMl ? 'font-ml' : ''}`}>
                   {isMl ? 'മെമ്മറി' : 'Memory'}
                 </h2>
@@ -156,7 +156,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Accessibility */}
-              <div className="rounded-md border border-[var(--color-neutral-100)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5">
+              <div className="rounded-xl border border-[var(--border-primary)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5 shadow-sm">
                 <h2 className={`text-sm font-semibold text-[var(--color-neutral-700)] ${isMl ? 'font-ml' : ''}`}>
                   {t.accessibility}
                 </h2>
@@ -177,7 +177,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Privacy */}
-              <div className="rounded-md border border-[var(--color-neutral-100)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5">
+              <div className="rounded-xl border border-[var(--border-primary)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] p-5 shadow-sm">
                 <h2 className={`text-sm font-semibold text-[var(--color-neutral-700)] ${isMl ? 'font-ml' : ''}`}>
                   {isMl ? 'സ്വകാര്യത' : 'Privacy'}
                 </h2>

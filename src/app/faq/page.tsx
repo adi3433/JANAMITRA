@@ -110,7 +110,7 @@ export default function FAQPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="rounded-md border border-[var(--color-neutral-100)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] overflow-hidden"
+                  className="rounded-xl border border-[var(--border-primary)] border-l-4 border-l-[var(--color-primary-500)] bg-[var(--surface-primary)] overflow-hidden shadow-sm"
                 >
                   <button
                     onClick={() => setOpenIndex(openIndex === i ? null : i)}
