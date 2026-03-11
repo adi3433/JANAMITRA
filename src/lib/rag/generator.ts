@@ -94,17 +94,19 @@ function stripUntaggedReasoning(text: string): string {
 
 /**
  * Generate an answer using qwen3-vl-30b-a3b-thinking (text-only mode)
+ * @param originalQuery - The user's original question (used for template fallback keyword matching)
  */
 export async function generateAnswer(
   systemPrompt: string,
   userPrompt: string,
-  locale: string
+  locale: string,
+  originalQuery?: string
 ): Promise<GenerationResult> {
   const cfg = getConfig();
 
   if (!cfg.apiKey) {
     console.warn('No FIREWORKS_API_KEY configured. Using template fallback.');
-    return templateFallback(userPrompt, locale);
+    return templateFallback(originalQuery || userPrompt, locale);
   }
 
   // Token trimming — keep prompt within budget
@@ -156,7 +158,7 @@ export async function generateAnswer(
     };
   } catch (error) {
     console.error('Generator error:', error);
-    return templateFallback(userPrompt, locale);
+    return templateFallback(originalQuery || userPrompt, locale);
   }
 }
 
@@ -166,13 +168,14 @@ export async function generateAnswer(
 export async function generateAnswerStream(
   systemPrompt: string,
   userPrompt: string,
-  locale: string
+  locale: string,
+  originalQuery?: string
 ): Promise<ReadableStream<string>> {
   const cfg = getConfig();
 
   if (!cfg.apiKey) {
     // Return a simple stream with template fallback
-    const fallback = templateFallback(userPrompt, locale);
+    const fallback = templateFallback(originalQuery || userPrompt, locale);
     return new ReadableStream<string>({
       start(controller) {
         controller.enqueue(fallback.text);
@@ -198,10 +201,11 @@ export async function generateAnswerStream(
 }
 
 /**
- * Template-based fallback when LLM is unavailable
+ * Template-based fallback when LLM is unavailable.
+ * @param query - The user's original query text (NOT the full assembled prompt)
  */
-function templateFallback(userPrompt: string, locale: string): GenerationResult {
-  const queryLower = userPrompt.toLowerCase();
+function templateFallback(query: string, locale: string): GenerationResult {
+  const queryLower = query.toLowerCase();
   const fallbackMeta = { promptTokens: 0, completionTokens: 0, model: 'template-fallback' };
 
   // Match common intents

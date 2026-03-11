@@ -125,7 +125,7 @@ export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {
   userPrompt = trimToTokenBudget(userPrompt, MAX_PROMPT_TOKENS);
 
   const genStart = Date.now();
-  const generated = await generateAnswer(systemPrompt, userPrompt, locale);
+  const generated = await generateAnswer(systemPrompt, userPrompt, locale, query);
   const generationLatencyMs = Date.now() - genStart;
 
   // ── Extract model self-score if present ──────────────────────
