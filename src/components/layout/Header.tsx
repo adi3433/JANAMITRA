@@ -1,5 +1,5 @@
 /**
- * Header — Top bar with logo, locale toggle, dark mode, nav, mobile menu
+ * Header — Gov top bar + accessibility bar + navbar + tricolor
  */
 'use client';
 
@@ -18,6 +18,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { useLocale } from '@/hooks/useLocale';
 import { useJanamitraStore } from '@/lib/store';
+import { GovTopBar } from './GovTopBar';
+import { AccessibilityBar } from './AccessibilityBar';
 
 const NAV_ITEMS = [
   { href: '/chat', labelEn: 'Chat', labelMl: 'ചാറ്റ്' },
@@ -61,6 +63,8 @@ export function Header() {
 
   return (
     <>
+      <GovTopBar />
+      <AccessibilityBar />
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

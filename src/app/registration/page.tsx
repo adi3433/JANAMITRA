@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
+import { FloatingChatButton } from '@/components/layout/FloatingChatButton';
 import { useLocale } from '@/hooks/useLocale';
 
 type TabType = 'voterId' | 'details';
@@ -189,6 +190,7 @@ export default function RegistrationPage() {
             </AnimatePresence>
           </div>
         </main>
+        <FloatingChatButton />
       </div>
     </>
   );

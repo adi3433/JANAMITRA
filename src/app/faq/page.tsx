@@ -5,9 +5,10 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
+import { FloatingChatButton } from '@/components/layout/FloatingChatButton';
 import { useLocale } from '@/hooks/useLocale';
 
 interface FAQItem {
@@ -68,9 +69,14 @@ export default function FAQPage() {
   const isMl = locale === 'ml';
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [filter, setFilter] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const categories = ['All', ...Array.from(new Set(FAQ_DATA.map((f) => f.category)))];
-  const filtered = filter === 'All' ? FAQ_DATA : FAQ_DATA.filter((f) => f.category === filter);
+  const filtered = (filter === 'All' ? FAQ_DATA : FAQ_DATA.filter((f) => f.category === filter)).filter((f) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return f.questionEn.toLowerCase().includes(q) || f.answerEn.toLowerCase().includes(q) || f.questionMl.includes(q) || f.answerMl.includes(q);
+  });
 
   return (
     <>
@@ -84,6 +90,18 @@ export default function FAQPage() {
                 {isMl ? 'പൊതു ചോദ്യങ്ങൾ' : 'Frequently Asked Questions'}
               </h1>
             </motion.div>
+
+            {/* Search */}
+            <div className="mt-4 relative">
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-neutral-400)]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={isMl ? 'ചോദ്യങ്ങൾ തിരയുക...' : 'Search questions...'}
+                className="w-full rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] py-3 pl-10 pr-4 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
+              />
+            </div>
 
             {/* Category filter */}
             <div className="mt-4 flex flex-wrap gap-2">
@@ -144,6 +162,7 @@ export default function FAQPage() {
             </div>
           </div>
         </main>
+        <FloatingChatButton />
       </div>
     </>
   );

@@ -243,6 +243,16 @@ export default function ChatPage() {
                     ? 'കോട്ടയം ജില്ലയിലെ വോട്ടർ വിവരങ്ങൾക്ക് നിങ്ങളുടെ AI സഹായി'
                     : 'Your AI voter information assistant for Kottayam District'}
                 </p>
+
+                {/* Welcome card */}
+                <div className="mx-auto mt-6 max-w-md rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] p-5 shadow-sm text-left">
+                  <p className={`text-sm text-[var(--text-secondary)] leading-relaxed ${locale === 'ml' ? 'font-ml' : ''}`}>
+                    {locale === 'ml'
+                      ? 'ഞാൻ ജനമിത്ര, തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ ഓഫ് ഇന്ത്യയുടെ SVEEP ഇനിഷ്യേറ്റീവിന് കീഴിലുള്ള നിങ്ങളുടെ AI വോട്ടർ സഹായി. വോട്ടർ രജിസ്ട്രേഷൻ, പോളിംഗ് ബൂത്തുകൾ, തിരഞ്ഞെടുപ്പ് നടപടിക്രമങ്ങൾ എന്നിവയെ കുറിച്ച് ചോദിക്കൂ.'
+                      : 'I am Janamitra, your AI voter assistant under the SVEEP initiative of the Election Commission of India. Ask me about voter registration, polling booths, election procedures, and more.'}
+                  </p>
+                </div>
+
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-[11px] text-[var(--text-tertiary)]">
                   <span className="flex items-center gap-1">
                     <ShieldCheckIcon className="h-3.5 w-3.5 text-emerald-500" />
@@ -258,11 +268,39 @@ export default function ChatPage() {
                 </div>
               </motion.div>
 
+              {/* Suggested Questions */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-                className="mt-8 w-full max-w-2xl"
+                transition={{ duration: 0.4, delay: 0.15 }}
+                className="mt-6 w-full max-w-2xl"
+              >
+                <p className={`mb-3 text-center text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider ${locale === 'ml' ? 'font-ml' : ''}`}>
+                  {locale === 'ml' ? 'നിർദ്ദേശിത ചോദ്യങ്ങൾ' : 'Suggested Questions'}
+                </p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {[
+                    { en: 'Where is my polling booth?', ml: 'എന്റെ പോളിംഗ് ബൂത്ത് എവിടെയാണ്?' },
+                    { en: 'How to register as a voter?', ml: 'ഒരു വോട്ടറായി എങ്ങനെ രജിസ്റ്റർ ചെയ്യാം?' },
+                    { en: 'What documents are required?', ml: 'ഏതൊക്കെ രേഖകൾ ആവശ്യമാണ്?' },
+                    { en: 'How to report a violation?', ml: 'ഒരു ലംഘനം എങ്ങനെ റിപ്പോർട്ട് ചെയ്യാം?' },
+                  ].map((q) => (
+                    <button
+                      key={q.en}
+                      onClick={() => send(locale === 'ml' ? q.ml : q.en)}
+                      className={`rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] px-4 py-3 text-left text-sm text-[var(--text-secondary)] shadow-sm transition-all hover:border-[var(--color-primary-300)] hover:shadow-md hover:text-[var(--color-primary-600)] ${locale === 'ml' ? 'font-ml' : ''}`}
+                    >
+                      {locale === 'ml' ? q.ml : q.en}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+                className="mt-6 w-full max-w-2xl"
               >
                 <QuickActions actions={quickActions} onAction={handleQuickAction} />
               </motion.div>

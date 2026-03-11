@@ -12,15 +12,16 @@ import {
 } from '@heroicons/react/24/outline';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
+import { FloatingChatButton } from '@/components/layout/FloatingChatButton';
 import { useLocale } from '@/hooks/useLocale';
 import type { ViolationReport } from '@/types';
 
-const VIOLATION_TYPES: { key: ViolationReport['type']; en: string; ml: string }[] = [
-  { key: 'bribery', en: 'Bribery', ml: 'കൈക്കൂലി' },
-  { key: 'intimidation', en: 'Voter Intimidation', ml: 'വോട്ടർ ഭീഷണി' },
-  { key: 'misinformation', en: 'Misinformation', ml: 'തെറ്റായ വിവരങ്ങൾ' },
-  { key: 'polling_irregularity', en: 'Polling Irregularity', ml: 'പോളിംഗ് ക്രമക്കേട്' },
-  { key: 'other', en: 'Other', ml: 'മറ്റുള്ളവ' },
+const VIOLATION_TYPES: { key: ViolationReport['type']; en: string; ml: string; desc: string; descMl: string }[] = [
+  { key: 'polling_irregularity', en: 'Booth Accessibility', ml: 'ബൂത്ത് പ്രവേശനക്ഷമത', desc: 'Accessibility issues at polling booths', descMl: 'പോളിംഗ് ബൂത്തിലെ പ്രവേശന പ്രശ്നങ്ങൾ' },
+  { key: 'misinformation', en: 'Voter List Issue', ml: 'വോട്ടർ പട്ടിക പ്രശ്നം', desc: 'Errors or omissions in voter list', descMl: 'വോട്ടർ പട്ടികയിലെ പിഴവുകൾ' },
+  { key: 'bribery', en: 'Election Violation', ml: 'തിരഞ്ഞെടുപ്പ് ലംഘനം', desc: 'Bribery, intimidation, or malpractice', descMl: 'കൈക്കൂലി, ഭീഷണി, അല്ലെങ്കിൽ ക്രമക്കേട്' },
+  { key: 'intimidation', en: 'Voter Intimidation', ml: 'വോട്ടർ ഭീഷണി', desc: 'Threats or coercion of voters', descMl: 'വോട്ടർമാരെ ഭീഷണിപ്പെടുത്തൽ' },
+  { key: 'other', en: 'General Complaint', ml: 'പൊതു പരാതി', desc: 'Other election-related issues', descMl: 'മറ്റ് തിരഞ്ഞെടുപ്പ് സംബന്ധമായ പ്രശ്നങ്ങൾ' },
 ];
 
 export default function ReportPage() {
@@ -29,6 +30,8 @@ export default function ReportPage() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [type, setType] = useState<ViolationReport['type']>('other');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [description, setDescription] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [useLocation, setUseLocation] = useState(false);
@@ -108,25 +111,58 @@ export default function ReportPage() {
             </motion.div>
 
             <div className="mt-6 space-y-5">
-              {/* Violation type */}
+              {/* Complaint Category */}
               <div>
                 <label className={`block text-sm font-medium text-[var(--color-neutral-700)] ${isMl ? 'font-ml' : ''}`}>
-                  {isMl ? 'ലംഘന തരം' : 'Violation Type'}
+                  {isMl ? 'പരാതി വിഭാഗം' : 'Complaint Category'}
                 </label>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
                   {VIOLATION_TYPES.map((vt) => (
                     <button
                       key={vt.key}
                       onClick={() => setType(vt.key)}
-                      className={`rounded-lg border px-3 py-1.5 text-sm transition-colors ${
+                      className={`rounded-xl border p-3 text-left transition-all ${
                         type === vt.key
-                          ? 'border-[var(--color-primary-300)] bg-[var(--color-primary-50)] text-[var(--color-primary-600)]'
-                          : 'border-[var(--color-neutral-200)] bg-[var(--surface-primary)] text-[var(--color-neutral-600)] hover:bg-[var(--color-neutral-50)]'
+                          ? 'border-[var(--color-primary-300)] bg-[var(--color-primary-50)] shadow-sm'
+                          : 'border-[var(--color-neutral-200)] bg-[var(--surface-primary)] hover:border-[var(--color-neutral-300)] hover:bg-[var(--color-neutral-50)]'
                       } ${isMl ? 'font-ml' : ''}`}
                     >
-                      {isMl ? vt.ml : vt.en}
+                      <p className={`text-sm font-medium ${type === vt.key ? 'text-[var(--color-primary-600)]' : 'text-[var(--color-neutral-700)]'}`}>
+                        {isMl ? vt.ml : vt.en}
+                      </p>
+                      <p className="mt-0.5 text-xs text-[var(--color-neutral-500)]">
+                        {isMl ? vt.descMl : vt.desc}
+                      </p>
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Name & Phone */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className={`block text-sm font-medium text-[var(--color-neutral-700)] ${isMl ? 'font-ml' : ''}`}>
+                    {isMl ? 'പേര്' : 'Name'}
+                  </label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={isMl ? 'നിങ്ങളുടെ പേര്' : 'Your name'}
+                    className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-medium text-[var(--color-neutral-700)] ${isMl ? 'font-ml' : ''}`}>
+                    {isMl ? 'ഫോൺ' : 'Phone'}
+                  </label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder={isMl ? 'ഫോൺ നമ്പർ' : 'Phone number'}
+                    className="mt-1 w-full rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] px-4 py-3 text-sm text-[var(--text-primary)] shadow-sm outline-none focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] transition"
+                  />
                 </div>
               </div>
 
@@ -196,6 +232,7 @@ export default function ReportPage() {
             </div>
           </div>
         </main>
+        <FloatingChatButton />
       </div>
     </>
   );

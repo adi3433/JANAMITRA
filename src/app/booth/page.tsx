@@ -18,6 +18,7 @@ import {
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
+import { FloatingChatButton } from '@/components/layout/FloatingChatButton';
 import { useLocale } from '@/hooks/useLocale';
 import type { BoothInfo, BoothSearchResponse } from '@/types';
 import type { BoothMapHandle } from '@/components/booth/BoothMap';
@@ -51,6 +52,7 @@ export default function BoothPage() {
   const { locale, t } = useLocale();
   const isMl = locale === 'ml';
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchType, setSearchType] = useState<'name' | 'epic' | 'phone'>('name');
   const [results, setResults] = useState<BoothInfo[]>([]);
   const [allBooths, setAllBooths] = useState<BoothInfo[]>([]);
   const [mapBooths, setMapBooths] = useState<BoothInfo[]>([]);
@@ -159,12 +161,40 @@ export default function BoothPage() {
               )}
             </motion.div>
 
+            {/* Search type tabs */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="mt-6"
+            >
+              <div className="flex rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-1 w-fit">
+                {([
+                  { key: 'name' as const, label: isMl ? 'പേര് / സ്ഥലം' : 'Name / Area' },
+                  { key: 'epic' as const, label: isMl ? 'EPIC നമ്പർ' : 'EPIC Number' },
+                  { key: 'phone' as const, label: isMl ? 'ഫോൺ' : 'Phone' },
+                ]).map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => setSearchType(item.key)}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                      searchType === item.key
+                        ? 'bg-[var(--surface-primary)] text-[var(--color-primary-600)] shadow-sm'
+                        : 'text-[var(--color-neutral-500)] hover:text-[var(--color-neutral-700)]'
+                    } ${isMl ? 'font-ml' : ''}`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+
             {/* Search bar */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.15 }}
-              className="mt-6"
+              className="mt-3"
             >
               <div className="flex gap-2">
                 <div className="relative flex-1">
@@ -175,9 +205,11 @@ export default function BoothPage() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     placeholder={
-                      isMl
-                        ? 'ബൂത്ത് പേര് / സ്റ്റേഷൻ നമ്പർ / പ്രദേശം'
-                        : 'Booth name / Station number / Area / Landmark'
+                      searchType === 'epic'
+                        ? (isMl ? 'EPIC നമ്പർ നൽകുക (e.g., ABC1234567)' : 'Enter EPIC number (e.g., ABC1234567)')
+                        : searchType === 'phone'
+                          ? (isMl ? 'ഫോൺ നമ്പർ നൽകുക' : 'Enter phone number')
+                          : (isMl ? 'ബൂത്ത് പേര് / സ്റ്റേഷൻ നമ്പർ / പ്രദേശം' : 'Booth name / Station number / Area / Landmark')
                     }
                     className="w-full rounded-md border border-[var(--color-neutral-200)] bg-[var(--surface-primary)] py-3 pl-10 pr-4 text-sm text-[var(--text-primary)] shadow-sm focus:border-[var(--color-primary-300)] focus:ring-2 focus:ring-[var(--color-primary-100)] outline-none transition"
                   />
@@ -337,6 +369,7 @@ export default function BoothPage() {
             </AnimatePresence>
           </div>
         </main>
+        <FloatingChatButton />
       </div>
     </>
   );

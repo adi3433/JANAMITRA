@@ -288,3 +288,97 @@ textarea:focus {
     display: none !important;
   }
 }
+
+/* ── Animated CSS Components ──────────────────────────────────── */
+
+/* Floating particles animation for hero */
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.4; }
+  25% { transform: translateY(-20px) translateX(10px) rotate(90deg); opacity: 0.7; }
+  50% { transform: translateY(-35px) translateX(-5px) rotate(180deg); opacity: 0.5; }
+  75% { transform: translateY(-15px) translateX(15px) rotate(270deg); opacity: 0.6; }
+}
+
+.animate-float-particle {
+  animation: float-particle 6s ease-in-out infinite;
+}
+
+.animate-float-particle-delayed {
+  animation: float-particle 8s ease-in-out 2s infinite;
+}
+
+.animate-float-particle-slow {
+  animation: float-particle 10s ease-in-out 1s infinite;
+}
+
+/* Gradient shimmer animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-50) 0%,
+    var(--color-primary-100) 25%,
+    var(--surface-primary) 50%,
+    var(--color-primary-100) 75%,
+    var(--color-primary-50) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Pulse ring animation for status indicators */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.animate-pulse-ring {
+  position: relative;
+}
+
+.animate-pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid var(--color-primary-500);
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Tricolor flow animation */
+@keyframes tricolor-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-tricolor {
+  background: linear-gradient(90deg, #FF9933, #FFFFFF, #138808, #FFFFFF, #FF9933);
+  background-size: 300% 100%;
+  animation: tricolor-flow 4s ease infinite;
+}
+
+/* Counting up number animation */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-count-up {
+  animation: count-up 0.6s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+/* High Contrast Mode */
+body.high-contrast {
+  --surface-primary: #FFFFFF;
+  --surface-secondary: #F0F0F0;
+  --text-primary: #000000;
+  --text-secondary: #1A1A1A;
+  --border-primary: #000000;
+  filter: contrast(1.2);
+}

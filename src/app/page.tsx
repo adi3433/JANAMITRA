@@ -25,9 +25,15 @@ import {
   HandRaisedIcon,
   GlobeAltIcon,
   DocumentTextIcon,
+  MegaphoneIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  PencilSquareIcon,
+  DocumentCheckIcon,
 } from '@heroicons/react/24/outline';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
+import { FloatingChatButton } from '@/components/layout/FloatingChatButton';
 import { useLocale } from '@/hooks/useLocale';
 
 const staggerContainer = {
@@ -132,13 +138,8 @@ export default function Home() {
       <ParallaxBackground />
       <Header />
       <main className="relative min-h-screen">
-        {/* Government Banner */}
-        <div className="bg-[var(--color-primary-600)] text-white">
-          <div className="mx-auto flex max-w-5xl items-center justify-center gap-2 px-4 py-1.5 text-[11px] font-medium">
-            <ShieldCheckIcon className="h-3.5 w-3.5" />
-            <span>{isMl ? 'SVEEP ഇനിഷ്യേറ്റീവ് — ഇന്ത്യൻ തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ' : 'SVEEP Initiative — Election Commission of India'}</span>
-          </div>
-        </div>
+        {/* Latest Updates Ticker */}
+        <LatestUpdatesTicker isMl={isMl} />
 
         {/* Hero Section */}
         <section className="mx-auto max-w-5xl px-4 pt-16 pb-12 text-center">
@@ -250,6 +251,9 @@ export default function Home() {
 
         {/* Voter Journey — Process Path Animation */}
         <VoterJourney isMl={isMl} />
+
+        {/* Voter Services Grid */}
+        <VoterServicesGrid isMl={isMl} />
 
         {/* Feature Cards */}
         <section className="mx-auto max-w-5xl px-4 py-16">
@@ -499,6 +503,8 @@ export default function Home() {
             <div className="flex-1 bg-[#138808]" />
           </div>
         </footer>
+
+        <FloatingChatButton />
       </main>
     </>
   );
@@ -606,6 +612,196 @@ function VoterJourney({ isMl }: { isMl: boolean }) {
             </motion.div>
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+/* ── Latest Updates Ticker ───────────────────────────────────── */
+
+const UPDATES = [
+  { en: 'National Voters Day — January 25', ml: 'ദേശീയ വോട്ടേഴ്‌സ് ദിനം — ജനുവരി 25' },
+  { en: 'Voter registration deadline approaching — Apply on NVSP', ml: 'വോട്ടർ രജിസ്ട്രേഷൻ സമയപരിധി അടുക്കുന്നു — NVSP-ൽ അപേക്ഷിക്കുക' },
+  { en: 'New voter ID cards available for download on Voter Portal', ml: 'പുതിയ വോട്ടർ ഐഡി കാർഡുകൾ വോട്ടർ പോർട്ടലിൽ ഡൗൺലോഡിനായി ലഭ്യമാണ്' },
+  { en: 'cVIGIL app — Report violations in real-time', ml: 'cVIGIL ആപ്പ് — ലംഘനങ്ങൾ തത്സമയം റിപ്പോർട്ട് ചെയ്യുക' },
+];
+
+function LatestUpdatesTicker({ isMl }: { isMl: boolean }) {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % UPDATES.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="border-b border-[var(--border-primary)] bg-[var(--color-accent-50)]">
+      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2">
+        <span className="flex shrink-0 items-center gap-1.5 rounded bg-[var(--color-accent-500)] px-2.5 py-1 text-[11px] font-bold text-white uppercase tracking-wider">
+          <MegaphoneIcon className="h-3.5 w-3.5" />
+          {isMl ? 'അപ്ഡേറ്റ്' : 'Updates'}
+        </span>
+        <div className="flex-1 overflow-hidden">
+          <motion.p
+            key={currentIndex}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className={`text-sm text-[var(--text-secondary)] truncate ${isMl ? 'font-ml' : ''}`}
+          >
+            {isMl ? UPDATES[currentIndex].ml : UPDATES[currentIndex].en}
+          </motion.p>
+        </div>
+        <div className="flex shrink-0 gap-1">
+          <button
+            onClick={() => setCurrentIndex((prev) => (prev - 1 + UPDATES.length) % UPDATES.length)}
+            className="rounded p-1 text-[var(--text-tertiary)] hover:bg-[var(--surface-primary)] transition-colors"
+            aria-label="Previous update"
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setCurrentIndex((prev) => (prev + 1) % UPDATES.length)}
+            className="rounded p-1 text-[var(--text-tertiary)] hover:bg-[var(--surface-primary)] transition-colors"
+            aria-label="Next update"
+          >
+            <ChevronRightIcon className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Voter Services Grid ─────────────────────────────────────── */
+
+const voterServices = [
+  {
+    icon: MapPinIcon,
+    href: '/booth',
+    titleEn: 'Find Polling Booth',
+    titleMl: 'പോളിംഗ് ബൂത്ത് കണ്ടെത്തുക',
+    descEn: 'Locate your assigned polling station on an interactive map.',
+    descMl: 'ഇന്ററാക്ടീവ് മാപ്പിൽ നിങ്ങളുടെ പോളിംഗ് സ്റ്റേഷൻ കണ്ടെത്തുക.',
+    color: 'text-blue-600',
+    bg: 'bg-blue-50 dark:bg-blue-900/20',
+  },
+  {
+    icon: IdentificationIcon,
+    href: '/registration',
+    titleEn: 'Check Voter Registration',
+    titleMl: 'വോട്ടർ രജിസ്ട്രേഷൻ പരിശോധിക്കുക',
+    descEn: 'Verify your voter registration status instantly.',
+    descMl: 'നിങ്ങളുടെ വോട്ടർ രജിസ്ട്രേഷൻ സ്ഥിതി ഉടൻ പരിശോധിക്കുക.',
+    color: 'text-violet-600',
+    bg: 'bg-violet-50 dark:bg-violet-900/20',
+  },
+  {
+    icon: DocumentCheckIcon,
+    href: 'https://www.nvsp.in',
+    titleEn: 'Apply for Voter ID',
+    titleMl: 'വോട്ടർ ഐഡിക്ക് അപേക്ഷിക്കുക',
+    descEn: 'Apply for a new voter ID card on the NVSP portal.',
+    descMl: 'NVSP പോർട്ടലിൽ പുതിയ വോട്ടർ ഐഡി കാർഡിന് അപേക്ഷിക്കുക.',
+    color: 'text-emerald-600',
+    bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+  },
+  {
+    icon: PencilSquareIcon,
+    href: 'https://www.nvsp.in',
+    titleEn: 'Update Details',
+    titleMl: 'വിവരങ്ങൾ അപ്ഡേറ്റ് ചെയ്യുക',
+    descEn: 'Update name, address, or photo on your voter record.',
+    descMl: 'നിങ്ങളുടെ വോട്ടർ റെക്കോർഡിൽ പേര്, വിലാസം, ഫോട്ടോ അപ്ഡേറ്റ് ചെയ്യുക.',
+    color: 'text-amber-600',
+    bg: 'bg-amber-50 dark:bg-amber-900/20',
+  },
+  {
+    icon: ExclamationTriangleIcon,
+    href: '/report',
+    titleEn: 'Report Election Issue',
+    titleMl: 'തിരഞ്ഞെടുപ്പ് പ്രശ്‌നം റിപ്പോർട്ട്',
+    descEn: 'Report election violations with evidence confidentially.',
+    descMl: 'തെളിവുകൾ ഉപയോഗിച്ച് ലംഘനങ്ങൾ രഹസ്യമായി റിപ്പോർട്ട് ചെയ്യുക.',
+    color: 'text-red-600',
+    bg: 'bg-red-50 dark:bg-red-900/20',
+  },
+  {
+    icon: QuestionMarkCircleIcon,
+    href: '/faq',
+    titleEn: 'Election FAQ',
+    titleMl: 'തിരഞ്ഞെടുപ്പ് FAQ',
+    descEn: 'Find answers to common questions about elections.',
+    descMl: 'തിരഞ്ഞെടുപ്പിനെക്കുറിച്ചുള്ള പൊതു ചോദ്യങ്ങൾക്ക് ഉത്തരം കണ്ടെത്തുക.',
+    color: 'text-cyan-600',
+    bg: 'bg-cyan-50 dark:bg-cyan-900/20',
+  },
+];
+
+function VoterServicesGrid({ isMl }: { isMl: boolean }) {
+  return (
+    <section className="border-y border-[var(--border-primary)] bg-[var(--surface-primary)]">
+      <div className="mx-auto max-w-5xl px-4 py-14">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-10"
+        >
+          <h2 className={`text-2xl font-bold text-[var(--color-neutral-900)] ${isMl ? 'font-ml' : ''}`}>
+            {isMl ? 'വോട്ടർ സേവനങ്ങൾ' : 'Voter Services'}
+          </h2>
+          <p className={`mt-2 text-sm text-[var(--color-neutral-500)] ${isMl ? 'font-ml' : ''}`}>
+            {isMl ? 'നിങ്ങൾക്ക് ആവശ്യമായ എല്ലാ സേവനങ്ങളും ഒരിടത്ത്' : 'All the services you need in one place'}
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {voterServices.map((service) => {
+            const Icon = service.icon;
+            const isExternal = service.href.startsWith('http');
+            const cardClassName = "group block rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] p-6 shadow-sm transition-all hover:shadow-md hover:border-[var(--color-primary-300)] hover:-translate-y-0.5";
+            const cardContent = (
+              <>
+                <div className={`inline-flex rounded-xl p-3 ${service.bg}`}>
+                  <Icon className={`h-6 w-6 ${service.color}`} />
+                </div>
+                <h3 className={`mt-4 text-sm font-semibold text-[var(--color-neutral-800)] ${isMl ? 'font-ml' : ''}`}>
+                  {isMl ? service.titleMl : service.titleEn}
+                </h3>
+                <p className={`mt-1 text-xs text-[var(--color-neutral-500)] leading-relaxed ${isMl ? 'font-ml' : ''}`}>
+                  {isMl ? service.descMl : service.descEn}
+                </p>
+                <span className="mt-3 inline-block text-xs font-medium text-[var(--color-primary-500)] group-hover:underline">
+                  {isMl ? 'കൂടുതൽ അറിയുക →' : 'Learn More →'}
+                </span>
+              </>
+            );
+
+            return (
+              <motion.div key={service.titleEn} variants={fadeUp}>
+                {isExternal ? (
+                  <a href={service.href} target="_blank" rel="noopener noreferrer" className={cardClassName}>
+                    {cardContent}
+                  </a>
+                ) : (
+                  <Link href={service.href} className={cardClassName}>
+                    {cardContent}
+                  </Link>
+                )}
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
     </section>
   );

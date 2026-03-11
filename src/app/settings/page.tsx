@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Header } from '@/components/layout/Header';
 import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
+import { FloatingChatButton } from '@/components/layout/FloatingChatButton';
 import { useLocale } from '@/hooks/useLocale';
 import { useJanamitraStore } from '@/lib/store';
 import {
@@ -219,6 +220,7 @@ export default function SettingsPage() {
             </div>
           </div>
         </main>
+        <FloatingChatButton />
       </div>
     </>
   );
