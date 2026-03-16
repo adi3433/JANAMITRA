@@ -19,6 +19,8 @@ import type { ExtractedField } from '@/lib/vision';
 const TEMPLATE_VERSIONS: Record<string, string> = {
   'rag-system': 'v5.0-kottayam-2026',
   'rag-user': 'v5.0-kottayam-2026',
+  'general-civic-system': 'v1.0-general-reasoning-2026',
+  'general-civic-user': 'v1.0-general-reasoning-2026',
   'vision-extraction': 'v2.0-doc-extractor',
   'vision-explanation': 'v2.0-doc-explainer',
   'reranker-input': 'v2.0-passage-rerank',
@@ -81,6 +83,23 @@ You are Janamitra, a District-Level Civic AI Agent for Kottayam district, Kerala
 13. PRIVACY: Never expose full Aadhaar numbers, full EPIC numbers, or personal voter roll data in responses. Redact PII.`;
 }
 
+export function generalCivicSystemPrompt(): string {
+  return `/no_think
+You are Janamitra, an impartial voter information assistant for Kerala elections.
+
+Rules:
+1. LANGUAGE: Reply fully in the user's language (English or Malayalam).
+2. SAFETY: Never provide party recommendation, candidate endorsement, election prediction, or persuasive political advice.
+3. SCOPE: You may answer general election process questions using your civic knowledge when retrieved documents are weak or unavailable.
+4. UNCERTAINTY: If a detail can vary by state or year, clearly say it may vary and point to official verification sources.
+5. STYLE: Be direct, practical, and structured. Use bullet points for steps and requirements.
+6. OFFICIAL LINKS: Include official references when relevant: eci.gov.in, voters.eci.gov.in, electoralsearch.eci.gov.in, ceokerala.gov.in.
+7. HELPLINE: Include 1950 when useful.
+8. PRIVACY: Do not reveal sensitive personal data.
+9. OUTPUT: Return only final user-facing answer. Do not include chain-of-thought.
+10. CONFIDENCE: End with CONFIDENCE_SCORE: <float 0.0 to 1.0>.`;
+}
+
 // ── RAG User Prompt (with passages & citations) ──────────────────
 
 export interface RAGUserPromptInput {
@@ -90,6 +109,13 @@ export interface RAGUserPromptInput {
   query: string;
   locale: Locale;
   retrievalTrace: RetrievalTraceEntry[];
+}
+
+export interface GeneralCivicUserPromptInput {
+  query: string;
+  locale: Locale;
+  conversationBlock: string;
+  memoryBlock: string;
 }
 
 export function ragUserPrompt(input: RAGUserPromptInput): string {
@@ -121,6 +147,26 @@ ${memoryBlock}${traceBlock}
 
 CONTEXT (official sources, reranked by relevance):
 ${contextBlock || 'No relevant sources found.'}`;
+}
+
+export function generalCivicUserPrompt(input: GeneralCivicUserPromptInput): string {
+  const { query, locale, conversationBlock, memoryBlock } = input;
+  const lang = locale === 'ml' ? 'Malayalam' : 'English';
+
+  return `USER QUESTION (locale: ${locale}):
+${query}
+
+INSTRUCTIONS:
+- Answer entirely in ${lang}.
+- This is a general civic reasoning mode because retrieval confidence is low.
+- Provide practical election-process guidance without inventing district-specific factual claims.
+- If policy details may vary, say "Please verify on official ECI/CEO sources".
+- Keep answer useful and concise with steps or bullet points when applicable.
+- End with CONFIDENCE_SCORE: <float>
+
+CONVERSATION HISTORY:
+${conversationBlock || 'None'}
+${memoryBlock}`;
 }
 
 // ── Vision Extraction Prompt (JSON-only) ─────────────────────────

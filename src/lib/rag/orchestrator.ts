@@ -23,6 +23,8 @@ import { getConfig, estimateTokens, trimToTokenBudget } from '@/lib/fireworks';
 import {
   ragSystemPrompt,
   ragUserPrompt,
+  generalCivicSystemPrompt,
+  generalCivicUserPrompt,
   computePromptHash,
   getTemplateVersion,
 } from '@/lib/prompts';
@@ -68,6 +70,8 @@ const PROMPT_VERSION = getTemplateVersion('rag-system');
 const MAX_CONTEXT_TOKENS = 3000;
 const MAX_PROMPT_TOKENS = 4000;
 const ESCALATION_THRESHOLD = 0.55;
+const LOW_RETRIEVAL_SIMILARITY = 0.34;
+const LOW_RERANK_SCORE = 0.4;
 
 export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {
   const { query, locale, conversationHistory, userId } = input;
@@ -86,6 +90,10 @@ export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {
   // Use reranked passages for context (top 3)
   const topPassages = reranked.map((r) => r.passage);
   const rerankerScores = reranked.map((r) => r.rerankerScore);
+  const avgRerankerScore =
+    rerankerScores.length > 0
+      ? rerankerScores.reduce((sum, s) => sum + s, 0) / rerankerScores.length
+      : 0;
 
   // ── Build retrieval trace (per-chunk audit) ────────────────
   const retrievalTrace: RetrievalTraceEntry[] = reranked.map((r) => ({
@@ -111,15 +119,28 @@ export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {
   // Memory context (empty if user hasn't opted in)
   const memoryBlock = userId ? await buildMemoryContext(userId) : '';
 
-  const systemPrompt = ragSystemPrompt();
-  let userPrompt = ragUserPrompt({
-    contextBlock,
-    conversationBlock,
-    memoryBlock,
-    query,
-    locale,
-    retrievalTrace,
-  });
+  const maxSimilarity = topPassages.length > 0
+    ? Math.max(...topPassages.map((p) => p.score))
+    : 0;
+  const weakRetrieval = topPassages.length === 0
+    || (maxSimilarity < LOW_RETRIEVAL_SIMILARITY && avgRerankerScore < LOW_RERANK_SCORE);
+
+  const systemPrompt = weakRetrieval ? generalCivicSystemPrompt() : ragSystemPrompt();
+  let userPrompt = weakRetrieval
+    ? generalCivicUserPrompt({
+      query,
+      locale,
+      conversationBlock,
+      memoryBlock,
+    })
+    : ragUserPrompt({
+      contextBlock,
+      conversationBlock,
+      memoryBlock,
+      query,
+      locale,
+      retrievalTrace,
+    });
 
   // Trim prompt to budget
   userPrompt = trimToTokenBudget(userPrompt, MAX_PROMPT_TOKENS);
@@ -150,39 +171,39 @@ export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {
   }
 
   // ── Build sources with citation ──────────────────────────────
-  const sources: ChatSource[] = topPassages.map((p) => ({
-    title: p.metadata.source,
-    url: p.metadata.url,
-    lastUpdated: p.metadata.lastUpdated,
-    excerpt: p.content.substring(0, 150) + '...',
-  }));
+  const sources: ChatSource[] = weakRetrieval
+    ? []
+    : topPassages.map((p) => ({
+      title: p.metadata.source,
+      url: p.metadata.url,
+      lastUpdated: p.metadata.lastUpdated,
+      excerpt: p.content.substring(0, 150) + '...',
+    }));
 
   // ── Confidence scoring (new formula) ─────────────────────────
   // confidence = clamp(0.2*max_similarity + 0.4*avg_reranker + 0.2*model_selfscore + 0.2*validation_score, 0, 1)
-  const maxSimilarity = topPassages.length > 0
-    ? Math.max(...topPassages.map((p) => p.score))
-    : 0;
-  const avgRerankerScore =
-    rerankerScores.length > 0
-      ? rerankerScores.reduce((sum, s) => sum + s, 0) / rerankerScores.length
-      : 0;
+  let confidence: number;
+  if (weakRetrieval) {
+    const brevityBonus = cleanText.length >= 120 ? 0.15 : (cleanText.length >= 60 ? 0.1 : 0.05);
+    confidence = Math.max(0.45, Math.min(0.74, Math.round((modelSelfScore * 0.75 + brevityBonus) * 100) / 100));
+  } else {
+    // validation_score: 1.0 if response has sources cited + is non-empty, lower if not
+    let validationScore = 1.0;
+    if (cleanText.length < 50) validationScore -= 0.3;
+    if (!cleanText.includes('[Source')) validationScore -= 0.2;
+    if (generated.completionTokens === 0) validationScore -= 0.2;
+    validationScore = Math.max(0, validationScore);
 
-  // validation_score: 1.0 if response has sources cited + is non-empty, lower if not
-  let validationScore = 1.0;
-  if (cleanText.length < 50) validationScore -= 0.3;
-  if (!cleanText.includes('[Source')) validationScore -= 0.2;
-  if (generated.completionTokens === 0) validationScore -= 0.2;
-  validationScore = Math.max(0, validationScore);
-
-  const confidence = Math.min(
-    1,
-    Math.round(
-      (maxSimilarity * 0.20 +
-        avgRerankerScore * 0.40 +
-        modelSelfScore * 0.20 +
-        validationScore * 0.20) * 100
-    ) / 100
-  );
+    confidence = Math.min(
+      1,
+      Math.round(
+        (maxSimilarity * 0.20 +
+          avgRerankerScore * 0.40 +
+          modelSelfScore * 0.20 +
+          validationScore * 0.20) * 100
+      ) / 100
+    );
+  }
 
   const escalate = confidence < ESCALATION_THRESHOLD;
 
@@ -214,7 +235,7 @@ export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {
     actionable,
     retrievalScore: Math.round(maxSimilarity * 100) / 100,
     rerankerScores,
-    retrievalTrace,
+    retrievalTrace: weakRetrieval ? [] : retrievalTrace,
     generatorModel: generated.model || cfg.generatorModel,
     promptVersionHash: pHash,
     trace,

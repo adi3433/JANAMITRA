@@ -168,6 +168,9 @@ const CATEGORY_PATTERNS: Array<{
       /\bvote\s+without\s+(voter\s*)?(id|card)\b/i,
       /\bwithout\s+(voter\s*)?(id|card)\s+(can\s+i\s+)?vote\b/i,
       /\bcan\s+i\s+vote\s+without\b/i,
+      /\b(candidate|election\s+agent|party)\s+(bank\s+account|separate\s+account|election\s+account)\b/i,
+      /\b(mandatory|required)\b.*\b(separate\s+bank\s+account|election\s+account)\b/i,
+      /\b(election\s+expense|campaign\s+expense|election\s+expenditure|candidate\s+expenses?)\b/i,
       mlRegex('(എങ്ങനെ\\s*വോട്ട്\\s*ചെയ്യ|വോട്ടിങ്\\s*നിയമ|ഐഡി\\s*പ്രൂഫ്|വോട്ടിങ്\\s*സമയ)'),
       // Extended Malayalam voting rules patterns
       mlRegex('(നിരോധിച്ച|നിരോധന|അനുവദനീയമല്ല|കൊണ്ടുപോകാമോ)'),
@@ -186,6 +189,8 @@ const CATEGORY_PATTERNS: Array<{
       mlRegex('(നിയമവിരുദ്ധ|നിയമ\\s*വിരുദ്ധ)'),
       mlRegex('(ബാലറ്റ്\\s*പേപ്പർ)'),
       mlRegex('(എപ്പോൾ\\s*തുടങ്ങ|എപ്പോൾ\\s*അവസാനിക്ക)'),
+      mlRegex('(തിരഞ്ഞെടുപ്പ്\\s*ചെലവ്|ക്യാമ്പെയ്ൻ\\s*ചെലവ്|സ്ഥാനാർഥി\\s*ചെലവ്)'),
+      mlRegex('(പ്രത്യേക\\s*ബാങ്ക്\\s*അക്കൗണ്ട്|തിരഞ്ഞെടുപ്പ്\\s*അക്കൗണ്ട്)'),
       /\b(what\s+(can|should)\s+i\s+(bring|carry)\s+to\s+(the\s+)?poll)\b/i,
     ],
     subIntentPatterns: [
@@ -297,7 +302,8 @@ const CATEGORY_PATTERNS: Array<{
       /\b(health|doctor|medicine|hospital|symptom)\b/i,
       /\b(programming|javascript|python|software|source\s*code|write\s+code)\b/i,
       /\b(hotel|restaurants?|travel|flight|bookings?|ticket)\b/i,
-      /\b(loan|insurance|bank\s+account|credit\s+card)\b/i,
+      /\b(loan|insurance|credit\s+card|mutual\s+fund|personal\s+finance)\b/i,
+      /\b(open\s+(a\s+)?(savings|current)?\s*bank\s+account|savings\s+account|current\s+account)\b/i,
       // Adversarial / abuse / threats / jailbreak attempts
       /\b(destroy|kill|murder|attack|bomb)\s+(yourself|you|this|me)\b/i,
       /\b(shut\s*(up|down)|go\s+away|f[\*u]ck\s*(off|you|yourself)|screw\s+you)\b/i,
@@ -319,7 +325,7 @@ const CATEGORY_PATTERNS: Array<{
       mlRegex('(ഓഹരി|നിക്ഷേപ|ക്രിപ്റ്റോ|ബിറ്റ്കോയിൻ)'),
       mlRegex('(ആശുപത്രി|ഡോക്ടർ|മരുന്ന്)'),
       mlRegex('(ഫ്ലൈറ്റ|ടിക്കറ്റ|ബുക്ക്|ഹോട്ടൽ|റെസ്റ്റോറന്റ)'),  
-      mlRegex('(ലോൺ|ഇൻഷുറൻസ്|ബാങ്ക്\\s*അക്കൗണ്ട്)'),
+      mlRegex('(ലോൺ|ഇൻഷുറൻസ്|ക്രെഡിറ്റ്\\s*കാർഡ്|വ്യക്തിഗത\\s*ധനകാര്യ)'),
       // Malayalam adversarial / abuse
       mlRegex('(ഉപയോഗശൂന്യ|മണ്ടൻ|വിഡ്ഢി|പോടാ|പോടീ)'),
       // Malayalam political opinion
