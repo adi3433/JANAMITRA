@@ -276,24 +276,61 @@ export default function ChatPage() {
                 className="mt-6 w-full max-w-2xl"
               >
                 <p className={`mb-3 text-center text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider ${locale === 'ml' ? 'font-ml' : ''}`}>
-                  {locale === 'ml' ? 'നിർദ്ദേശിത ചോദ്യങ്ങൾ' : 'Suggested Questions'}
+                  {locale === 'ml' ? 'നിർദ്ദേശിത ചോദ്യങ്ങൾ' : 'Select a Question to Get Started'}
                 </p>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {[
-                    { en: 'Where is my polling booth?', ml: 'എന്റെ പോളിംഗ് ബൂത്ത് എവിടെയാണ്?' },
-                    { en: 'How to register as a voter?', ml: 'ഒരു വോട്ടറായി എങ്ങനെ രജിസ്റ്റർ ചെയ്യാം?' },
-                    { en: 'What documents are required?', ml: 'ഏതൊക്കെ രേഖകൾ ആവശ്യമാണ്?' },
-                    { en: 'How to report a violation?', ml: 'ഒരു ലംഘനം എങ്ങനെ റിപ്പോർട്ട് ചെയ്യാം?' },
-                  ].map((q) => (
-                    <button
-                      key={q.en}
-                      onClick={() => send(locale === 'ml' ? q.ml : q.en)}
-                      className={`rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] px-4 py-3 text-left text-sm text-[var(--text-secondary)] shadow-sm transition-all hover:border-[var(--color-primary-300)] hover:shadow-md hover:text-[var(--color-primary-600)] ${locale === 'ml' ? 'font-ml' : ''}`}
-                    >
-                      {locale === 'ml' ? q.ml : q.en}
-                    </button>
-                  ))}
-                </div>
+                {[
+                  {
+                    category: locale === 'ml' ? 'രജിസ്ട്രേഷൻ' : 'Registration',
+                    questions: [
+                      { en: 'How to register as a voter?', ml: 'ഒരു വോട്ടറായി എങ്ങനെ രജിസ്റ്റർ ചെയ്യാം?' },
+                      { en: 'What documents are required for registration?', ml: 'രജിസ്ട്രേഷനായി ഏതൊക്കെ രേഖകൾ ആവശ്യമാണ്?' },
+                      { en: 'How to check my voter registration status?', ml: 'എന്റെ വോട്ടർ രജിസ്ട്രേഷൻ സ്ഥിതി എങ്ങനെ പരിശോധിക്കാം?' },
+                      { en: 'How to transfer voter registration to a new address?', ml: 'പുതിയ വിലാസത്തിലേക്ക് വോട്ടർ രജിസ്ട്രേഷൻ മാറ്റുന്നത് എങ്ങനെ?' },
+                    ],
+                  },
+                  {
+                    category: locale === 'ml' ? 'വോട്ടിംഗ്' : 'Voting',
+                    questions: [
+                      { en: 'Where is my polling booth?', ml: 'എന്റെ പോളിംഗ് ബൂത്ത് എവിടെയാണ്?' },
+                      { en: 'What time do polling booths open and close?', ml: 'പോളിംഗ് ബൂത്തുകൾ എത്ര മണിക്ക് തുറക്കുകയും അടയ്ക്കുകയും ചെയ്യും?' },
+                      { en: 'What should I bring to the polling booth?', ml: 'പോളിംഗ് ബൂത്തിലേക്ക് എന്ത് കൊണ്ടുപോകണം?' },
+                      { en: 'Can I vote without a Voter ID card?', ml: 'വോട്ടർ ഐഡി കാർഡ് ഇല്ലാതെ വോട്ട് ചെയ്യാൻ കഴിയുമോ?' },
+                    ],
+                  },
+                  {
+                    category: locale === 'ml' ? 'ലംഘനങ്ങൾ & പരാതികൾ' : 'Violations & Complaints',
+                    questions: [
+                      { en: 'How to report an election violation?', ml: 'ഒരു തിരഞ്ഞെടുപ്പ് ലംഘനം എങ്ങനെ റിപ്പോർട്ട് ചെയ്യാം?' },
+                      { en: 'How to report vote buying or bribery?', ml: 'വോട്ട് വാങ്ങൽ അല്ലെങ്കിൽ കൈക്കൂലി എങ്ങനെ റിപ്പോർട്ട് ചെയ്യാം?' },
+                      { en: 'What is the cVIGIL app and how to use it?', ml: 'cVIGIL ആപ്പ് എന്താണ്, അത് എങ്ങനെ ഉപയോഗിക്കാം?' },
+                    ],
+                  },
+                  {
+                    category: locale === 'ml' ? 'പൊതു വിവരങ്ങൾ' : 'General',
+                    questions: [
+                      { en: 'What is SVEEP?', ml: 'SVEEP എന്താണ്?' },
+                      { en: 'What is the Model Code of Conduct?', ml: 'മാതൃകാ പെരുമാറ്റ ചട്ടം എന്താണ്?' },
+                      { en: 'What is the election helpline number?', ml: 'തിരഞ്ഞെടുപ്പ് ഹെൽപ്‌ലൈൻ നമ്പർ എന്താണ്?' },
+                    ],
+                  },
+                ].map((section) => (
+                  <div key={section.category} className="mb-4">
+                    <p className={`mb-2 text-xs font-semibold text-[var(--color-primary-500)] uppercase tracking-wider ${locale === 'ml' ? 'font-ml' : ''}`}>
+                      {section.category}
+                    </p>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {section.questions.map((q) => (
+                        <button
+                          key={q.en}
+                          onClick={() => send(locale === 'ml' ? q.ml : q.en)}
+                          className={`rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] px-4 py-2.5 text-left text-sm text-[var(--text-secondary)] shadow-sm transition-all hover:border-[var(--color-primary-300)] hover:shadow-md hover:text-[var(--color-primary-600)] active:scale-[0.98] ${locale === 'ml' ? 'font-ml' : ''}`}
+                        >
+                          {locale === 'ml' ? q.ml : q.en}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </motion.div>
 
               <motion.div
@@ -309,6 +346,33 @@ export default function ChatPage() {
             /* ── Messages ── */
             <MessageList messages={messages} isTyping={isTyping} onAction={send} />
           )}
+
+          {/* ── Quick Suggestion Chips (always visible) ── */}
+          <div className="border-t border-[var(--border-primary)] bg-[var(--surface-secondary)] px-4 py-2">
+            <div className="mx-auto max-w-3xl">
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
+                {[
+                  { en: 'Where is my polling booth?', ml: 'എന്റെ പോളിംഗ് ബൂത്ത് എവിടെ?' },
+                  { en: 'How to register as a voter?', ml: 'വോട്ടറായി എങ്ങനെ രജിസ്റ്റർ ചെയ്യാം?' },
+                  { en: 'What documents are required?', ml: 'ഏതൊക്കെ രേഖകൾ ആവശ്യം?' },
+                  { en: 'How to report a violation?', ml: 'ലംഘനം എങ്ങനെ റിപ്പോർട്ട് ചെയ്യാം?' },
+                  { en: 'Check voter registration status', ml: 'വോട്ടർ സ്ഥിതി പരിശോധിക്കുക' },
+                  { en: 'What time do booths open?', ml: 'ബൂത്ത് എത്ര മണിക്ക് തുറക്കും?' },
+                  { en: 'What is the election helpline?', ml: 'ഹെൽപ്‌ലൈൻ നമ്പർ എന്താണ്?' },
+                  { en: 'What is SVEEP?', ml: 'SVEEP എന്താണ്?' },
+                ].map((chip) => (
+                  <button
+                    key={chip.en}
+                    onClick={() => send(locale === 'ml' ? chip.ml : chip.en)}
+                    disabled={isTyping}
+                    className={`shrink-0 rounded-full border border-[var(--border-primary)] bg-[var(--surface-primary)] px-3 py-1 text-xs text-[var(--text-secondary)] transition-all hover:border-[var(--color-primary-300)] hover:text-[var(--color-primary-600)] hover:shadow-sm active:scale-95 disabled:opacity-50 ${locale === 'ml' ? 'font-ml' : ''}`}
+                  >
+                    {locale === 'ml' ? chip.ml : chip.en}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* ── Input Bar ── */}
           <div className="border-t border-[var(--border-primary)] bg-[var(--surface-primary)] px-4 py-3">
