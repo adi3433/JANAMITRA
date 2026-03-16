@@ -19,4 +19,18 @@ describe('Query classifier regressions', () => {
 
     expect(result.category).toBe('out_of_scope');
   });
+
+  it('classifies voter-id question as voting rules (not prohibited)', () => {
+    const result = classifyQuery('Can I vote without a Voter ID card?');
+
+    expect(result.category).toBe('voting_rules');
+    expect(result.subIntent).toBe('id_documents');
+  });
+
+  it('classifies bring-to-polling-booth question as voting rules', () => {
+    const result = classifyQuery('What should I bring to the polling booth?');
+
+    expect(result.category).toBe('voting_rules');
+    expect(result.subIntent).toBe('id_documents');
+  });
 });

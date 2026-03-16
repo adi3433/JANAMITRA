@@ -171,6 +171,7 @@ const CATEGORY_PATTERNS: Array<{
       /\b(candidate|election\s+agent|party)\s+(bank\s+account|separate\s+account|election\s+account)\b/i,
       /\b(mandatory|required)\b.*\b(separate\s+bank\s+account|election\s+account)\b/i,
       /\b(election\s+expense|campaign\s+expense|election\s+expenditure|candidate\s+expenses?)\b/i,
+      /\b(what\s+(can|should)\s+i\s+(bring|carry)\s+to\s+(the\s+)?(poll|polling\s*booth|polling\s*station|booth)|what\s+should\s+i\s+take\s+for\s+voting)\b/i,
       mlRegex('(എങ്ങനെ\\s*വോട്ട്\\s*ചെയ്യ|വോട്ടിങ്\\s*നിയമ|ഐഡി\\s*പ്രൂഫ്|വോട്ടിങ്\\s*സമയ)'),
       // Extended Malayalam voting rules patterns
       mlRegex('(നിരോധിച്ച|നിരോധന|അനുവദനീയമല്ല|കൊണ്ടുപോകാമോ)'),
@@ -194,10 +195,10 @@ const CATEGORY_PATTERNS: Array<{
       /\b(what\s+(can|should)\s+i\s+(bring|carry)\s+to\s+(the\s+)?poll)\b/i,
     ],
     subIntentPatterns: [
-      { pattern: /\b(id\s*(proof|document)|photo\s*id|accepted|allowed|valid)\s*id/i, subIntent: 'id_documents' },
+      { pattern: /\b(voter\s*id|id\s*card|epic|id\s*(proof|document)|photo\s*id|accepted\s*id|allowed\s*id|valid\s*id|vote\s+without\s+(a\s+)?(voter\s*)?(id|card)|what\s+(can|should)\s+i\s+(bring|carry)\s+to\s+(the\s+)?(poll|polling\s*booth|polling\s*station|booth))\b/i, subIntent: 'id_documents' },
       { pattern: /\b(time|timing|when|hour|open|close)\b/i, subIntent: 'poll_timing' },
       { pattern: /\b(evm|vvpat|machine)\b/i, subIntent: 'evm_vvpat' },
-      { pattern: /\b(prohibit|ban|not\s+allowed|carry|bring)\b/i, subIntent: 'prohibited' },
+      { pattern: /\b(prohibit(?:ed|ion)?|ban(?:ned)?|not\s+allowed|forbidden|restricted|not\s+permitted|cannot\s+carry|can\s*i\s*carry)\b/i, subIntent: 'prohibited' },
       { pattern: /\b(pwd|disab|elderly|senior|wheelchair|braille|companion)\b/i, subIntent: 'pwd_facilities' },
       { pattern: /\b(step|process|how\s+to\s+vote)\b/i, subIntent: 'voting_process' },
       { pattern: /\b(tender|impersonat)\b/i, subIntent: 'tender_vote' },
@@ -412,6 +413,16 @@ export function classifyQuery(query: string): ClassificationResult {
   // more specific category.
   if (scores.booth_query > 0 && scores.voting_rules > 0) {
     scores.voting_rules = Math.max(scores.voting_rules, scores.booth_query + 1);
+  }
+
+  // Disambiguation: if query mentions booth/station but asks about docs/ID/rules,
+  // prefer voting_rules over booth location intent.
+  if (scores.booth_query > 0 && /\b(voter\s*id|id\s*card|photo\s*id|documents?|required|bring|carry|without\s+(a\s+)?(voter\s*)?(id|card)|allowed|valid|rule|rules?)\b/i.test(query)) {
+    scores.voting_rules = Math.max(scores.voting_rules, scores.booth_query + 2);
+  }
+
+  if (scores.booth_query > 0 && /(ഐഡി|രേഖ|കൊണ്ടുപോകണം|അനുവദനീയ|നിയമ)/i.test(query)) {
+    scores.voting_rules = Math.max(scores.voting_rules, scores.booth_query + 2);
   }
   if (scores.booth_query > 0 && scores.complaint > 0) {
     scores.complaint = Math.max(scores.complaint, scores.booth_query + 1);

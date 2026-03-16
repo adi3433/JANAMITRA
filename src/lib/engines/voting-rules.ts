@@ -240,10 +240,11 @@ export function getVotingRulesResponse(subIntent?: string, query?: string, local
   // Auto-detect sub-intent from query if not provided
   if (!subIntent && query) {
     const lq = query.toLowerCase();
-    if (/\b(id\s*(proof|document)|photo\s*id|accepted|allowed|valid)\s*id|what\s+(id|document)\b/i.test(lq) || /ഐഡി\s*പ്രൂഫ്|രേഖകൾ/i.test(lq)) subIntent = 'id_documents';
+    if (/\b(voter\s*id|id\s*card|epic|photo\s*id|accepted\s*id|valid\s*id|what\s+(id|document)|documents?\s+(required|needed)|vote\s+without\s+(a\s+)?(voter\s*)?(id|card))\b/i.test(lq) || /ഐഡി\s*പ്രൂഫ്|രേഖകൾ|ഐഡി\s*കാർഡ്\s*ഇല്ലാതെ/i.test(lq)) subIntent = 'id_documents';
     else if (/\b(time|timing|when|hour|open|close)\b/i.test(lq) || /സമയം|എപ്പോൾ/i.test(lq)) subIntent = 'poll_timing';
     else if (/\b(evm|vvpat|machine)\b/i.test(lq) || /മെഷീൻ|വോട്ടിങ്\s*മെഷീൻ/i.test(lq)) subIntent = 'evm_vvpat';
-    else if (/\b(prohibit|ban|not\s+allowed|carry|bring|can\s+i)\b/i.test(lq) || /നിരോധിത|കൊണ്ടുവരാൻ/i.test(lq)) subIntent = 'prohibited';
+    else if (/\b(prohibit(?:ed|ion)?|ban(?:ned)?|not\s+allowed|forbidden|restricted|not\s+permitted|cannot\s+carry|can\s*i\s*carry)\b/i.test(lq) || /നിരോധിത|അനുവദനീയമല്ല|കൊണ്ടുവരാൻ\s*പാടില്ല/i.test(lq)) subIntent = 'prohibited';
+    else if (/\b(what\s+(can|should)\s+i\s+(bring|carry)\s+to\s+(the\s+)?(poll|polling\s*booth|polling\s*station|booth)|what\s+should\s+i\s+take\s+for\s+voting)\b/i.test(lq) || /എന്ത്\s*കൊണ്ടുപോകണം|പോളിംഗ്\s*ബൂത്തിലേക്ക്\s*എന്ത്/i.test(lq)) subIntent = 'id_documents';
     else if (/\b(pwd|disab|elderly|senior|wheelchair|braille|companion|home\s+voting)\b/i.test(lq) || /വികലാങ്കർ|വയോധികർ/i.test(lq)) subIntent = 'pwd_facilities';
     else if (/\b(step|process|how\s+to\s+vote)\b/i.test(lq) || /എങ്ങനെ\s*വോട്ട്|പ്രക്രിയ/i.test(lq)) subIntent = 'voting_process';
     else if (/\b(tender|impersonat)\b/i.test(lq)) subIntent = 'tender_vote';

@@ -242,6 +242,7 @@ function tryEngineRoute(
   longitude?: number
 ): EngineDirectResult | null {
   const classification = classifyQuery(query);
+  const lowerQuery = query.toLowerCase();
 
   // Only route to engine if classification confidence is decent
   if (classification.confidence < 0.4) return null;
@@ -302,6 +303,13 @@ function tryEngineRoute(
 
     case 'booth_query': {
       const isMl = locale === 'ml';
+
+      // Guardrail: booth wording can appear in general voting-rule questions
+      // (e.g. "what should I bring to the polling booth?").
+      // In such cases, do NOT force booth-locator engine.
+      if (/\b(voter\s*id|id\s*card|photo\s*id|documents?|required|bring|carry|without\s+(a\s+)?(voter\s*)?(id|card)|allowed|valid|rule|rules?)\b/i.test(lowerQuery) || /(ഐഡി|രേഖ|കൊണ്ടുപോകണം|അനുവദനീയ|നിയമ)/i.test(query)) {
+        return null;
+      }
 
       // Check if query contains / is a booth number → direct lookup
       const numberMatch = query.trim().match(/^(\d{1,3})$/)
