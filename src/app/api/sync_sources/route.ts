@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuid } from 'uuid';
 import type { AdminSyncRequest, AdminSyncResponse } from '@/types';
+import { runGuidelineSync } from '@/lib/ingestion/guideline-sync';
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,6 +23,17 @@ export async function POST(request: NextRequest) {
         timestamp: new Date().toISOString(),
       })
     );
+
+    if (sourceType === 'guidelines') {
+      const result = await runGuidelineSync();
+      const response: AdminSyncResponse = {
+        jobId,
+        status: 'completed',
+        recordsProcessed: result.recordsProcessed,
+        errors: result.errors,
+      };
+      return NextResponse.json(response);
+    }
 
     const response: AdminSyncResponse = {
       jobId,

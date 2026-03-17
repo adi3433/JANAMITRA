@@ -156,7 +156,7 @@ export interface ViolationReportResponse {
 
 // ── Admin ─────────────────────────────────────────────────────────
 export interface AdminSyncRequest {
-  sourceType: 'voter_roll' | 'booth_data' | 'faq' | 'circular';
+  sourceType: 'voter_roll' | 'booth_data' | 'faq' | 'circular' | 'guidelines';
   sourceUrl?: string;
   data?: unknown;
 }

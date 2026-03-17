@@ -506,17 +506,47 @@ function EscalationsTab() {
 }
 
 function SyncTab() {
-  const [syncing, setSyncing] = useState(false);
+  const [syncingType, setSyncingType] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<string>('');
 
   const sources = [
     { type: 'voter_roll', label: 'Voter Roll Data', lastSync: '2026-02-22T18:00:00Z', records: 245320 },
     { type: 'booth_data', label: 'Booth Locations', lastSync: '2026-02-22T18:00:00Z', records: 487 },
     { type: 'faq', label: 'FAQ Content', lastSync: '2026-02-21T12:00:00Z', records: 24 },
     { type: 'circular', label: 'ECI Circulars', lastSync: '2026-02-20T09:00:00Z', records: 156 },
+    { type: 'guidelines', label: 'Official Guideline Corpus (ECI/PRS/IndiaCode)', lastSync: 'Never', records: 0 },
   ];
+
+  const handleSync = async (sourceType: string) => {
+    setSyncingType(sourceType);
+    setSyncStatus('');
+    try {
+      const res = await fetch('/api/sync_sources', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sourceType }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setSyncStatus(`Sync failed for ${sourceType}`);
+        return;
+      }
+      const count = typeof json.recordsProcessed === 'number' ? json.recordsProcessed : 0;
+      setSyncStatus(`Sync completed for ${sourceType}: ${count} records`);
+    } catch {
+      setSyncStatus(`Sync failed for ${sourceType}`);
+    } finally {
+      setSyncingType(null);
+    }
+  };
 
   return (
     <div className="space-y-3">
+      {syncStatus && (
+        <div className="rounded-md border border-[var(--color-neutral-100)] bg-[var(--surface-primary)] px-3 py-2 text-xs text-[var(--color-neutral-700)]">
+          {syncStatus}
+        </div>
+      )}
       {sources.map((source) => (
         <div
           key={source.type}
@@ -529,12 +559,12 @@ function SyncTab() {
             </p>
           </div>
           <button
-            onClick={() => setSyncing(true)}
-            disabled={syncing}
+            onClick={() => handleSync(source.type)}
+            disabled={syncingType !== null}
             className="flex items-center gap-1.5 rounded-lg bg-[var(--color-primary-50)] px-3 py-1.5 text-xs font-medium text-[var(--color-primary-600)] hover:bg-[var(--color-primary-100)] transition-colors disabled:opacity-50"
           >
-            <ArrowPathIcon className={`h-3.5 w-3.5 ${syncing ? 'animate-spin' : ''}`} />
-            Sync
+            <ArrowPathIcon className={`h-3.5 w-3.5 ${syncingType === source.type ? 'animate-spin' : ''}`} />
+            {syncingType === source.type ? 'Syncing...' : 'Sync'}
           </button>
         </div>
       ))}

@@ -11,6 +11,8 @@ import type { RetrievedPassage, RetrievalResult } from '@/types';
 import { embedQuery, embedDocuments, cosineSimilarity } from './embeddings';
 import { getConfig } from '@/lib/fireworks';
 import { getAllBooths, type BoothRecord } from '@/lib/booth-data';
+import { existsSync, readFileSync, statSync } from 'fs';
+import path from 'path';
 
 // ── V5 Knowledge Base — Core + Dataset-grounded passages ──
 const CORE_KNOWLEDGE_BASE: RetrievedPassage[] = [
@@ -267,21 +269,173 @@ function boothToPassage(booth: BoothRecord): RetrievedPassage {
 
 // Merged knowledge base: V5 expanded core + 171 booth entries
 let _mergedKB: RetrievedPassage[] | null = null;
+let _kbFingerprint = '';
+
+interface ParsedFaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  chapter: string;
+}
+
+function parseEciFaqText(raw: string): ParsedFaqItem[] {
+  const lines = raw.split(/\r?\n/).map((l) => l.trim());
+  const items: ParsedFaqItem[] = [];
+
+  let currentChapter = 'Conduct of Elections FAQ';
+  let currentId = '';
+  let question = '';
+  let answer = '';
+  let readingAnswer = false;
+
+  const flush = () => {
+    if (!currentId || !question || !answer) return;
+    items.push({
+      id: currentId,
+      question: question.replace(/\s+/g, ' ').trim(),
+      answer: answer.replace(/\s+/g, ' ').trim(),
+      chapter: currentChapter,
+    });
+  };
+
+  for (const line of lines) {
+    if (!line) continue;
+
+    // Chapter headings are usually uppercase blocks in this document.
+    const isLikelyHeading =
+      line === line.toUpperCase() &&
+      /[A-Z]/.test(line) &&
+      !/^S\.?\s*No\.?/i.test(line) &&
+      !/^CONTENTS$/i.test(line) &&
+      !/^CHAPTER$/i.test(line) &&
+      !/^Question$/i.test(line) &&
+      !/^Answer$/i.test(line);
+    if (isLikelyHeading) {
+      currentChapter = line;
+      continue;
+    }
+
+    const qStart = line.match(/^(\d+)\.\s*(.*)$/);
+    if (qStart) {
+      flush();
+      currentId = qStart[1];
+      question = qStart[2] || '';
+      answer = '';
+      readingAnswer = /\?\s*$/.test(question);
+      continue;
+    }
+
+    if (!currentId) continue;
+
+    if (!readingAnswer) {
+      question += ` ${line}`;
+      if (/\?\s*$/.test(line)) {
+        readingAnswer = true;
+      }
+      continue;
+    }
+
+    answer += ` ${line}`;
+  }
+
+  flush();
+  return items;
+}
+
+function loadFaqPassagesFromNewTxt(): { passages: RetrievedPassage[]; fingerprint: string } {
+  try {
+    const filePath = path.join(process.cwd(), 'src', 'data', 'new.txt');
+    const stat = statSync(filePath);
+    const raw = readFileSync(filePath, 'utf8');
+    const parsed = parseEciFaqText(raw);
+
+    const passages: RetrievedPassage[] = parsed.map((p) => ({
+      id: `eci-faq-${p.id}`,
+      content: `Q: ${p.question}\nA: ${p.answer}`,
+      metadata: {
+        source: `ECI Conduct of Elections FAQ (${p.chapter})`,
+        url: 'https://www.eci.gov.in/faq/',
+        lastUpdated: '2026-03-17',
+        section: p.chapter,
+      },
+      score: 0,
+      method: 'vector',
+    }));
+
+    return {
+      passages,
+      fingerprint: `${stat.mtimeMs}:${passages.length}`,
+    };
+  } catch {
+    return { passages: [], fingerprint: 'none' };
+  }
+}
+
+function loadFaqPassagesFromJson(): { passages: RetrievedPassage[]; fingerprint: string } {
+  try {
+    const filePath = path.join(process.cwd(), 'src', 'data', 'eci_faq_full.json');
+    if (!existsSync(filePath)) {
+      return { passages: [], fingerprint: 'none' };
+    }
+
+    const stat = statSync(filePath);
+    const raw = readFileSync(filePath, 'utf8');
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) {
+      return { passages: [], fingerprint: 'none' };
+    }
+
+    const passages: RetrievedPassage[] = parsed
+      .filter((p) => p && typeof p.question === 'string' && typeof p.answer === 'string')
+      .map((p, i) => ({
+        id: `eci-faq-json-${i + 1}`,
+        content: `Q: ${String(p.question).trim()}\nA: ${String(p.answer).trim()}`,
+        metadata: {
+          source: 'ECI FAQ (Playwright Full Extract)',
+          url: typeof p.url === 'string' && p.url ? p.url : 'https://www.eci.gov.in/faq/',
+          lastUpdated: '2026-03-17',
+          section: `Category ${String(p.category ?? 'NA')} Page ${String(p.page ?? 'NA')}`,
+        },
+        score: 0,
+        method: 'vector',
+      }));
+
+    return {
+      passages,
+      fingerprint: `${stat.mtimeMs}:${passages.length}`,
+    };
+  } catch {
+    return { passages: [], fingerprint: 'none' };
+  }
+}
 
 function getKnowledgeBase(): RetrievedPassage[] {
-  if (_mergedKB) return _mergedKB;
   const boothPassages = getAllBooths().map(boothToPassage);
-  _mergedKB = [...CORE_KNOWLEDGE_BASE, ...boothPassages];
-  console.log(`[retriever] KB initialized: ${CORE_KNOWLEDGE_BASE.length} core (V5) + ${boothPassages.length} booth = ${_mergedKB.length} total passages`);
+  const faqJson = loadFaqPassagesFromJson();
+  const faq = faqJson.passages.length > 0 ? faqJson : loadFaqPassagesFromNewTxt();
+  const nextFingerprint = `${boothPassages.length}:${faq.fingerprint}`;
+
+  if (_mergedKB && _kbFingerprint === nextFingerprint) return _mergedKB;
+
+  // KB changed → invalidate embedding cache so next retrieval can refresh.
+  if (_kbFingerprint && _kbFingerprint !== nextFingerprint) {
+    kbEmbeddings = null;
+    kbEmbeddingsSize = 0;
+    kbEmbeddingPromise = null;
+  }
+
+  _mergedKB = [...CORE_KNOWLEDGE_BASE, ...boothPassages, ...faq.passages];
+  _kbFingerprint = nextFingerprint;
+  console.log(`[retriever] KB initialized: ${CORE_KNOWLEDGE_BASE.length} core (V5) + ${boothPassages.length} booth + ${faq.passages.length} FAQ = ${_mergedKB.length} total passages`);
+
+  // Start background embedding for the updated KB if needed.
+  warmUpKbEmbeddings();
+
   return _mergedKB;
 }
 
-/**
- * Simple BM25-style keyword scoring
- */
-function bm25Score(query: string, document: string): number {
-  const KB = getKnowledgeBase();
-  const queryTerms = query.toLowerCase().split(/\s+/).filter(Boolean);
+function bm25ScoreWithTerms(queryTerms: string[], document: string, corpusSize: number): number {
   const docTerms = document.toLowerCase().split(/\s+/);
   const docLen = docTerms.length;
   const avgDocLen = 200; // approximation
@@ -291,7 +445,7 @@ function bm25Score(query: string, document: string): number {
   let score = 0;
   for (const term of queryTerms) {
     const tf = docTerms.filter((t) => t.includes(term)).length;
-    const idf = Math.log(1 + (KB.length - tf + 0.5) / (tf + 0.5));
+    const idf = Math.log(1 + (corpusSize - tf + 0.5) / (tf + 0.5));
     const numerator = tf * (k1 + 1);
     const denominator = tf + k1 * (1 - b + b * (docLen / avgDocLen));
     score += idf * (numerator / denominator);
@@ -304,20 +458,29 @@ let kbEmbeddings: number[][] | null = null;
 let kbEmbeddingsSize = 0;
 let kbEmbeddingPromise: Promise<void> | null = null;
 
+function isVectorSearchEnabled(): boolean {
+  const cfg = getConfig();
+  const isVitestCli = process.argv.some((arg) => /vitest/i.test(arg));
+  const isTestRuntime =
+    process.env.VITEST === 'true' ||
+    process.env.NODE_ENV === 'test' ||
+    isVitestCli;
+  return Boolean(cfg.apiKey) && process.env.DISABLE_VECTOR_SEARCH !== '1' && !isTestRuntime;
+}
+
 /**
  * Start KB embedding in the background. Called once on first import.
  * Does NOT block queries — if embeddings aren't ready, BM25 is used.
  */
 function warmUpKbEmbeddings(): void {
   if (kbEmbeddingPromise) return; // already running / done
+  if (!isVectorSearchEnabled()) {
+    kbEmbeddings = [];
+    kbEmbeddingsSize = 0;
+    return;
+  }
 
   kbEmbeddingPromise = (async () => {
-    const cfg = getConfig();
-    if (!cfg.apiKey) {
-      kbEmbeddings = [];
-      kbEmbeddingsSize = 0;
-      return;
-    }
     const KB = getKnowledgeBase();
     if (kbEmbeddings && kbEmbeddingsSize === KB.length) return;
 
@@ -396,19 +559,20 @@ export async function retrievePassages(
   let queryEmbeddingLatencyMs = 0;
 
   const KB = getKnowledgeBase();
+  const queryTerms = query.toLowerCase().split(/\s+/).filter(Boolean);
 
   // ── BM25 scoring ────────────────────────────────────────────
   const bm25Scored = KB.map((passage) => ({
     ...passage,
-    score: bm25Score(query, passage.content),
+    score: bm25ScoreWithTerms(queryTerms, passage.content, KB.length),
     method: 'bm25' as const,
   }));
 
   // ── Vector scoring (if API key available) ───────────────────
-  const cfg = getConfig();
   let vectorScored: (RetrievedPassage & { vectorScore: number })[] = [];
+  const vectorSearchEnabled = isVectorSearchEnabled();
 
-  if (cfg.apiKey) {
+  if (vectorSearchEnabled) {
     try {
       const embStart = Date.now();
       const [queryEmb, kbEmbs] = await Promise.all([

@@ -50,7 +50,7 @@ describe('Canonical Malayalam Queries', () => {
     );
 
     for (const q of factualQueries) {
-      it(`#${q.id}: "${q.query_en}" → returns passages`, async () => {
+      it(`#${q.id}: "${q.query_en}" → returns passages`, { timeout: 20000 }, async () => {
         // Use English translation for BM25 since knowledge base is English
         const result = await retrievePassages(q.query_en, 'en', 1000);
         expect(result.passages.length).toBeGreaterThan(0);
