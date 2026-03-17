@@ -30,6 +30,7 @@ import { ResponseCache } from '@/lib/fireworks';
 import { recordQueryLog, recordAuditEntry } from '@/lib/admin-audit';
 import { saveConversation } from '@/lib/chat-history';
 import { formatBoothResult } from '@/lib/booth-data';
+import { applyResponseGuard } from '@/lib/response-guard';
 import type { ChatRequest, ChatResponseV2, RetrievalTraceEntry } from '@/types';
 
 // V2: Use ResponseCache with configurable TTL instead of raw Map
@@ -241,12 +242,23 @@ export async function POST(request: NextRequest) {
     // Safety check
     const safetyResult = safetyCheck(responseText, message.trim());
 
+    // Open-text guard: if evidence is weak, cap confidence and add verification note
+    const guarded = applyResponseGuard({
+      query: message.trim(),
+      responseText: safetyResult.flagged ? safetyResult.safeText : responseText,
+      locale: routerResult.resolvedLocale,
+      confidence,
+      sourcesCount: (ragResult?.sources ?? []).length,
+      routerType: routerResult.type,
+      safetyFlagged: safetyResult.flagged,
+    });
+
     // V2.1: Escalation comes from orchestrator (confidence + formula)
-    const shouldEscalate = (ragResult?.escalate ?? (confidence < 0.55)) || safetyResult.flagged;
+    const shouldEscalate = (ragResult?.escalate ?? (guarded.confidence < 0.55)) || safetyResult.flagged || guarded.forceEscalate;
 
     const response: ChatResponseV2 = {
-      text: safetyResult.flagged ? safetyResult.safeText : responseText,
-      confidence,
+      text: guarded.text,
+      confidence: guarded.confidence,
       sources: ragResult?.sources ?? [],
       actionable: ragResult?.actionable ?? [],
       escalate: shouldEscalate,
