@@ -33,4 +33,10 @@ describe('Query classifier regressions', () => {
     expect(result.category).toBe('voting_rules');
     expect(result.subIntent).toBe('id_documents');
   });
+
+  it('routes nomination procedure question to general_faq (not voting_rules)', () => {
+    const result = classifyQuery('how many persons are allowed with candidate while filing nomination');
+
+    expect(result.category).toBe('general_faq');
+  });
 });

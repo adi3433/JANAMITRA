@@ -249,6 +249,16 @@ function tryEngineRoute(
 
   switch (classification.category) {
     case 'voting_rules': {
+      // Guardrail: nomination filing/procedure queries can contain words like
+      // "allowed" and "candidate" but are not voting-day rule questions.
+      // Let these go to RAG for source-grounded procedural/legal answers.
+      if (
+        /\b(nomination|nomination\s+paper|filing\s+nomination|returning\s+officer|scrutiny\s+of\s+nomination|withdrawal\s+of\s+candidature|proposer)\b/i.test(query)
+        || /(നാമനിർദ്ദേശ|നാമ\s*നിർദ്ദേശ|റിട്ടേണിംഗ്\s*ഓഫീസർ|പ്രൊപ്പോസർ|നാമനിർദ്ദേശ\s*പേപ്പർ)/i.test(query)
+      ) {
+        return null;
+      }
+
       const result = getVotingRulesResponse(classification.subIntent, query, locale);
       return {
         engineName: 'voting-rules',

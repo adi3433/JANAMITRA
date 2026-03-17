@@ -433,6 +433,21 @@ export function classifyQuery(query: string): ClassificationResult {
     scores.form_guidance = Math.max(scores.form_guidance, scores.roll_lookup + 1);
   }
 
+  // Disambiguation: nomination/candidate filing procedure questions are open-text
+  // legal/procedural FAQs, not voting-day rules. Route them to general_faq (RAG).
+  const nominationProcedurePattern = /\b(nomination|nomination\s+paper|filing\s+nomination|returning\s+officer|scrutiny\s+of\s+nomination|withdrawal\s+of\s+candidature|proposer)\b/i;
+  const nominationProcedurePatternMl = /(നാമനിർദ്ദേശ|നാമ\s*നിർദ്ദേശ|റിട്ടേണിംഗ്\s*ഓഫീസർ|പ്രൊപ്പോസർ|നാമനിർദ്ദേശ\s*പേപ്പർ)/i;
+  const strictVotingDayPattern = /\b(voter|voting|polling|poll\s+day|evm|vvpat|id\s*(card|proof|document)|photo\s*id|poll\s*timing|silence\s*period|polling\s*slip|tender\s*vote)\b/i;
+  const strictVotingDayPatternMl = /(വോട്ടർ|വോട്ടിങ്|പോളിങ്|ഇവിഎം|വിവിപാറ്റ്|ഐഡി|സമയ|നിശ്ശബ്ദ\s*കാല|സ്ലിപ്പ്|ടെൻഡർ\s*വോട്ട്)/i;
+
+  if (
+    scores.voting_rules > 0
+    && (nominationProcedurePattern.test(query) || nominationProcedurePatternMl.test(query))
+    && !(strictVotingDayPattern.test(query) || strictVotingDayPatternMl.test(query))
+  ) {
+    scores.general_faq = Math.max(scores.general_faq, scores.voting_rules + 2);
+  }
+
   // Find the winning category
   let bestCategory: QueryCategory = 'general_faq';
   let bestScore = 0;
