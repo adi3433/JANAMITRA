@@ -126,7 +126,7 @@ const CORE_KNOWLEDGE_BASE: RetrievedPassage[] = [
   {
     id: 'kb-v5-vr-001',
     content:
-      'Polling hours in Kerala are from 7:00 AM to 6:00 PM. The first 30 minutes (6:30 AM – 7:00 AM) are reserved for mock polls in the presence of polling agents. Voters who are in the queue at 6:00 PM will be allowed to vote.',
+      'Polling opening and closing time in Kerala: polling hours are from 7:00 AM to 6:00 PM. The first 30 minutes (6:30 AM – 7:00 AM) are reserved for mock polls in the presence of polling agents. Last voter rule: voters who are in queue at 6:00 PM will be allowed to vote.',
     metadata: { source: 'ECI — Voting Rules', url: 'https://eci.gov.in/poll-timing', lastUpdated: '2026-01-15', section: 'Poll Timing' },
     score: 0, method: 'vector',
   },
@@ -147,7 +147,7 @@ const CORE_KNOWLEDGE_BASE: RetrievedPassage[] = [
   {
     id: 'kb-v5-vr-004',
     content:
-      'Prohibited items at polling stations: mobile phones, cameras, arms, loud speakers, party flags/banners within 200m. Strict silence period of 48 hours before polling day — no campaigning allowed.',
+      'Banned or prohibited things inside polling station on poll day include mobile phones, cameras, arms, loud speakers, and party flags/banners within 200m. Strict silence period of 48 hours before polling day: no campaigning allowed.',
     metadata: { source: 'ECI — Prohibited Items', url: 'https://eci.gov.in/voting-rules', lastUpdated: '2026-01-15', section: 'Prohibited Items' },
     score: 0, method: 'vector',
   },
@@ -247,6 +247,58 @@ const CORE_KNOWLEDGE_BASE: RetrievedPassage[] = [
       'Model Code of Conduct (MCC): The MCC comes into effect from the date of election announcement and is lifted on the date results are declared. It governs the conduct of political parties, candidates, and the ruling government. Current status: NOT IN EFFECT (pending 2026 election announcement).',
     metadata: { source: 'ECI — MCC', url: 'https://eci.gov.in/mcc', lastUpdated: '2026-01-15', section: 'MCC' },
     score: 0, method: 'vector',
+  },
+  {
+    id: 'kb-v5-faq-001',
+    content:
+      'Nomination filing (RO office entry): Other than the candidate, only 4 persons are allowed to enter the Returning Officer\'s room/office when nomination papers are filed by an independent or unregistered party candidate. For illiterate proposers, if thumb impression was not already made before another authorized officer, the RO may call proposers in batches of four to affix thumb impression in front of the RO.',
+    metadata: {
+      source: 'ECI FAQ — Conduct of Elections',
+      url: 'https://www.eci.gov.in/faq/1/3',
+      lastUpdated: '2026-03-17',
+      section: 'Nomination Filing',
+    },
+    score: 0,
+    method: 'vector',
+  },
+  {
+    id: 'kb-v5-faq-002',
+    content:
+      'Nomination paper submission mode: nomination cannot be sent by post, fax, or e-mail. It must be presented in person to the Returning Officer or authorized Assistant Returning Officer by the candidate or any of the candidate\'s proposers.',
+    metadata: {
+      source: 'ECI FAQ — Conduct of Elections',
+      url: 'https://www.eci.gov.in/faq/1/1',
+      lastUpdated: '2026-03-17',
+      section: 'Nomination Submission',
+    },
+    score: 0,
+    method: 'vector',
+  },
+  {
+    id: 'kb-v5-faq-003',
+    content:
+      'First-time voter registration papers/documents checklist: proof of age, proof of address, and one recent passport-size photograph. New voters (18+) should generally apply using Form 6.',
+    metadata: {
+      source: 'ECI — Voter Registration FAQ',
+      url: 'https://voters.eci.gov.in/',
+      lastUpdated: '2026-03-17',
+      section: 'Registration Documents',
+    },
+    score: 0,
+    method: 'vector',
+  },
+  {
+    id: 'kb-v5-faq-004',
+    content:
+      'Shifted address or voter details correction: use Form 8 for correction and updates (name correction, address change, and shifting residence). Form 7 is for deletion/objection, not routine correction.',
+    metadata: {
+      source: 'ECI — Forms Guidance',
+      url: 'https://voters.eci.gov.in/',
+      lastUpdated: '2026-03-17',
+      section: 'Form Selection',
+    },
+    score: 0,
+    method: 'vector',
   },
 ];
 

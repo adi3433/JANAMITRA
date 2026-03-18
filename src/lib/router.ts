@@ -243,6 +243,27 @@ function tryEngineRoute(
 ): EngineDirectResult | null {
   const classification = classifyQuery(query);
   const lowerQuery = query.toLowerCase();
+  const isMl = locale === 'ml';
+
+  // High-precision FAQ guardrail: nomination filing room-entry limit.
+  // This avoids semantic drift to voting-day ID-document answers for
+  // queries containing words like "allowed" + "candidate".
+  const nominationEntryPattern = /\b(how\s+many\s+persons?|how\s+many\s+people|number\s+of\s+persons?|how\s+many)\b.*\b(allowed|enter|accompany|with)\b.*\b(candidate|nomination)\b|\b(candidate|nomination)\b.*\b(how\s+many|number\s+of\s+persons?)\b/i;
+  const nominationEntryPatternMl = /(നാമനിർദ്ദേശ|നാമ\s*നിർദ്ദേശ|സ്ഥാനാർഥി).*?(എത്ര\s*പേർ|എത്ര\s*ആൾ|അനുവദ|പ്രവേശ|കൂടെ)/i;
+
+  if (
+    (nominationEntryPattern.test(query) || nominationEntryPatternMl.test(query))
+    && /\b(nomination|returning\s+officer|ro\s+room|nomination\s+paper|filing)\b/i.test(query)
+  ) {
+    return {
+      engineName: 'nomination-faq',
+      classification,
+      formattedResponse: isMl
+        ? '**നാമനിർദ്ദേശം സമർപ്പിക്കുമ്പോൾ RO ഓഫീസിലേക്ക് പ്രവേശനം**\n\nസ്ഥാനാർഥിയെ ഒഴിവാക്കി **പരമാവധി 4 പേർക്ക്** മാത്രമേ RO ഓഫീസിൽ പ്രവേശിക്കാനാകൂ.\n\nഅക്ഷരജ്ഞാനമില്ലാത്ത പ്രൊപ്പോസർമാർക്ക്, മുമ്പ് അധികാരപ്പെടുത്തിയ ഉദ്യോഗസ്ഥൻ മുമ്പാകെ തമ്പ് ഇംപ്രഷൻ നൽകിയിട്ടില്ലെങ്കിൽ, RO നാല് പേരടങ്ങുന്ന ബാച്ചുകളായി വിളിച്ച് RO-യുടെ സാന്നിധ്യത്തിൽ തമ്പ് ഇംപ്രഷൻ എടുക്കും.\n\n[Source: ECI FAQ, Conduct of Elections, Q on RO room entry during nomination filing]'
+        : '**RO Room Entry While Filing Nomination**\n\nOther than the candidate, **only 4 persons** are allowed to enter the Returning Officer\'s office at a time during nomination filing.\n\nFor illiterate proposers, if thumb impression was not already made before another authorized officer, the RO may call them in batches of four to affix thumb impression in front of the RO.\n\n[Source: ECI FAQ, Conduct of Elections, question on RO room entry during nomination filing]',
+      confidence: 0.97,
+    };
+  }
 
   // Only route to engine if classification confidence is decent
   if (classification.confidence < 0.4) return null;
@@ -300,7 +321,6 @@ function tryEngineRoute(
     }
 
     case 'out_of_scope': {
-      const isMl = locale === 'ml';
       return {
         engineName: 'civic-boundary',
         classification,
