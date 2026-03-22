@@ -51,7 +51,7 @@ export default function ReportPage() {
         description: string;
         locale: 'en' | 'ml';
         mediaIds?: string[];
-        location?: { lat: number; lng: number; address?: string };
+        location?: { latitude: number; longitude: number; address?: string };
       } = {
         type,
         description: description.trim(),
@@ -74,8 +74,8 @@ export default function ReportPage() {
 
         if (pos) {
           payload.location = {
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
           };
         }
       }

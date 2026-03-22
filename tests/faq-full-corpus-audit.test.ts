@@ -19,8 +19,19 @@ function normalizeText(value: string): string {
 
 describe('Full FAQ corpus API audit', () => {
   it('returns canonical answers for all FAQ questions via /api/chat', { timeout: 180000 }, async () => {
-    const faqRows = (Array.isArray(eciFaqFull) ? eciFaqFull : [])
-      .filter((item): item is FaqRow => Boolean(item && typeof item.question === 'string' && typeof item.answer === 'string'));
+    const rawRows: unknown[] = Array.isArray(eciFaqFull) ? (eciFaqFull as unknown[]) : [];
+    const faqRows: FaqRow[] = rawRows.flatMap((item) => {
+      if (!item || typeof item !== 'object') return [];
+
+      const obj = item as Record<string, unknown>;
+      if (typeof obj.question !== 'string' || typeof obj.answer !== 'string') return [];
+
+      return [{
+        question: obj.question,
+        answer: obj.answer,
+        url: typeof obj.url === 'string' ? obj.url : undefined,
+      }];
+    });
 
     expect(faqRows.length).toBeGreaterThanOrEqual(550);
 
@@ -73,7 +84,6 @@ describe('Full FAQ corpus API audit', () => {
     }
 
     if (failures.length > 0) {
-      // eslint-disable-next-line no-console
       console.log('[faq-full-corpus-audit] failures:', JSON.stringify(failures.slice(0, 25), null, 2));
     }
 

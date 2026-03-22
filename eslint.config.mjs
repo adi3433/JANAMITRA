@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated scrape artifact, not application source.
+    "tmp_eci_main.js",
   ]),
   {
     rules: {

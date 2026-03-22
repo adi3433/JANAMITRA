@@ -43,7 +43,6 @@ describe('FAQ paraphrase RAG capability', () => {
     const passRate = passed / FAQ_PARAPHRASE_QUERIES.length;
     if (failures.length > 0) {
       // Helpful diagnostics for improving KB and prompts.
-      // eslint-disable-next-line no-console
       console.log('[faq-paraphrase-rag] failures:', JSON.stringify(failures, null, 2));
     }
 
