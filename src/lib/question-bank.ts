@@ -96,15 +96,22 @@ function buildFaqQuestions(): ApprovedQuestion[] {
       const categoryName = typeof item.categoryName === 'string' && item.categoryName.trim()
         ? item.categoryName.trim()
         : 'ECI FAQ';
+      const categoryNameMl = typeof item.categoryName_ml === 'string' && item.categoryName_ml.trim()
+        ? item.categoryName_ml.trim()
+        : categoryName;
       const subCategoryName = typeof item.subCategoryName === 'string' && item.subCategoryName.trim()
         ? item.subCategoryName.trim()
+        : undefined;
+      const questionMl = typeof item.question_ml === 'string' && item.question_ml.trim()
+        ? item.question_ml.trim()
         : undefined;
 
       return {
         id: `faq:${idx + 1}`,
         en: item.question.trim(),
+        ml: questionMl,
         sectionEn: `ECI FAQ - ${categoryName}`,
-        sectionMl: `ECI FAQ - ${categoryName}`,
+        sectionMl: `ECI FAQ - ${categoryNameMl}`,
         subSectionEn: subCategoryName,
         source: 'faq' as const,
       };
