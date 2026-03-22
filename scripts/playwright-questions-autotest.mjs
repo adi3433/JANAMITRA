@@ -86,10 +86,9 @@ async function runDesktopFlow(browser) {
     'assistant response marker'
   );
 
-  await page.getByRole('button', { name: 'Collapse question list' }).click();
-  await assertHidden(searchInput, 'search input after collapse');
+  await assertVisible(page.getByRole('button', { name: 'Show question list' }), 'auto-collapse toggle after question select');
+  await assertHidden(searchInput, 'search input after auto-collapse');
 
-  await assertVisible(page.getByRole('button', { name: 'Show question list' }), 'show toggle after collapse');
   await page.getByRole('button', { name: 'Show question list' }).click();
   await assertVisible(searchInput, 'search input after re-open');
 

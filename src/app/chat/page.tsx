@@ -144,14 +144,11 @@ export default function ChatPage() {
   }, [questionQuery]);
 
   const handleSelectQuestion = useCallback((question: string) => {
+    // Collapse after selection to keep focus on the answer thread.
+    setQuestionPanelCollapsed(true);
     setQuestionQuery('');
     setSelectedSection('all');
     send(question);
-
-    // On mobile, collapse picker after selection to prioritize message view.
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
-      setQuestionPanelCollapsed(true);
-    }
 
     // Smoothly bring the conversation area into view after sending.
     requestAnimationFrame(() => {
