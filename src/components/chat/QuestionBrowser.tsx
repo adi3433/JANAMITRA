@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import type { ApprovedQuestion } from '@/lib/question-bank';
+import { motion } from 'framer-motion';
 
 export interface QuestionSection {
   sectionEn: string;
@@ -75,7 +76,7 @@ export function QuestionBrowser({
         </div>
       </div>
 
-      <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+      <div className="mb-3 flex gap-2 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: 'touch' }}>
         <button
           onClick={() => setSelectedSection('all')}
           className={`shrink-0 rounded-full border px-3 py-1 text-xs transition ${selectedSection === 'all'
@@ -99,14 +100,21 @@ export function QuestionBrowser({
         ))}
       </div>
 
-      <div className="max-h-[48vh] overflow-y-auto pr-1">
+      <div className="max-h-[52vh] overflow-y-auto pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
         {filteredSections.length === 0 ? (
           <p className={`py-8 text-center text-sm text-[var(--text-tertiary)] ${locale === 'ml' ? 'font-ml' : ''}`}>
             {locale === 'ml' ? 'ചോദ്യങ്ങൾ കണ്ടെത്താനായില്ല.' : 'No questions found.'}
           </p>
         ) : (
-          filteredSections.map((section) => (
-            <details key={section.sectionEn} open className="mb-2 rounded-lg border border-[var(--border-primary)] bg-[var(--surface-secondary)]">
+          filteredSections.map((section, index) => (
+            <motion.details
+              key={section.sectionEn}
+              open
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.18, delay: Math.min(index * 0.03, 0.18) }}
+              className="mb-2 rounded-lg border border-[var(--border-primary)] bg-[var(--surface-secondary)]"
+            >
               <summary className={`cursor-pointer list-none px-3 py-2 text-sm font-semibold text-[var(--text-primary)] ${locale === 'ml' ? 'font-ml' : ''}`}>
                 {locale === 'ml' ? section.sectionMl : section.sectionEn}
                 <span className="ml-2 text-xs font-normal text-[var(--text-tertiary)]">({section.questions.length})</span>
@@ -124,7 +132,7 @@ export function QuestionBrowser({
                   </button>
                 ))}
               </div>
-            </details>
+            </motion.details>
           ))
         )}
       </div>

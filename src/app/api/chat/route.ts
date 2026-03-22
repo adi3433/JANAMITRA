@@ -31,7 +31,7 @@ import { recordQueryLog, recordAuditEntry } from '@/lib/admin-audit';
 import { saveConversation } from '@/lib/chat-history';
 import { formatBoothResult } from '@/lib/booth-data';
 import { applyResponseGuard } from '@/lib/response-guard';
-import { isApprovedQuestion } from '@/lib/question-bank';
+import { getFaqExactAnswer, isApprovedQuestion } from '@/lib/question-bank';
 import type { ChatRequest, ChatResponseV2, RetrievalTraceEntry } from '@/types';
 
 // V2: Use ResponseCache with configurable TTL instead of raw Map
@@ -76,6 +76,38 @@ export async function POST(request: NextRequest) {
       };
 
       return NextResponse.json(unsupportedResponse);
+    }
+
+    const faqExact = getFaqExactAnswer(cleanedMessage);
+    if (faqExact) {
+      const sourceTitle = faqExact.categoryName
+        ? `ECI FAQ - ${faqExact.categoryName}`
+        : 'ECI FAQ';
+
+      const exactFaqResponse: ChatResponseV2 = {
+        text: locale === 'ml'
+          ? `**ECI FAQ അടിസ്ഥാനമാക്കിയുള്ള ഉത്തരം**\n\n${faqExact.answer}\n\n[Source 1: ${sourceTitle}]\n${faqExact.url}`
+          : `**Answer Based On ECI FAQ**\n\n${faqExact.answer}\n\n[Source 1: ${sourceTitle}]\n${faqExact.url}`,
+        confidence: 0.99,
+        sources: [{
+          title: sourceTitle,
+          url: faqExact.url,
+          lastUpdated: new Date().toISOString().split('T')[0],
+          excerpt: `Q: ${faqExact.question}`,
+        }],
+        actionable: [],
+        escalate: false,
+        locale: locale || 'en',
+        messageId: uuid(),
+        timestamp: new Date().toISOString(),
+        retrievalTrace: [],
+        promptVersionHash: 'faq-exact-direct-v1',
+        generatorModel: 'faq-exact-direct',
+        routerType: 'rag',
+        modality: 'text',
+      };
+
+      return NextResponse.json(exactFaqResponse);
     }
 
     // V5: Pre-routing safety check — block adversarial/abusive inputs immediately

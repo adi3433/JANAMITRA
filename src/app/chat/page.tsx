@@ -19,6 +19,8 @@ import {
   SparklesIcon,
   ArrowDownTrayIcon,
   ShieldCheckIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -39,6 +41,8 @@ export default function ChatPage() {
   const [approvedSections, setApprovedSections] = useState<ApprovedQuestionSection[]>([]);
   const [questionQuery, setQuestionQuery] = useState('');
   const [selectedSection, setSelectedSection] = useState('all');
+  const [questionPanelCollapsed, setQuestionPanelCollapsed] = useState(false);
+  const messageAreaRef = useRef<HTMLDivElement>(null);
 
   // Chat persistence — auto-save & load conversations
   const { selectConversation, removeConversation, toggleStar, togglePin } = useChatPersistence();
@@ -106,7 +110,23 @@ export default function ChatPage() {
 
   const handleNewConversation = useCallback(() => {
     resetSession();
+    setQuestionPanelCollapsed(false);
   }, [resetSession]);
+
+  const handleSelectQuestion = useCallback((question: string) => {
+    setQuestionQuery('');
+    send(question);
+
+    // On mobile, collapse picker after selection to prioritize message view.
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setQuestionPanelCollapsed(true);
+    }
+
+    // Smoothly bring the conversation area into view after sending.
+    requestAnimationFrame(() => {
+      messageAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    });
+  }, [send]);
 
   return (
     <div className="flex h-screen flex-col bg-[var(--surface-secondary)]">
@@ -188,6 +208,48 @@ export default function ChatPage() {
             )}
           </div>
 
+          <div className="border-t border-[var(--border-primary)] bg-[var(--surface-secondary)] px-4 py-2 md:py-3">
+            <div className="mx-auto w-full max-w-5xl">
+              <div className="mb-2 flex items-center justify-between">
+                <p className={`text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider ${locale === 'ml' ? 'font-ml' : ''}`}>
+                  {locale === 'ml' ? 'അംഗീകൃത ചോദ്യങ്ങളുടെ ലിസ്റ്റ്' : 'Approved Questions List'}
+                </p>
+                <button
+                  onClick={() => setQuestionPanelCollapsed((v) => !v)}
+                  className={`inline-flex items-center gap-1 rounded-md border border-[var(--border-primary)] bg-[var(--surface-primary)] px-2 py-1 text-[11px] text-[var(--text-secondary)] transition hover:border-[var(--color-primary-300)] ${locale === 'ml' ? 'font-ml' : ''}`}
+                >
+                  {questionPanelCollapsed
+                    ? (locale === 'ml' ? 'കാണിക്കുക' : 'Show')
+                    : (locale === 'ml' ? 'ചുരുക്കുക' : 'Collapse')}
+                  {questionPanelCollapsed ? <ChevronDownIcon className="h-3.5 w-3.5" /> : <ChevronUpIcon className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+              <AnimatePresence initial={false}>
+                {!questionPanelCollapsed && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.22, ease: [0.2, 0.8, 0.2, 1] }}
+                  >
+                    <QuestionBrowser
+                      locale={locale}
+                      sections={approvedSections}
+                      query={questionQuery}
+                      setQuery={setQuestionQuery}
+                      selectedSection={selectedSection}
+                      setSelectedSection={setSelectedSection}
+                      onSelectQuestion={handleSelectQuestion}
+                      disabled={isTyping}
+                      searchInputRef={searchInputRef}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          <div ref={messageAreaRef} className="min-h-0 flex-1">
           {messages.length === 0 ? (
             /* ── Welcome Screen ── */
             <div className="flex flex-1 flex-col items-center justify-center px-4 py-8">
@@ -244,26 +306,8 @@ export default function ChatPage() {
             </div>
           ) : (
             /* ── Messages ── */
-            <MessageList messages={messages} isTyping={isTyping} onAction={send} />
+            <MessageList messages={messages} isTyping={isTyping} onAction={handleSelectQuestion} />
           )}
-
-          <div className="border-t border-[var(--border-primary)] bg-[var(--surface-secondary)] px-4 py-3">
-            <div className="mx-auto w-full max-w-5xl">
-              <p className={`mb-2 text-center text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider ${locale === 'ml' ? 'font-ml' : ''}`}>
-                {locale === 'ml' ? 'അംഗീകൃത ചോദ്യങ്ങളുടെ ലിസ്റ്റ്' : 'Approved Questions List'}
-              </p>
-              <QuestionBrowser
-                locale={locale}
-                sections={approvedSections}
-                query={questionQuery}
-                setQuery={setQuestionQuery}
-                selectedSection={selectedSection}
-                setSelectedSection={setSelectedSection}
-                onSelectQuestion={send}
-                disabled={isTyping}
-                searchInputRef={searchInputRef}
-              />
-            </div>
           </div>
 
           {/* ── FAQ-Only Mode Footer ── */}

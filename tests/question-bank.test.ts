@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getApprovedQuestions, isApprovedQuestion } from '@/lib/question-bank';
+import { getApprovedQuestions, getFaqExactAnswer, isApprovedQuestion } from '@/lib/question-bank';
 
 describe('Approved question bank', () => {
   it('contains FAQ corpus questions and curated questions', () => {
@@ -15,5 +15,12 @@ describe('Approved question bank', () => {
     expect(isApprovedQuestion('SVEEP എന്താണ്?')).toBe(true);
     expect(isApprovedQuestion('What is the term of office of President?')).toBe(true);
     expect(isApprovedQuestion('Tell me some random political analysis')).toBe(false);
+  });
+
+  it('returns exact FAQ answer for president-term question', () => {
+    const result = getFaqExactAnswer('What is the term of office of President?');
+
+    expect(result).not.toBeNull();
+    expect(result?.answer.toLowerCase()).toMatch(/five\s+years|term\s+of\s+five\s+years/);
   });
 });

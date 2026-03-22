@@ -10,6 +10,14 @@ export interface ApprovedQuestion {
   source: 'faq' | 'curated';
 }
 
+export interface FaqExactAnswer {
+  question: string;
+  answer: string;
+  url: string;
+  categoryName?: string;
+  subCategoryName?: string;
+}
+
 const CURATED_SECTIONS: Array<{
   sectionEn: string;
   sectionMl: string;
@@ -116,6 +124,7 @@ function buildFaqQuestions(): ApprovedQuestion[] {
 
 let cachedQuestions: ApprovedQuestion[] | null = null;
 let approvedNormalized: Set<string> | null = null;
+let faqAnswerByNormalizedQuestion: Map<string, FaqExactAnswer> | null = null;
 
 export function getApprovedQuestions(): ApprovedQuestion[] {
   if (cachedQuestions) return cachedQuestions;
@@ -142,9 +151,25 @@ export function getApprovedQuestions(): ApprovedQuestion[] {
   });
 
   approvedNormalized = new Set<string>();
+  faqAnswerByNormalizedQuestion = new Map<string, FaqExactAnswer>();
   for (const q of cachedQuestions) {
     approvedNormalized.add(normalizeQuestion(q.en));
     if (q.ml) approvedNormalized.add(normalizeQuestion(q.ml));
+  }
+
+  const raw = Array.isArray(eciFaqFull) ? eciFaqFull : [];
+  for (const item of raw) {
+    if (!item || typeof item.question !== 'string' || typeof item.answer !== 'string') continue;
+    const norm = normalizeQuestion(item.question);
+    if (!norm || faqAnswerByNormalizedQuestion.has(norm)) continue;
+
+    faqAnswerByNormalizedQuestion.set(norm, {
+      question: item.question.trim(),
+      answer: item.answer.trim(),
+      url: typeof item.url === 'string' && item.url ? item.url : 'https://www.eci.gov.in/faq/',
+      categoryName: typeof item.categoryName === 'string' ? item.categoryName : undefined,
+      subCategoryName: typeof item.subCategoryName === 'string' ? item.subCategoryName : undefined,
+    });
   }
 
   return cachedQuestions;
@@ -161,4 +186,13 @@ export function isApprovedQuestion(input: string): boolean {
 
 export function normalizeApprovedQuestion(input: string): string {
   return normalizeQuestion(input || '');
+}
+
+export function getFaqExactAnswer(input: string): FaqExactAnswer | null {
+  const normalized = normalizeQuestion(input || '');
+  if (!normalized) return null;
+  if (!faqAnswerByNormalizedQuestion) {
+    getApprovedQuestions();
+  }
+  return faqAnswerByNormalizedQuestion?.get(normalized) ?? null;
 }
