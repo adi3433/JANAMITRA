@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "echo \"No automated tests in release package\""
+    "test": "echo \"No automated tests in release package\"",
+    "translations:apply": "node scripts/apply-ml-translations.mjs",
+    "translations:apply:incoming": "node scripts/apply-ml-translations.mjs translations/incoming-chunk.json"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",

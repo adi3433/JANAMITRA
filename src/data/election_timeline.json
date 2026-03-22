@@ -12,49 +12,79 @@
     "reference_source": "https://kottayam.nic.in",
     "ceo_kerala": "https://www.ceo.kerala.gov.in",
     "last_updated": "2026-02-23",
-    "update_instructions": "Replace all 'TBA' values with official dates once ECI announces the schedule. Update 'status' field to 'ANNOUNCED' and set 'announcement_date'."
+    "update_instructions": "Replace all 'TBA' values with official dates once ECI announces the schedule. Update 'status' field to 'ANNOUNCED' and set 'announcement_date'.",
+    "dataset_name_ml": "തിരഞ്ഞെടുപ്പ് സമയക്രമം",
+    "description_ml": "2026-ലെ കേരള നിയമസഭാ തിരഞ്ഞെടുപ്പിനുള്ള ഔദ്യോഗിക സമയക്രമം. തീയതികൾ കേന്ദ്ര തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ ഔദ്യോഗികമായി പ്രഖ്യാപിക്കാനിരിക്കുന്നതേയുള്ളൂ.",
+    "district_ml": "കോട്ടയം",
+    "election_ml": "കേരള നിയമസഭാ തിരഞ്ഞെടുപ്പ് 2026",
+    "state_ml": "കേരളം",
+    "status_ml": "ഔദ്യോഗിക പ്രഖ്യാപനത്തിനായി കാത്തിരിക്കുന്നു",
+    "system_ml": "ജനമിത്ര V5",
+    "update_instructions_ml": "തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ ഷെഡ്യൂൾ പ്രഖ്യാപിച്ചുകഴിഞ്ഞാൽ എല്ലാ 'TBA' മൂല്യങ്ങളും ഔദ്യോഗിക തീയതികൾ ഉപയോഗിച്ച് മാറ്റുക."
   },
-
   "announcement": {
     "status": "PENDING_OFFICIAL_ANNOUNCEMENT",
     "announcement_date": "TBA",
     "expected_window": "Late February – Early March 2026",
     "announced_by": "Election Commission of India",
     "official_press_release_url": "https://www.eci.gov.in",
-    "notification_note": "The ECI will formally announce the full election schedule including all below dates via a press conference and official Gazette notification."
+    "notification_note": "The ECI will formally announce the full election schedule including all below dates via a press conference and official Gazette notification.",
+    "announced_by_ml": "ഭാരത തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ",
+    "announcement_date_ml": "പിന്നീട് അറിയിക്കും",
+    "expected_window_ml": "2026 ഫെബ്രുവരി അവസാനം - മാർച്ച് ആദ്യം",
+    "notification_note_ml": "തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ വാർത്താ സമ്മേളനത്തിലൂടെയും ഔദ്യോഗിക വിജ്ഞാപനത്തിലൂടെയും മുഴുവൻ സമയക്രമവും പ്രഖ്യാപിക്കും.",
+    "status_ml": "ഔദ്യോഗിക പ്രഖ്യാപനത്തിനായി കാത്തിരിക്കുന്നു"
   },
-
   "model_code_of_conduct": {
     "comes_into_effect": "TBA — same date as election announcement",
     "lifted_on": "TBA — after counting and result declaration",
     "description": "The Model Code of Conduct (MCC) comes into effect immediately upon announcement of the election schedule and governs conduct of political parties, candidates, and the government until results are declared.",
-    "status": "NOT_IN_EFFECT"
+    "status": "NOT_IN_EFFECT",
+    "comes_into_effect_ml": "പ്രഖ്യാപന ദിവസം മുതൽ നിലവിൽ വരും",
+    "description_ml": "തിരഞ്ഞെടുപ്പ് പ്രഖ്യാപിച്ചാലുടൻ പെരുമാറ്റച്ചട്ടം നിലവിൽ വരും.",
+    "lifted_on_ml": "ഫലപ്രഖ്യാപനത്തിന് ശേഷം പിൻവലിക്കും",
+    "status_ml": "നിലവിൽ പ്രാബല്യത്തിലില്ല"
   },
-
   "key_dates": {
     "election_notification_date": {
       "label": "Date of Notification",
       "date": "TBA",
       "description": "Official notification published in the Gazette. Nomination process begins from this date.",
-      "status": "TBA"
+      "status": "TBA",
+      "date_ml": "പിന്നീട് അറിയിക്കും",
+      "description_ml": "ഔദ്യോഗിക വിജ്ഞാപനം. ഈ ദിവസം മുതൽ നാമനിർദ്ദേശ പത്രിക സമർപ്പിക്കാം.",
+      "label_ml": "വിജ്ഞാപന തീയതി",
+      "status_ml": "ലഭ്യമല്ല"
     },
     "last_date_of_nomination": {
       "label": "Last Date of Filing Nominations",
       "date": "TBA",
       "description": "Candidates must file their nomination papers with the Returning Officer by this date.",
-      "status": "TBA"
+      "status": "TBA",
+      "date_ml": "ലഭ്യമല്ല",
+      "description_ml": "സ്ഥാനാർത്ഥികൾ പത്രിക നൽകേണ്ട അവസാന ദിവസം.",
+      "label_ml": "പത്രിക സമർപ്പിക്കാനുള്ള അവസാന തീയതി",
+      "status_ml": "ലഭ്യമല്ല"
     },
     "scrutiny_of_nominations": {
       "label": "Scrutiny of Nominations",
       "date": "TBA",
       "description": "Returning Officer verifies and scrutinises all filed nominations for eligibility.",
-      "status": "TBA"
+      "status": "TBA",
+      "date_ml": "ലഭ്യമല്ല",
+      "description_ml": "സമർപ്പിച്ച പത്രികകൾ വരണാധികാരി പരിശോധിക്കുന്ന ദിവസം.",
+      "label_ml": "സൂക്ഷ്മപരിശോധന",
+      "status_ml": "ലഭ്യമല്ല"
     },
     "last_date_of_withdrawal": {
       "label": "Last Date of Withdrawal of Candidature",
       "date": "TBA",
       "description": "Candidates may withdraw their nomination on or before this date. Final candidate list is published after this.",
-      "status": "TBA"
+      "status": "TBA",
+      "date_ml": "ലഭ്യമല്ല",
+      "description_ml": "സ്ഥാനാർത്ഥികൾക്ക് പേര് പിൻവലിക്കാൻ കഴിയുന്ന അവസാന ദിവസം.",
+      "label_ml": "പത്രിക പിൻവലിക്കാനുള്ള അവസാന തീയതി",
+      "status_ml": "ലഭ്യമല്ല"
     },
     "poll_date": {
       "label": "Date of Poll",
@@ -62,63 +92,122 @@
       "description": "The actual voting day. Polling stations open 7:00 AM to 6:00 PM.",
       "poll_time_start": "07:00",
       "poll_time_end": "18:00",
-      "status": "TBA"
+      "status": "TBA",
+      "date_ml": "ലഭ്യമല്ല",
+      "description_ml": "യഥാർത്ഥ വോട്ടിംഗ് ദിവസം. രാവിലെ 7 മുതൽ വൈകുന്നേരം 6 വരെ.",
+      "label_ml": "വോട്ടെടുപ്പ് ദിവസം",
+      "status_ml": "ലഭ്യമല്ല"
     },
     "counting_date": {
       "label": "Date of Counting",
       "date": "TBA",
       "description": "Votes are counted and results declared on this date.",
-      "status": "TBA"
+      "status": "TBA",
+      "date_ml": "ലഭ്യമല്ല",
+      "description_ml": "വോട്ടുകൾ എണ്ണി ഫലം പ്രഖ്യാപിക്കുന്ന ദിവസം.",
+      "label_ml": "വോട്ടെണ്ണൽ ദിവസം",
+      "status_ml": "ലഭ്യമല്ല"
     },
     "completion_date": {
       "label": "Election Process Completion Date",
       "date": "TBA",
       "description": "Date by which the entire election process must be completed as specified in the notification.",
-      "status": "TBA"
+      "status": "TBA",
+      "date_ml": "ലഭ്യമല്ല",
+      "description_ml": "തിരഞ്ഞെടുപ്പ് പ്രക്രിയ പൂർണ്ണമായും അവസാനിക്കേണ്ട തീയതി.",
+      "label_ml": "തിരഞ്ഞെടുപ്പ് നടപടികൾ പൂർത്തിയാക്കേണ്ട തീയതി",
+      "status_ml": "ലഭ്യമല്ല"
     }
   },
-
   "voter_service_deadlines": {
     "note": "Voter service deadlines (form submission cutoffs) are determined relative to the notification/poll dates. These will be populated once official dates are announced.",
     "form_6_new_registration": {
       "label": "Last date for new voter registration (Form 6)",
       "deadline": "TBA",
-      "reference": "Typically several weeks before poll date — check CEO Kerala for exact cutoff."
+      "reference": "Typically several weeks before poll date — check CEO Kerala for exact cutoff.",
+      "deadline_ml": "ലഭ്യമല്ല",
+      "label_ml": "പുതിയ വോട്ടർ രജിസ്ട്രേഷനുള്ള അവസാന തീയതി (ഫോം 6)",
+      "reference_ml": "സാധാരണയായി വോട്ടെടുപ്പിന് ഏതാനും ആഴ്ചകൾക്ക് മുമ്പ്. ചീഫ് ഇലക്ടറൽ ഓഫീസറുടെ അറിയിപ്പ് ശ്രദ്ധിക്കുക."
     },
     "form_8_corrections": {
       "label": "Last date for corrections / address change (Form 8)",
       "deadline": "TBA",
-      "reference": "Typically several weeks before poll date."
+      "reference": "Typically several weeks before poll date.",
+      "deadline_ml": "ലഭ്യമല്ല",
+      "label_ml": "തിരുത്തലുകൾക്കും വിലാസം മാറ്റുന്നതിനുമുള്ള അവസാന തീയതി (ഫോം 8)",
+      "reference_ml": "സാധാരണയായി വോട്ടെടുപ്പിന് ഏതാനും ആഴ്ചകൾക്ക് മുമ്പ്."
     },
     "form_7_deletion_objection": {
       "label": "Last date for objections / deletions (Form 7)",
       "deadline": "TBA",
-      "reference": "Typically several weeks before poll date."
+      "reference": "Typically several weeks before poll date.",
+      "deadline_ml": "ലഭ്യമല്ല",
+      "label_ml": "പേര് ഒഴിവാക്കുന്നതിനും ആക്ഷേപങ്ങൾക്കുമുള്ള അവസാന തീയതി (ഫോം 7)",
+      "reference_ml": "സാധാരണയായി വോട്ടെടുപ്പിന് ഏതാനും ആഴ്ചകൾക്ക് മുമ്പ്."
     },
     "postal_ballot_application": {
       "label": "Last date for postal ballot application (85+ and PwD voters)",
       "deadline": "TBA",
-      "reference": "Apply to ERO after notification date. Deadline announced after schedule is released."
-    }
+      "reference": "Apply to ERO after notification date. Deadline announced after schedule is released.",
+      "deadline_ml": "ലഭ്യമല്ല",
+      "label_ml": "തപാൽ വോട്ടിനുള്ള അപേക്ഷ നൽകേണ്ട അവസാന തീയതി (85 വയസ്സിന് മുകളിൽ ഉള്ളവർക്കും ഭിന്നശേഷിക്കാർക്കും)",
+      "reference_ml": "വിജ്ഞാപനം വന്ന ശേഷം അപേക്ഷിക്കാം."
+    },
+    "note_ml": "വോട്ടർ സേവനങ്ങൾക്കുള്ള സമയപരിധി തിരഞ്ഞെടുപ്പ് തീയതികൾ പ്രഖ്യാപിച്ചാലുടൻ ഇവിടെ നൽകുന്നതാണ്."
   },
-
   "assembly_constituencies_kottayam": {
     "description": "Assembly constituencies within Kottayam district that will go to polls.",
     "note": "Constituency boundaries are as per 2008 delimitation. All below constituencies will vote on the same poll date.",
     "constituencies": [
-      { "no": 99,  "name": "Pala" },
-      { "no": 100, "name": "Kaduthuruthy" },
-      { "no": 101, "name": "Vaikom" },
-      { "no": 102, "name": "Ettumanoor" },
-      { "no": 103, "name": "Kottayam" },
-      { "no": 104, "name": "Puthuppally" },
-      { "no": 105, "name": "Changanacherry" },
-      { "no": 106, "name": "Kanjirappally" },
-      { "no": 107, "name": "Poonjar" }
+      {
+        "no": 99,
+        "name": "Pala",
+        "name_ml": "പാലാ"
+      },
+      {
+        "no": 100,
+        "name": "Kaduthuruthy",
+        "name_ml": "കടുത്തുരുത്തി"
+      },
+      {
+        "no": 101,
+        "name": "Vaikom",
+        "name_ml": "വൈക്കം"
+      },
+      {
+        "no": 102,
+        "name": "Ettumanoor",
+        "name_ml": "ഏറ്റുമാനൂർ"
+      },
+      {
+        "no": 103,
+        "name": "Kottayam",
+        "name_ml": "കോട്ടയം"
+      },
+      {
+        "no": 104,
+        "name": "Puthuppally",
+        "name_ml": "പുതുപ്പള്ളി"
+      },
+      {
+        "no": 105,
+        "name": "Changanacherry",
+        "name_ml": "ചങ്ങനാശ്ശേരി"
+      },
+      {
+        "no": 106,
+        "name": "Kanjirappally",
+        "name_ml": "കാഞ്ഞിരപ്പള്ളി"
+      },
+      {
+        "no": 107,
+        "name": "Poonjar",
+        "name_ml": "പൂഞ്ഞാർ"
+      }
     ],
-    "total_constituencies": 9
+    "total_constituencies": 9,
+    "description_ml": "കോട്ടയം ജില്ലയിലെ നിയമസഭാ മണ്ഡലങ്ങൾ."
   },
-
   "reference_timeline_2021": {
     "description": "2021 Kerala Assembly Election timeline (same structure, actual dates for reference only — do NOT use these as 2026 dates).",
     "disclaimer": "These are historical reference dates for JSON structure validation only.",
@@ -129,14 +218,14 @@
     "poll_date": "2021-04-06",
     "counting_date": "2021-05-02"
   },
-
   "janamitra_bot_behaviour": {
     "when_dates_are_tba": "Clearly inform the user that official dates have not yet been announced by ECI. Direct them to https://www.eci.gov.in or https://www.ceo.kerala.gov.in for the latest updates.",
     "when_dates_are_announced": "Read from key_dates fields and provide structured response with dates, countdown if applicable, and any deadlines that are approaching.",
     "never_assume_dates": true,
-    "never_use_reference_2021_dates_as_2026": true
+    "never_use_reference_2021_dates_as_2026": true,
+    "when_dates_are_announced_ml": "പ്രഖ്യാപിച്ച തീയതികൾ ഉപയോക്താവിന് കൃത്യമായി നൽകുക.",
+    "when_dates_are_tba_ml": "ഔദ്യോഗിക തീയതികൾ പ്രഖ്യാപിച്ചിട്ടില്ലെന്ന് ഉപയോക്താവിനെ അറിയിക്കുക. കൂടുതൽ വിവരങ്ങൾക്ക് ഇലക്ഷൻ കമ്മീഷൻ വെബ്സൈറ്റ് സന്ദർശിക്കാൻ നിർദ്ദേശിക്കുക."
   },
-
   "resources": {
     "eci_official": "https://www.eci.gov.in",
     "ceo_kerala": "https://www.ceo.kerala.gov.in",

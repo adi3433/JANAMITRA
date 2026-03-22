@@ -10,12 +10,13 @@
     "last_updated": "2026-02-23",
     "note": "Rules are standardised across all Indian state elections. Kerala-specific details noted where applicable."
   },
-
   "poll_timings": {
     "general": {
       "start": "7:00 AM",
       "end": "6:00 PM",
-      "note": "Timings are standard for Kerala Assembly elections. Final timings will be confirmed in official notification."
+      "note": "Timings are standard for Kerala Assembly elections. Final timings will be confirmed in official notification.",
+      "end_ml": "വൈകുന്നേരം 6:00 മണി",
+      "start_ml": "രാവിലെ 7:00 മണി"
     },
     "last_voter_rule": "Any voter who is present in the queue at 6:00 PM is entitled to cast their vote even if it extends beyond closing time.",
     "mock_poll": {
@@ -23,7 +24,6 @@
       "purpose": "EVM/VVPAT functionality is publicly tested before the actual poll begins. Agents and observers can witness this."
     }
   },
-
   "allowed_photo_id_documents": {
     "description": "Voters must carry any ONE of the following valid photo ID documents to the polling station.",
     "primary_id": {
@@ -80,21 +80,21 @@
         "document": "Overseas Voter (NRI): Original Passport only (no alternative accepted)"
       }
     ],
-    "important_note": "The name in the document must match the name in the electoral roll. Expired driving licences and expired passports are generally NOT accepted."
+    "important_note": "The name in the document must match the name in the electoral roll. Expired driving licences and expired passports are generally NOT accepted.",
+    "description_ml": "താഴെ പറയുന്നവയിൽ ഏതെങ്കിലും ഒരു തിരിച്ചറിയൽ രേഖ കയ്യിൽ കരുതണം."
   },
-
   "polling_slip": {
     "description": "A Voter Slip (polling slip) is distributed by the BLO or political parties before election day.",
     "purpose": "It tells the voter their booth number, serial number in roll, and polling station address.",
     "is_sufficient_alone": false,
     "note": "Polling slip alone is NOT sufficient to vote. A valid photo ID from the approved list must also be carried."
   },
-
   "step_by_step_voting_process": [
     {
       "step": 1,
       "action": "Arrive at your assigned polling station",
-      "detail": "Find your booth using your polling slip, Voter ID, or the Voter Helpline 1950 / CEO Kerala website."
+      "detail": "Find your booth using your polling slip, Voter ID, or the Voter Helpline 1950 / CEO Kerala website.",
+      "action_ml": "നിങ്ങൾക്ക് അനുവദിച്ച ബൂത്തിലെത്തുക"
     },
     {
       "step": 2,
@@ -109,7 +109,8 @@
     {
       "step": 4,
       "action": "Indelible ink mark applied",
-      "detail": "Ink is applied on the left index finger (or as designated). This prevents double voting."
+      "detail": "Ink is applied on the left index finger (or as designated). This prevents double voting.",
+      "action_ml": "വിരലിൽ മഷി പുരട്ടുക"
     },
     {
       "step": 5,
@@ -124,7 +125,8 @@
     {
       "step": 7,
       "action": "Press button on EVM",
-      "detail": "Enter the voting compartment. Press the button on the Ballot Unit next to your chosen candidate's name/symbol. A beep confirms your vote."
+      "detail": "Enter the voting compartment. Press the button on the Ballot Unit next to your chosen candidate's name/symbol. A beep confirms your vote.",
+      "action_ml": "ഇവിഎമ്മിലെ ബട്ടൺ അമർത്തുക"
     },
     {
       "step": 8,
@@ -137,11 +139,13 @@
       "detail": "Your vote has been cast. Do not linger inside the polling station."
     }
   ],
-
   "evm_vvpat_explanation": {
     "evm": {
       "full_form": "Electronic Voting Machine",
-      "components": ["Control Unit (with Polling Officer)", "Ballot Unit (with Voter)"],
+      "components": [
+        "Control Unit (with Polling Officer)",
+        "Ballot Unit (with Voter)"
+      ],
       "how_it_works": "The Ballot Unit shows candidate names and symbols. Pressing the button next to a candidate casts one vote. Each EVM can record a maximum of 2000 votes and support up to 64 candidates.",
       "tamper_proof": "EVMs are standalone devices with no network connectivity. They cannot be hacked remotely."
     },
@@ -153,7 +157,6 @@
       "auditability": "VVPAT slips can be counted/audited by ECI order to verify EVM results."
     }
   },
-
   "prohibited_items_at_polling_station": [
     "Mobile phones (inside voting compartment — may be allowed in premises, rules vary by state)",
     "Cameras or recording devices",
@@ -162,7 +165,6 @@
     "Liquor or any intoxicants",
     "Unauthorised persons (non-voters, media without authorization)"
   ],
-
   "prohibited_activities_on_poll_day": [
     "Campaigning or canvassing within 100 metres of a polling station",
     "Displaying election symbols or party flags near the booth",
@@ -171,13 +173,11 @@
     "Interfering with a voter's right to vote in secret",
     "Carrying weapons near a polling station (Section 144 CrPC applies)"
   ],
-
   "silence_period": {
     "description": "No campaign activity of any kind is allowed during the silence period.",
     "duration": "48 hours before the scheduled closing of polls",
     "applies_to": "All political parties, candidates, and their representatives"
   },
-
   "pwd_and_elderly_facilities": {
     "title": "Facilities for Persons with Disabilities (PwD) and Senior Citizens",
     "facilities": [
@@ -210,21 +210,19 @@
         "detail": "ECI mandates that all polling stations be on the ground floor or have ramp access. Signage, furniture, and layout must be accessible."
       }
     ],
-    "helpline": "1950"
+    "helpline": "1950",
+    "title_ml": "ഭിന്നശേഷിക്കാർക്കും മുതിർന്ന പൗരന്മാർക്കും ഉള്ള സൗകര്യങ്ങൾ"
   },
-
   "tender_vote": {
     "description": "If someone else has already voted in your name (impersonation), you are entitled to cast a Tender Vote.",
     "process": "Inform the Presiding Officer immediately. A Tender Ballot Paper (pink) will be issued. Your tender vote is kept separately and counted only if there is evidence of impersonation.",
     "note": "Your vote is protected. You will not be turned away."
   },
-
   "indelible_ink_rules": {
     "applied_on": "Left index finger (or as designated by Presiding Officer)",
     "purpose": "Prevents a person from voting more than once",
     "permanence": "The ink is permanent and cannot be washed off easily — it fades over several weeks"
   },
-
   "janamitra_bot_behaviour": {
     "can_do": [
       "Tell voter their booth location",
@@ -242,7 +240,6 @@
       "Access or confirm whether a specific person voted"
     ]
   },
-
   "resources": {
     "voter_helpline": "1950",
     "ceo_kerala": "https://www.ceo.kerala.gov.in",

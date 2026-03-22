@@ -10,7 +10,6 @@
     "last_updated": "2026-02-23",
     "total_forms": 6
   },
-
   "intent_routing_map": {
     "new_voter_registration": "Form-6",
     "overseas_voter_registration": "Form-6A",
@@ -26,9 +25,7 @@
     "migrant_voter_intimation_notified": "Form-12C",
     "migrant_voter_intimation_general": "Form-M"
   },
-
   "forms": {
-
     "Form-6": {
       "title": "Application for New Voter Registration",
       "form_number": "Form-6",
@@ -77,9 +74,10 @@
       "nvsp_portal": "https://www.nvsp.in",
       "estimated_processing_time": "15–30 days after submission",
       "declaration_penalty": "False declaration punishable under Section 31 of Representation of the People Act, 1950 — imprisonment up to 1 year or fine or both",
-      "accessibility_note": "For persons with intellectual disability, autism, cerebral palsy, or multiple disabilities — signature or left thumb impression of the person or their legal guardian is accepted as per RPWD Act 2016."
+      "accessibility_note": "For persons with intellectual disability, autism, cerebral palsy, or multiple disabilities — signature or left thumb impression of the person or their legal guardian is accepted as per RPWD Act 2016.",
+      "purpose_ml": "ആദ്യമായി വോട്ട് ചേർക്കുന്നവർക്കും മറ്റ് എവിടെയും പേരില്ലാത്തവർക്കും പട്ടികയിൽ പേര് ചേർക്കാൻ.",
+      "title_ml": "പുതിയ വോട്ടർ രജിസ്ട്രേഷനുള്ള അപേക്ഷ"
     },
-
     "Form-6A": {
       "title": "Application for Inclusion of Name by Overseas Elector",
       "form_number": "Form-6A",
@@ -123,9 +121,9 @@
         "Will immediately inform ERO if Indian citizenship is renounced",
         "Will inform ERO of any change in overseas address",
         "Will inform ERO upon returning to ordinary residence in India"
-      ]
+      ],
+      "title_ml": "പ്രവാസി വോട്ടർമാർക്ക് വോട്ടർപട്ടികയിൽ പേര് ചേർക്കാനുള്ള അപേക്ഷ"
     },
-
     "Form-7": {
       "title": "Application for Objection for Proposed Inclusion / Deletion of Name in Electoral Roll",
       "form_number": "Form-7",
@@ -141,16 +139,32 @@
       "objection_types": {
         "delete_existing": {
           "description": "Request deletion of a name already in the current roll",
-          "valid_reasons": ["Death", "Under Age", "Absent / Permanently shifted", "Already enrolled elsewhere", "Not an Indian Citizen"],
+          "valid_reasons": [
+            "Death",
+            "Under Age",
+            "Absent / Permanently shifted",
+            "Already enrolled elsewhere",
+            "Not an Indian Citizen"
+          ],
           "death_certificate_required": true
         },
         "object_proposed_inclusion": {
           "description": "Object to a proposed new inclusion in the roll",
-          "valid_reasons": ["Death", "Under Age", "Absent / Permanently shifted", "Already enrolled elsewhere", "Not an Indian Citizen"]
+          "valid_reasons": [
+            "Death",
+            "Under Age",
+            "Absent / Permanently shifted",
+            "Already enrolled elsewhere",
+            "Not an Indian Citizen"
+          ]
         },
         "delete_self": {
           "description": "Request deletion of own name",
-          "valid_reasons": ["Permanently shifted", "Already enrolled elsewhere", "Not an Indian Citizen"]
+          "valid_reasons": [
+            "Permanently shifted",
+            "Already enrolled elsewhere",
+            "Not an Indian Citizen"
+          ]
         }
       },
       "key_fields": {
@@ -164,9 +178,9 @@
       "online_portal": "https://voters.eci.gov.in",
       "estimated_processing_time": "15–30 days",
       "declaration_penalty": "False declaration punishable under Section 31 of Representation of the People Act, 1950 — imprisonment up to 1 year or fine or both",
-      "accessibility_note": "Persons with intellectual disability, autism, cerebral palsy, or multiple disabilities may use legal guardian's signature."
+      "accessibility_note": "Persons with intellectual disability, autism, cerebral palsy, or multiple disabilities may use legal guardian's signature.",
+      "title_ml": "പേര് ഒഴിവാക്കാനോ പുതിയ പേരിനെതിരെ പരാതി നൽകാനോ ഉള്ള അപേക്ഷ"
     },
-
     "Form-8": {
       "title": "Application for Shifting of Residence / Correction of Entries / Replacement of EPIC / Marking of PwD",
       "form_number": "Form-8",
@@ -198,14 +212,27 @@
         "section_2_correction_of_entries": {
           "applicable_when": "Any detail in the electoral roll is incorrect",
           "max_corrections_per_application": 4,
-          "correctable_fields": ["Name", "Gender", "Date of Birth / Age", "Relation type", "Relation name", "Address", "Mobile number", "Photo"],
+          "correctable_fields": [
+            "Name",
+            "Gender",
+            "Date of Birth / Age",
+            "Relation type",
+            "Relation name",
+            "Address",
+            "Mobile number",
+            "Photo"
+          ],
           "required": "Self-attested documentary proof for each correction",
           "photo_correction": "New passport size photo (4.5cm x 3.5cm, white background) required only if photo is being changed",
           "replacement_epic_can_be_requested": true
         },
         "section_3_replacement_epic": {
           "applicable_when": "Original EPIC is lost, destroyed, or mutilated",
-          "valid_reasons": ["Lost", "Destroyed due to floods/fire/natural disaster", "Mutilated"],
+          "valid_reasons": [
+            "Lost",
+            "Destroyed due to floods/fire/natural disaster",
+            "Mutilated"
+          ],
           "if_mutilated": "Return mutilated EPIC with application",
           "if_lost_or_destroyed": [
             "Attach copy of FIR / police report",
@@ -214,7 +241,12 @@
         },
         "section_4_marking_pwd": {
           "applicable_when": "Voter has a disability and wants it marked on EPIC",
-          "disability_categories": ["Locomotive", "Visual", "Deaf & Dumb", "Other (describe)"],
+          "disability_categories": [
+            "Locomotive",
+            "Visual",
+            "Deaf & Dumb",
+            "Other (describe)"
+          ],
           "required": "Disability certificate with percentage of disability"
         }
       },
@@ -222,9 +254,9 @@
       "online_portal": "https://voters.eci.gov.in",
       "estimated_processing_time": "15–30 days",
       "declaration_penalty": "False declaration punishable under Section 31 of Representation of the People Act, 1950 — imprisonment up to 1 year or fine or both",
-      "accessibility_note": "Persons with intellectual disability, autism, cerebral palsy, or multiple disabilities may use legal guardian's signature as per RPWD Act 2016."
+      "accessibility_note": "Persons with intellectual disability, autism, cerebral palsy, or multiple disabilities may use legal guardian's signature as per RPWD Act 2016.",
+      "title_ml": "താമസം മാറുന്നതിനും, തിരുത്തലുകൾ വരുത്തുന്നതിനും, പുതിയ ഐഡി കാർഡിനുമുള്ള അപേക്ഷ"
     },
-
     "Form-12C": {
       "title": "Letter of Intimation to Assistant Returning Officer for Notified Class of Electors",
       "form_number": "Form-12C",
@@ -257,7 +289,6 @@
       },
       "note": "Strike off whichever is not applicable. Substituted vide Notification No. S.O. 628(E), dated 4th August, 1999."
     },
-
     "Form-M": {
       "title": "Letter of Intimation to Assistant Returning Officer for Migrant Voters",
       "form_number": "Form-M",
@@ -284,9 +315,7 @@
       "certification": "Applicant certifies that all particulars given are correct to the best of their knowledge and belief.",
       "note": "This form is for in-person voting at a migrant polling station. It does not change the voter's registered constituency."
     }
-
   },
-
   "common_resources": {
     "voter_helpline": "1950",
     "eci_portal": "https://www.eci.gov.in",
