@@ -143,12 +143,12 @@ export default function ChatPage() {
     });
   }, [questionQuery]);
 
-  const handleSelectQuestion = useCallback((question: string) => {
+  const handleSelectQuestion = useCallback((canonicalQuestion: string, displayQuestion?: string) => {
     // Collapse after selection to keep focus on the answer thread.
     setQuestionPanelCollapsed(true);
     setQuestionQuery('');
     setSelectedSection('all');
-    send(question);
+    send({ text: canonicalQuestion, displayText: displayQuestion || canonicalQuestion });
 
     // Smoothly bring the conversation area into view after sending.
     requestAnimationFrame(() => {

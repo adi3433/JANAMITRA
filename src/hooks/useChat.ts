@@ -26,14 +26,18 @@ export function useChat() {
   } = useJanamitraStore();
 
   const send = useCallback(
-    async (text: string) => {
-      if (!text.trim()) return;
+    async (input: string | { text: string; displayText?: string }) => {
+      const text = (typeof input === 'string' ? input : input.text).trim();
+      const displayText = (typeof input === 'string' ? undefined : input.displayText)?.trim();
+
+      if (!text) return;
 
       // Add user message
       const userMsg: ChatMessage = {
         id: uuid(),
         role: 'user',
-        content: text.trim(),
+        // Render localized display text in UI/history while sending canonical text to API.
+        content: displayText || text,
         locale,
         timestamp: new Date().toISOString(),
       };
@@ -42,7 +46,7 @@ export function useChat() {
 
       try {
         const response = await sendChatMessage({
-          message: text.trim(),
+          message: text,
           locale,
           sessionId,
           conversationHistory: [...messages, userMsg].slice(-10), // last 10 msgs

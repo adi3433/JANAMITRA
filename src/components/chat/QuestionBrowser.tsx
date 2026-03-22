@@ -18,7 +18,7 @@ interface Props {
   setQuery: (value: string) => void;
   selectedSection: string;
   setSelectedSection: (value: string) => void;
-  onSelectQuestion: (question: string) => void;
+  onSelectQuestion: (canonicalQuestion: string, displayQuestion?: string) => void;
   disabled?: boolean;
   searchInputRef?: React.RefObject<HTMLInputElement | null>;
 }
@@ -147,8 +147,8 @@ export function QuestionBrowser({
                 {section.questions.map((q) => (
                   <button
                     key={q.id}
-                    // Always send canonical English question to keep allowlist and exact-answer matching deterministic.
-                    onClick={() => onSelectQuestion(q.en)}
+                    // Send canonical English for backend matching, but show localized text in UI/history.
+                    onClick={() => onSelectQuestion(q.en, locale === 'ml' ? (q.ml || q.en) : q.en)}
                     disabled={disabled}
                     className={`rounded-md border border-[var(--border-primary)] bg-[var(--surface-primary)] px-3 py-2 text-left text-xs text-[var(--text-secondary)] transition hover:border-[var(--color-primary-300)] hover:text-[var(--color-primary-600)] disabled:opacity-50 ${locale === 'ml' ? 'font-ml' : ''}`}
                     title={locale === 'ml' ? undefined : q.subSectionEn}
