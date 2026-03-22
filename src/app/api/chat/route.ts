@@ -80,20 +80,30 @@ export async function POST(request: NextRequest) {
 
     const faqExact = getFaqExactAnswer(cleanedMessage);
     if (faqExact) {
-      const sourceTitle = faqExact.categoryName
-        ? `ECI FAQ - ${faqExact.categoryName}`
+      const isMl = locale === 'ml';
+      const sourceCategory = isMl
+        ? (faqExact.categoryNameMl || faqExact.categoryName)
+        : faqExact.categoryName;
+      const sourceTitle = sourceCategory
+        ? `ECI FAQ - ${sourceCategory}`
         : 'ECI FAQ';
+      const answerText = isMl
+        ? (faqExact.answerMl || faqExact.answer)
+        : faqExact.answer;
+      const excerptQuestion = isMl
+        ? (faqExact.questionMl || faqExact.question)
+        : faqExact.question;
 
       const exactFaqResponse: ChatResponseV2 = {
-        text: locale === 'ml'
-          ? `**ECI FAQ അടിസ്ഥാനമാക്കിയുള്ള ഉത്തരം**\n\n${faqExact.answer}\n\n[Source 1: ${sourceTitle}]\n${faqExact.url}`
-          : `**Answer Based On ECI FAQ**\n\n${faqExact.answer}\n\n[Source 1: ${sourceTitle}]\n${faqExact.url}`,
+        text: isMl
+          ? `**ECI FAQ അടിസ്ഥാനമാക്കിയുള്ള ഉത്തരം**\n\n${answerText}\n\n[Source 1: ${sourceTitle}]\n${faqExact.url}`
+          : `**Answer Based On ECI FAQ**\n\n${answerText}\n\n[Source 1: ${sourceTitle}]\n${faqExact.url}`,
         confidence: 0.99,
         sources: [{
           title: sourceTitle,
           url: faqExact.url,
           lastUpdated: new Date().toISOString().split('T')[0],
-          excerpt: `Q: ${faqExact.question}`,
+          excerpt: `Q: ${excerptQuestion}`,
         }],
         actionable: [],
         escalate: false,

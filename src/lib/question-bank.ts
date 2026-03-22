@@ -12,10 +12,14 @@ export interface ApprovedQuestion {
 
 export interface FaqExactAnswer {
   question: string;
+  questionMl?: string;
   answer: string;
+  answerMl?: string;
   url: string;
   categoryName?: string;
+  categoryNameMl?: string;
   subCategoryName?: string;
+  subCategoryNameMl?: string;
 }
 
 const CURATED_SECTIONS: Array<{
@@ -167,10 +171,14 @@ export function getApprovedQuestions(): ApprovedQuestion[] {
 
     const faqAnswer: FaqExactAnswer = {
       question: item.question.trim(),
+      questionMl: typeof item.question_ml === 'string' ? item.question_ml.trim() : undefined,
       answer: item.answer.trim(),
+      answerMl: typeof item.answer_ml === 'string' ? item.answer_ml.trim() : undefined,
       url: typeof item.url === 'string' && item.url ? item.url : 'https://www.eci.gov.in/faq/',
       categoryName: typeof item.categoryName === 'string' ? item.categoryName : undefined,
+      categoryNameMl: typeof item.categoryName_ml === 'string' ? item.categoryName_ml : undefined,
       subCategoryName: typeof item.subCategoryName === 'string' ? item.subCategoryName : undefined,
+      subCategoryNameMl: typeof item.subCategoryName_ml === 'string' ? item.subCategoryName_ml : undefined,
     };
 
     const exactKey = exactQuestionKey(item.question);
