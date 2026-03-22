@@ -114,7 +114,7 @@ export function QuestionBrowser({
         ))}
       </div>
 
-      <div className="max-h-[52vh] overflow-y-auto pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div className="max-h-[52vh] overflow-y-scroll pr-1" style={{ WebkitOverflowScrolling: 'touch', scrollbarGutter: 'stable' }}>
         {filteredSections.length === 0 ? (
           <div className="py-8 text-center">
             <p className={`text-sm text-[var(--text-tertiary)] ${locale === 'ml' ? 'font-ml' : ''}`}>

@@ -281,7 +281,7 @@ export default function ChatPage() {
             </div>
           </div>
 
-          <div ref={messageAreaRef} className="min-h-0 flex-1">
+          <div ref={messageAreaRef} className="min-h-0 flex-1 overflow-hidden">
           {messages.length === 0 ? (
             /* ── Welcome Screen ── */
             <div className="flex flex-1 flex-col items-center justify-center px-4 py-8">

@@ -47,7 +47,7 @@ export function MessageList({ messages, isTyping, onRegenerate, onAction }: Mess
   }, [messages, isTyping]);
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6">
+    <div className="h-full overflow-y-scroll px-4 py-6 pb-24 md:pb-20" style={{ WebkitOverflowScrolling: 'touch' }}>
       <div className="mx-auto max-w-3xl space-y-4">
         {messages.map((msg, idx) => (
           <MessageBubble

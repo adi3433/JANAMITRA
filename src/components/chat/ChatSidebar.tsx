@@ -39,6 +39,7 @@ interface ChatSidebarProps {
 export function ChatSidebar({ onSelectConversation, onNewConversation, onToggleStar, onTogglePin, onDeleteConversation }: ChatSidebarProps) {
   const {
     sidebarOpen,
+    setSidebarOpen,
     toggleSidebar,
     conversations,
     setConversations,
@@ -59,6 +60,13 @@ export function ChatSidebar({ onSelectConversation, onNewConversation, onToggleS
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  // Prevent persisted desktop sidebar state from blocking mobile interactions.
+  useEffect(() => {
+    if (isMobile && sidebarOpen) {
+      setSidebarOpen(false);
+    }
+  }, [isMobile, sidebarOpen, setSidebarOpen]);
 
   // Filter & sort
   const filtered = conversations.filter((c) => {
