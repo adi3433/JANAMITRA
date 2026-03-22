@@ -24,17 +24,6 @@ const CURATED_SECTIONS: Array<{
   questions: Array<{ en: string; ml: string }>;
 }> = [
   {
-    sectionEn: 'Registration',
-    sectionMl: 'രജിസ്ട്രേഷൻ',
-    questions: [
-      { en: 'How to register as a voter?', ml: 'ഒരു വോട്ടറായി എങ്ങനെ രജിസ്റ്റർ ചെയ്യാം?' },
-      { en: 'What documents are required for registration?', ml: 'രജിസ്ട്രേഷനായി ഏതൊക്കെ രേഖകൾ ആവശ്യമാണ്?' },
-      { en: 'How to check my voter registration status?', ml: 'എന്റെ വോട്ടർ രജിസ്ട്രേഷൻ സ്ഥിതി എങ്ങനെ പരിശോധിക്കാം?' },
-      { en: 'How to transfer voter registration to a new address?', ml: 'പുതിയ വിലാസത്തിലേക്ക് വോട്ടർ രജിസ്ട്രേഷൻ മാറ്റുന്നത് എങ്ങനെ?' },
-      { en: 'Check voter registration status', ml: 'വോട്ടർ സ്ഥിതി പരിശോധിക്കുക' },
-    ],
-  },
-  {
     sectionEn: 'Voting',
     sectionMl: 'വോട്ടിംഗ്',
     questions: [

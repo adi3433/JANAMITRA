@@ -67,7 +67,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     let mounted = true;
-    fetchApprovedQuestions()
+    fetchApprovedQuestions(locale)
       .then((data) => {
         if (!mounted) return;
         setApprovedSections(data.sections);
@@ -79,7 +79,7 @@ export default function ChatPage() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [locale]);
 
   const handleQuickAction = (action: ActionItem) => {
     const prompts: Record<string, Record<string, string>> = {

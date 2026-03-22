@@ -15,6 +15,7 @@ import { ParallaxBackground } from '@/components/layout/ParallaxBackground';
 import { FloatingChatButton } from '@/components/layout/FloatingChatButton';
 import { useLocale } from '@/hooks/useLocale';
 import type { ViolationReport } from '@/types';
+import { submitViolationReport } from '@/lib/api-client';
 
 const VIOLATION_TYPES: { key: ViolationReport['type']; en: string; ml: string; desc: string; descMl: string }[] = [
   { key: 'polling_irregularity', en: 'Booth Accessibility', ml: 'ബൂത്ത് പ്രവേശനക്ഷമത', desc: 'Accessibility issues at polling booths', descMl: 'പോളിംഗ് ബൂത്തിലെ പ്രവേശന പ്രശ്നങ്ങൾ' },
@@ -38,15 +39,59 @@ export default function ReportPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refNumber, setRefNumber] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async () => {
     if (!description.trim()) return;
     setLoading(true);
-    // In production: call submitViolationReport API
-    await new Promise((r) => setTimeout(r, 2000));
-    setRefNumber(`SVEEP-KTM-${Date.now().toString(36).toUpperCase()}`);
-    setSubmitted(true);
-    setLoading(false);
+    setErrorMessage('');
+    try {
+      const payload: {
+        type: ViolationReport['type'];
+        description: string;
+        locale: 'en' | 'ml';
+        mediaIds?: string[];
+        location?: { lat: number; lng: number; address?: string };
+      } = {
+        type,
+        description: description.trim(),
+        locale,
+      };
+
+      if (files.length > 0) {
+        // TODO: replace with real media upload IDs when upload endpoint is integrated.
+        payload.mediaIds = files.map((file, idx) => `${file.name}-${idx}`);
+      }
+
+      if (useLocation && typeof navigator !== 'undefined' && navigator.geolocation) {
+        const pos = await new Promise<GeolocationPosition | null>((resolve) => {
+          navigator.geolocation.getCurrentPosition(
+            (p) => resolve(p),
+            () => resolve(null),
+            { enableHighAccuracy: false, timeout: 5000 }
+          );
+        });
+
+        if (pos) {
+          payload.location = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          };
+        }
+      }
+
+      const result = await submitViolationReport(payload);
+      setRefNumber(result.referenceNumber);
+      setSubmitted(true);
+    } catch {
+      setErrorMessage(
+        isMl
+          ? 'റിപ്പോർട്ട് സമർപ്പിക്കാൻ കഴിഞ്ഞില്ല. ദയവായി കുറച്ച് കഴിഞ്ഞ് വീണ്ടും ശ്രമിക്കുക.'
+          : 'Could not submit report. Please try again in a moment.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -229,6 +274,11 @@ export default function ReportPage() {
                   ? (isMl ? 'സമർപ്പിക്കുന്നു...' : 'Submitting...')
                   : t.submitReport}
               </motion.button>
+              {errorMessage && (
+                <p className={`text-sm text-red-600 ${isMl ? 'font-ml' : ''}`}>
+                  {errorMessage}
+                </p>
+              )}
             </div>
           </div>
         </main>

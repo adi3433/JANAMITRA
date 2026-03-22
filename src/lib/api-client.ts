@@ -45,8 +45,10 @@ export interface ApprovedQuestionSection {
   questions: ApprovedQuestion[];
 }
 
-export async function fetchApprovedQuestions(): Promise<{ total: number; sections: ApprovedQuestionSection[] }> {
-  const { data } = await api.get<{ total: number; sections: ApprovedQuestionSection[] }>('/questions');
+export async function fetchApprovedQuestions(locale?: 'en' | 'ml'): Promise<{ total: number; sections: ApprovedQuestionSection[] }> {
+  const { data } = await api.get<{ total: number; sections: ApprovedQuestionSection[] }>('/questions', {
+    params: locale ? { locale } : undefined,
+  });
   return data;
 }
 

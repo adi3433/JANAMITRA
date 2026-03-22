@@ -147,10 +147,11 @@ export function QuestionBrowser({
                 {section.questions.map((q) => (
                   <button
                     key={q.id}
-                    onClick={() => onSelectQuestion(locale === 'ml' ? (q.ml || q.en) : q.en)}
+                    // Always send canonical English question to keep allowlist and exact-answer matching deterministic.
+                    onClick={() => onSelectQuestion(q.en)}
                     disabled={disabled}
                     className={`rounded-md border border-[var(--border-primary)] bg-[var(--surface-primary)] px-3 py-2 text-left text-xs text-[var(--text-secondary)] transition hover:border-[var(--color-primary-300)] hover:text-[var(--color-primary-600)] disabled:opacity-50 ${locale === 'ml' ? 'font-ml' : ''}`}
-                    title={q.subSectionEn}
+                    title={locale === 'ml' ? undefined : q.subSectionEn}
                   >
                     {locale === 'ml' ? (q.ml || q.en) : q.en}
                   </button>

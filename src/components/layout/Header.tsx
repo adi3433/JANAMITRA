@@ -24,7 +24,6 @@ import { AccessibilityBar } from './AccessibilityBar';
 const NAV_ITEMS = [
   { href: '/chat', labelEn: 'Chat', labelMl: 'ചാറ്റ്' },
   { href: '/booth', labelEn: 'Booth', labelMl: 'ബൂത്ത്' },
-  { href: '/registration', labelEn: 'Registration', labelMl: 'രജിസ്ട്രേഷൻ' },
   { href: '/report', labelEn: 'Report', labelMl: 'റിപ്പോർട്ട്' },
   { href: '/faq', labelEn: 'FAQ', labelMl: 'FAQ' },
 ];
