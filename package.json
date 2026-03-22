@@ -6,10 +6,7 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "test": "vitest",
-    "test:e2e:questions": "node scripts/playwright-questions-autotest.mjs",
-    "test:e2e:questions:no-server": "node scripts/playwright-questions-autotest.mjs --no-server"
+    "lint": "eslint"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
