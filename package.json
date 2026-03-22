@@ -6,7 +6,8 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "echo \"No automated tests in release package\""
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
