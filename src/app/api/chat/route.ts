@@ -31,6 +31,7 @@ import { recordQueryLog, recordAuditEntry } from '@/lib/admin-audit';
 import { saveConversation } from '@/lib/chat-history';
 import { formatBoothResult } from '@/lib/booth-data';
 import { applyResponseGuard } from '@/lib/response-guard';
+import { isApprovedQuestion } from '@/lib/question-bank';
 import type { ChatRequest, ChatResponseV2, RetrievalTraceEntry } from '@/types';
 
 // V2: Use ResponseCache with configurable TTL instead of raw Map
@@ -53,8 +54,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
+    const cleanedMessage = message.trim();
+
+    if (!isApprovedQuestion(cleanedMessage)) {
+      const unsupportedResponse: ChatResponseV2 = {
+        text: (locale || 'en') === 'ml'
+          ? 'സുരക്ഷിത റിലീസ് മോഡിൽ അംഗീകൃത ചോദ്യങ്ങൾ മാത്രം അനുവദിച്ചിരിക്കുന്നു. ദയവായി സ്ക്രീനിലെ ചോദ്യ ലിസ്റ്റിൽ നിന്ന് തിരഞ്ഞെടുക്കുക.'
+          : 'Safe release mode allows only approved questions. Please choose from the on-screen question list.',
+        confidence: 0.99,
+        sources: [],
+        actionable: [],
+        escalate: false,
+        locale: locale || 'en',
+        messageId: uuid(),
+        timestamp: new Date().toISOString(),
+        retrievalTrace: [],
+        promptVersionHash: 'approved-question-gate-v1',
+        generatorModel: 'policy-gate',
+        routerType: 'safety',
+        modality: 'text',
+      };
+
+      return NextResponse.json(unsupportedResponse);
+    }
+
     // V5: Pre-routing safety check — block adversarial/abusive inputs immediately
-    const inputSafetyResult = safetyCheck('', message.trim());
+    const inputSafetyResult = safetyCheck('', cleanedMessage);
     if (inputSafetyResult.flagged) {
       const blockedResponse: ChatResponseV2 = {
         text: inputSafetyResult.safeText,
@@ -97,7 +122,7 @@ export async function POST(request: NextRequest) {
     const wantStream = url.searchParams.get('stream') === 'true';
 
     // Cache key: normalized message + locale
-    const cacheKey = `${locale}:${message.trim().toLowerCase()}`;
+    const cacheKey = `${locale}:${cleanedMessage.toLowerCase()}`;
     const cached = answerCache.get(cacheKey);
     if (cached) {
       return NextResponse.json({
@@ -111,7 +136,7 @@ export async function POST(request: NextRequest) {
 
     // Route through intelligent model router (passes userId for memory)
     const routerResult = await routeInput({
-      text: message.trim(),
+      text: cleanedMessage,
       locale,
       sessionId,
       conversationHistory: conversationHistory ?? [],
@@ -240,11 +265,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Safety check
-    const safetyResult = safetyCheck(responseText, message.trim());
+    const safetyResult = safetyCheck(responseText, cleanedMessage);
 
     // Open-text guard: if evidence is weak, cap confidence and add verification note
     const guarded = applyResponseGuard({
-      query: message.trim(),
+      query: cleanedMessage,
       responseText: safetyResult.flagged ? safetyResult.safeText : responseText,
       locale: routerResult.resolvedLocale,
       confidence,
@@ -285,7 +310,7 @@ export async function POST(request: NextRequest) {
     recordQueryLog({
       id: response.messageId,
       sessionId,
-      query: message.trim(),
+      query: cleanedMessage,
       locale: routerResult.resolvedLocale,
       response: response.text.substring(0, 500),
       confidence,
@@ -310,7 +335,7 @@ export async function POST(request: NextRequest) {
         actorId: hashIdentifier(sessionId),
         targetId: response.messageId,
         details: JSON.stringify({
-          query: message.trim().substring(0, 200),
+          query: cleanedMessage.substring(0, 200),
           locale: routerResult.resolvedLocale,
           confidence,
           reason: safetyResult.flagged ? 'safety_flag' : 'low_confidence',
@@ -328,12 +353,12 @@ export async function POST(request: NextRequest) {
       // Check if the last message in history already IS this user message (to prevent duplicates)
       const lastPrior = priorMessages[priorMessages.length - 1];
       const isAlreadyIncluded = lastPrior?.role === 'user'
-        && lastPrior.content?.trim() === message.trim();
+        && lastPrior.content?.trim() === cleanedMessage;
 
       const allMessages = [
         ...priorMessages,
         // Only add user message if it wasn't already the last item in history
-        ...(isAlreadyIncluded ? [] : [{ id: uuid(), role: 'user' as const, content: message.trim(), locale: routerResult.resolvedLocale, timestamp: new Date().toISOString() }]),
+        ...(isAlreadyIncluded ? [] : [{ id: uuid(), role: 'user' as const, content: cleanedMessage, locale: routerResult.resolvedLocale, timestamp: new Date().toISOString() }]),
         { id: response.messageId, role: 'assistant' as const, content: response.text, locale: routerResult.resolvedLocale, timestamp: response.timestamp },
       ];
       await saveConversation(

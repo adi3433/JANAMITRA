@@ -330,6 +330,13 @@ interface ParsedFaqItem {
   chapter: string;
 }
 
+interface FaqCorpusCache {
+  passages: RetrievedPassage[];
+  fingerprint: string;
+}
+
+let _faqCorpusCache: FaqCorpusCache | null = null;
+
 function parseEciFaqText(raw: string): ParsedFaqItem[] {
   const lines = raw.split(/\r?\n/).map((l) => l.trim());
   const items: ParsedFaqItem[] = [];
@@ -462,10 +469,25 @@ function loadFaqPassagesFromJson(): { passages: RetrievedPassage[]; fingerprint:
   }
 }
 
-function getKnowledgeBase(): RetrievedPassage[] {
-  const boothPassages = getAllBooths().map(boothToPassage);
+function getFaqKnowledgeBase(): FaqCorpusCache {
   const faqJson = loadFaqPassagesFromJson();
   const faq = faqJson.passages.length > 0 ? faqJson : loadFaqPassagesFromNewTxt();
+
+  if (_faqCorpusCache && _faqCorpusCache.fingerprint === faq.fingerprint) {
+    return _faqCorpusCache;
+  }
+
+  _faqCorpusCache = {
+    passages: faq.passages,
+    fingerprint: faq.fingerprint,
+  };
+
+  return _faqCorpusCache;
+}
+
+function getKnowledgeBase(): RetrievedPassage[] {
+  const boothPassages = getAllBooths().map(boothToPassage);
+  const faq = getFaqKnowledgeBase();
   const nextFingerprint = `${boothPassages.length}:${faq.fingerprint}`;
 
   if (_mergedKB && _kbFingerprint === nextFingerprint) return _mergedKB;
@@ -689,5 +711,52 @@ export async function retrievePassages(
     totalTokens: Math.round(tokenCount),
     queryEmbeddingLatencyMs,
     retrievalLatencyMs,
+  };
+}
+
+/**
+ * FAQ-only retrieval lane.
+ * Uses the full FAQ corpus and prioritizes deterministic BM25 matching to
+ * reduce dilution from booth/core passages for FAQ phrasing.
+ */
+export async function retrieveFaqPassages(
+  query: string,
+  _locale: string,
+  maxTokens: number
+): Promise<RetrievalResult> {
+  const startTime = Date.now();
+  const FAQ_KB = getFaqKnowledgeBase().passages;
+  const queryTerms = query.toLowerCase().split(/\s+/).filter(Boolean);
+
+  const bm25Scored = FAQ_KB.map((passage) => ({
+    ...passage,
+    score: bm25ScoreWithTerms(queryTerms, passage.content, FAQ_KB.length),
+    method: 'bm25' as const,
+  }));
+
+  const maxBm25 = Math.max(...bm25Scored.map((p) => p.score), 0.001);
+  const normalized = bm25Scored
+    .map((p) => ({
+      ...p,
+      score: Math.round((p.score / maxBm25) * 1000) / 1000,
+      method: 'bm25' as const,
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 20);
+
+  let tokenCount = 0;
+  const selectedPassages: RetrievedPassage[] = [];
+  for (const passage of normalized) {
+    const tokens = passage.content.split(/\s+/).length * 1.3;
+    if (tokenCount + tokens > maxTokens) break;
+    tokenCount += tokens;
+    selectedPassages.push(passage);
+  }
+
+  return {
+    passages: selectedPassages,
+    totalTokens: Math.round(tokenCount),
+    queryEmbeddingLatencyMs: 0,
+    retrievalLatencyMs: Date.now() - startTime,
   };
 }

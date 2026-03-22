@@ -4,3 +4,4 @@ export { SystemBanner } from './SystemBanner';
 export { QuickActions } from './QuickActions';
 export { ChatSidebar } from './ChatSidebar';
 export { FileUpload } from './FileUpload';
+export { QuestionBrowser } from './QuestionBrowser';

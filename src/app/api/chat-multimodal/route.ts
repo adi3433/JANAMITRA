@@ -18,6 +18,7 @@ import { v4 as uuid } from 'uuid';
 import { routeInput } from '@/lib/router';
 import { ragOrchestrate, type RAGOutput } from '@/lib/rag/orchestrator';
 import { safetyCheck } from '@/lib/safety';
+import { isApprovedQuestion } from '@/lib/question-bank';
 import { hashIdentifier } from '@/lib/privacy';
 import { recordQueryLog, recordAuditEntry } from '@/lib/admin-audit';
 import { saveConversation } from '@/lib/chat-history';
@@ -58,6 +59,30 @@ export async function POST(request: NextRequest) {
       userId,
     } = body;
 
+    const cleanedMessage = message?.trim() ?? '';
+
+    if (cleanedMessage && !isApprovedQuestion(cleanedMessage)) {
+      const unsupportedResponse: ChatResponseV2 = {
+        text: locale === 'ml'
+          ? 'സുരക്ഷിത റിലീസ് മോഡിൽ അംഗീകൃത ചോദ്യങ്ങൾ മാത്രം അനുവദിച്ചിരിക്കുന്നു. ദയവായി സ്ക്രീനിലെ ചോദ്യ ലിസ്റ്റിൽ നിന്ന് തിരഞ്ഞെടുക്കുക.'
+          : 'Safe release mode allows only approved questions. Please choose from the on-screen question list.',
+        confidence: 0.99,
+        sources: [],
+        actionable: [],
+        escalate: false,
+        locale,
+        messageId: uuid(),
+        timestamp: new Date().toISOString(),
+        retrievalTrace: [],
+        promptVersionHash: 'approved-question-gate-v1',
+        generatorModel: 'policy-gate',
+        routerType: 'safety',
+        modality: 'text',
+      };
+
+      return NextResponse.json(unsupportedResponse);
+    }
+
     // Validate: at least one input modality
     if (!message?.trim() && !imageBase64 && !audioBase64) {
       return NextResponse.json(
@@ -92,7 +117,7 @@ export async function POST(request: NextRequest) {
 
     // Route through intelligent model router
     const routerResult = await routeInput({
-      text: message?.trim() || undefined,
+      text: cleanedMessage || undefined,
       audioData,
       audioFilename: audioBase64 ? 'upload.webm' : undefined,
       imageBase64: imageBase64?.replace(/^data:image\/[^;]+;base64,/, ''),
@@ -141,7 +166,7 @@ export async function POST(request: NextRequest) {
       confidence = 0.3;
     }
 
-    const safetyResult = safetyCheck(responseText, message?.trim() ?? '');
+    const safetyResult = safetyCheck(responseText, cleanedMessage);
     const shouldEscalate = (ragResult?.escalate ?? (confidence < 0.55)) || safetyResult.flagged;
 
     const response: ChatResponseV2 = {
@@ -168,7 +193,7 @@ export async function POST(request: NextRequest) {
     recordQueryLog({
       id: response.messageId,
       sessionId,
-      query: `[${routerResult.modality}] ${message?.trim() ?? ''}`.trim(),
+      query: `[${routerResult.modality}] ${cleanedMessage}`.trim(),
       locale: routerResult.resolvedLocale,
       response: response.text.substring(0, 500),
       confidence,
@@ -202,7 +227,7 @@ export async function POST(request: NextRequest) {
         userId ?? sessionId,
         sessionId,
         [
-          { id: uuid(), role: 'user', content: message?.trim() ?? `[${routerResult.modality}]`, locale: routerResult.resolvedLocale, timestamp: new Date().toISOString() },
+          { id: uuid(), role: 'user', content: cleanedMessage || `[${routerResult.modality}]`, locale: routerResult.resolvedLocale, timestamp: new Date().toISOString() },
           { id: response.messageId, role: 'assistant', content: response.text, locale: routerResult.resolvedLocale, timestamp: response.timestamp },
         ],
         routerResult.resolvedLocale,

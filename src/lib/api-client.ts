@@ -25,6 +25,7 @@ import type {
   MemoryConsentResponse,
   MemoryExportResponse,
 } from '@/types';
+import type { ApprovedQuestion } from '@/lib/question-bank';
 
 const api = axios.create({
   baseURL: '/api',
@@ -35,6 +36,17 @@ const api = axios.create({
 // ── Chat ──────────────────────────────────────────────────────────
 export async function sendChatMessage(req: ChatRequest & { userId?: string }): Promise<ChatResponseV2> {
   const { data } = await api.post<ChatResponseV2>('/chat', req);
+  return data;
+}
+
+export interface ApprovedQuestionSection {
+  sectionEn: string;
+  sectionMl: string;
+  questions: ApprovedQuestion[];
+}
+
+export async function fetchApprovedQuestions(): Promise<{ total: number; sections: ApprovedQuestionSection[] }> {
+  const { data } = await api.get<{ total: number; sections: ApprovedQuestionSection[] }>('/questions');
   return data;
 }
 

@@ -7,11 +7,11 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
-import { ChatInput, MessageList, QuickActions, ChatSidebar, FileUpload } from '@/components/chat';
+import { MessageList, QuickActions, ChatSidebar, QuestionBrowser } from '@/components/chat';
 import { useChat } from '@/hooks/useChat';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useJanamitraStore } from '@/lib/store';
-import { sendMultimodalChat } from '@/lib/api-client';
+import { fetchApprovedQuestions, type ApprovedQuestionSection } from '@/lib/api-client';
 import { exportChatJSON, exportChatText } from '@/lib/export';
 import type { ActionItem } from '@/types';
 import {
@@ -28,17 +28,17 @@ export default function ChatPage() {
   const quickActions = useJanamitraStore((s) => s.quickActions);
   const locale = useJanamitraStore((s) => s.locale);
   const sessionId = useJanamitraStore((s) => s.sessionId);
-  const userId = useJanamitraStore((s) => s.userId);
   const resetSession = useJanamitraStore((s) => s.resetSession);
-  const addMessage = useJanamitraStore((s) => s.addMessage);
-  const setTyping = useJanamitraStore((s) => s.setTyping);
   const toggleSidebar = useJanamitraStore((s) => s.toggleSidebar);
   const incognitoMode = useJanamitraStore((s) => s.incognitoMode);
   const setShortcutHandlers = useJanamitraStore((s) => s.setShortcutHandlers);
   const clearShortcutHandlers = useJanamitraStore((s) => s.clearShortcutHandlers);
 
-  const inputRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [approvedSections, setApprovedSections] = useState<ApprovedQuestionSection[]>([]);
+  const [questionQuery, setQuestionQuery] = useState('');
+  const [selectedSection, setSelectedSection] = useState('all');
 
   // Chat persistence — auto-save & load conversations
   const { selectConversation, removeConversation, toggleStar, togglePin } = useChatPersistence();
@@ -48,8 +48,7 @@ export default function ChatPage() {
     setShortcutHandlers({
       onNewChat: () => resetSession(),
       onFocusInput: () => {
-        const textarea = inputRef.current?.querySelector('textarea');
-        textarea?.focus();
+        searchInputRef.current?.focus();
       },
       onStopGenerating: () => {
         // Stop the typing indicator (API call abort is handled in useChat)
@@ -58,6 +57,22 @@ export default function ChatPage() {
     });
     return () => clearShortcutHandlers();
   }, [setShortcutHandlers, clearShortcutHandlers, resetSession]);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchApprovedQuestions()
+      .then((data) => {
+        if (!mounted) return;
+        setApprovedSections(data.sections);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setApprovedSections([]);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const handleQuickAction = (action: ActionItem) => {
     const prompts: Record<string, Record<string, string>> = {
@@ -81,56 +96,6 @@ export default function ChatPage() {
     const prompt = prompts[action.action]?.[locale] || action.label;
     send(prompt);
   };
-
-  const handleFileUpload = useCallback(
-    async (base64: string, type: 'image' | 'document' | 'audio', _mimeType: string) => {
-      const userMessage = locale === 'ml'
-        ? `[📎 ${type === 'image' ? 'ചിത്രം' : 'ഡോക്യുമെന്റ്'} അപ്‌ലോഡ് ചെയ്തു]`
-        : `[📎 ${type === 'image' ? 'Image' : 'Document'} uploaded]`;
-
-      addMessage({
-        id: crypto.randomUUID(),
-        role: 'user',
-        content: userMessage,
-        locale,
-        timestamp: new Date().toISOString(),
-      });
-      setTyping(true);
-
-      try {
-        const response = await sendMultimodalChat({
-          message: type === 'image'
-            ? (locale === 'ml' ? 'ഈ ഡോക്യുമെന്റിൽ നിന്ന് വിവരങ്ങൾ എക്‌സ്ട്രാക്ട് ചെയ്യുക' : 'Extract information from this document')
-            : (locale === 'ml' ? 'ഈ ഫയൽ വിശകലനം ചെയ്യുക' : 'Analyze this file'),
-          locale,
-          sessionId,
-          imageBase64: type === 'image' ? base64 : undefined,
-          userId,
-        });
-
-        addMessage({
-          id: response.messageId,
-          role: 'assistant',
-          content: response.text,
-          locale,
-          timestamp: response.timestamp,
-        });
-      } catch {
-        addMessage({
-          id: crypto.randomUUID(),
-          role: 'assistant',
-          content: locale === 'ml'
-            ? 'ക്ഷമിക്കണം, ഫയൽ പ്രോസസ്സ് ചെയ്യാൻ കഴിഞ്ഞില്ല.'
-            : 'Sorry, I could not process the file.',
-          locale,
-          timestamp: new Date().toISOString(),
-        });
-      } finally {
-        setTyping(false);
-      }
-    },
-    [locale, sessionId, userId, addMessage, setTyping]
-  );
 
   const handleSelectConversation = useCallback(
     (conversationId: string) => {
@@ -268,71 +233,6 @@ export default function ChatPage() {
                 </div>
               </motion.div>
 
-              {/* Suggested Questions */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.15 }}
-                className="mt-6 w-full max-w-2xl"
-              >
-                <p className={`mb-3 text-center text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider ${locale === 'ml' ? 'font-ml' : ''}`}>
-                  {locale === 'ml' ? 'നിർദ്ദേശിത ചോദ്യങ്ങൾ' : 'Select a Question to Get Started'}
-                </p>
-                {[
-                  {
-                    category: locale === 'ml' ? 'രജിസ്ട്രേഷൻ' : 'Registration',
-                    questions: [
-                      { en: 'How to register as a voter?', ml: 'ഒരു വോട്ടറായി എങ്ങനെ രജിസ്റ്റർ ചെയ്യാം?' },
-                      { en: 'What documents are required for registration?', ml: 'രജിസ്ട്രേഷനായി ഏതൊക്കെ രേഖകൾ ആവശ്യമാണ്?' },
-                      { en: 'How to check my voter registration status?', ml: 'എന്റെ വോട്ടർ രജിസ്ട്രേഷൻ സ്ഥിതി എങ്ങനെ പരിശോധിക്കാം?' },
-                      { en: 'How to transfer voter registration to a new address?', ml: 'പുതിയ വിലാസത്തിലേക്ക് വോട്ടർ രജിസ്ട്രേഷൻ മാറ്റുന്നത് എങ്ങനെ?' },
-                    ],
-                  },
-                  {
-                    category: locale === 'ml' ? 'വോട്ടിംഗ്' : 'Voting',
-                    questions: [
-                      { en: 'Where is my polling booth?', ml: 'എന്റെ പോളിംഗ് ബൂത്ത് എവിടെയാണ്?' },
-                      { en: 'What time do polling booths open and close?', ml: 'പോളിംഗ് ബൂത്തുകൾ എത്ര മണിക്ക് തുറക്കുകയും അടയ്ക്കുകയും ചെയ്യും?' },
-                      { en: 'What should I bring to the polling booth?', ml: 'പോളിംഗ് ബൂത്തിലേക്ക് എന്ത് കൊണ്ടുപോകണം?' },
-                      { en: 'Can I vote without a Voter ID card?', ml: 'വോട്ടർ ഐഡി കാർഡ് ഇല്ലാതെ വോട്ട് ചെയ്യാൻ കഴിയുമോ?' },
-                    ],
-                  },
-                  {
-                    category: locale === 'ml' ? 'ലംഘനങ്ങൾ & പരാതികൾ' : 'Violations & Complaints',
-                    questions: [
-                      { en: 'How to report an election violation?', ml: 'ഒരു തിരഞ്ഞെടുപ്പ് ലംഘനം എങ്ങനെ റിപ്പോർട്ട് ചെയ്യാം?' },
-                      { en: 'How to report vote buying or bribery?', ml: 'വോട്ട് വാങ്ങൽ അല്ലെങ്കിൽ കൈക്കൂലി എങ്ങനെ റിപ്പോർട്ട് ചെയ്യാം?' },
-                      { en: 'What is the cVIGIL app and how to use it?', ml: 'cVIGIL ആപ്പ് എന്താണ്, അത് എങ്ങനെ ഉപയോഗിക്കാം?' },
-                    ],
-                  },
-                  {
-                    category: locale === 'ml' ? 'പൊതു വിവരങ്ങൾ' : 'General',
-                    questions: [
-                      { en: 'What is SVEEP?', ml: 'SVEEP എന്താണ്?' },
-                      { en: 'What is the Model Code of Conduct?', ml: 'മാതൃകാ പെരുമാറ്റ ചട്ടം എന്താണ്?' },
-                      { en: 'What is the election helpline number?', ml: 'തിരഞ്ഞെടുപ്പ് ഹെൽപ്‌ലൈൻ നമ്പർ എന്താണ്?' },
-                    ],
-                  },
-                ].map((section) => (
-                  <div key={section.category} className="mb-4">
-                    <p className={`mb-2 text-xs font-semibold text-[var(--color-primary-500)] uppercase tracking-wider ${locale === 'ml' ? 'font-ml' : ''}`}>
-                      {section.category}
-                    </p>
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {section.questions.map((q) => (
-                        <button
-                          key={q.en}
-                          onClick={() => send(locale === 'ml' ? q.ml : q.en)}
-                          className={`rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] px-4 py-2.5 text-left text-sm text-[var(--text-secondary)] shadow-sm transition-all hover:border-[var(--color-primary-300)] hover:shadow-md hover:text-[var(--color-primary-600)] active:scale-[0.98] ${locale === 'ml' ? 'font-ml' : ''}`}
-                        >
-                          {locale === 'ml' ? q.ml : q.en}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
-
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -347,45 +247,33 @@ export default function ChatPage() {
             <MessageList messages={messages} isTyping={isTyping} onAction={send} />
           )}
 
-          {/* ── Quick Suggestion Chips (always visible) ── */}
-          <div className="border-t border-[var(--border-primary)] bg-[var(--surface-secondary)] px-4 py-2">
-            <div className="mx-auto max-w-3xl">
-              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
-                {[
-                  { en: 'Where is my polling booth?', ml: 'എന്റെ പോളിംഗ് ബൂത്ത് എവിടെ?' },
-                  { en: 'How to register as a voter?', ml: 'വോട്ടറായി എങ്ങനെ രജിസ്റ്റർ ചെയ്യാം?' },
-                  { en: 'What documents are required?', ml: 'ഏതൊക്കെ രേഖകൾ ആവശ്യം?' },
-                  { en: 'How to report a violation?', ml: 'ലംഘനം എങ്ങനെ റിപ്പോർട്ട് ചെയ്യാം?' },
-                  { en: 'Check voter registration status', ml: 'വോട്ടർ സ്ഥിതി പരിശോധിക്കുക' },
-                  { en: 'What time do booths open?', ml: 'ബൂത്ത് എത്ര മണിക്ക് തുറക്കും?' },
-                  { en: 'What is the election helpline?', ml: 'ഹെൽപ്‌ലൈൻ നമ്പർ എന്താണ്?' },
-                  { en: 'What is SVEEP?', ml: 'SVEEP എന്താണ്?' },
-                ].map((chip) => (
-                  <button
-                    key={chip.en}
-                    onClick={() => send(locale === 'ml' ? chip.ml : chip.en)}
-                    disabled={isTyping}
-                    className={`shrink-0 rounded-full border border-[var(--border-primary)] bg-[var(--surface-primary)] px-3 py-1 text-xs text-[var(--text-secondary)] transition-all hover:border-[var(--color-primary-300)] hover:text-[var(--color-primary-600)] hover:shadow-sm active:scale-95 disabled:opacity-50 ${locale === 'ml' ? 'font-ml' : ''}`}
-                  >
-                    {locale === 'ml' ? chip.ml : chip.en}
-                  </button>
-                ))}
-              </div>
+          <div className="border-t border-[var(--border-primary)] bg-[var(--surface-secondary)] px-4 py-3">
+            <div className="mx-auto w-full max-w-5xl">
+              <p className={`mb-2 text-center text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wider ${locale === 'ml' ? 'font-ml' : ''}`}>
+                {locale === 'ml' ? 'അംഗീകൃത ചോദ്യങ്ങളുടെ ലിസ്റ്റ്' : 'Approved Questions List'}
+              </p>
+              <QuestionBrowser
+                locale={locale}
+                sections={approvedSections}
+                query={questionQuery}
+                setQuery={setQuestionQuery}
+                selectedSection={selectedSection}
+                setSelectedSection={setSelectedSection}
+                onSelectQuestion={send}
+                disabled={isTyping}
+                searchInputRef={searchInputRef}
+              />
             </div>
           </div>
 
-          {/* ── Input Bar ── */}
+          {/* ── FAQ-Only Mode Footer ── */}
           <div className="border-t border-[var(--border-primary)] bg-[var(--surface-primary)] px-4 py-3">
-            <div className="mx-auto flex max-w-3xl items-end gap-2" ref={inputRef}>
-              {/* File upload */}
-              <FileUpload onUpload={handleFileUpload} disabled={isTyping} />
-
-              {/* Chat input (flex-1) */}
-              <div className="flex-1">
-                <ChatInput onSend={send} disabled={isTyping} />
-              </div>
-            </div>
-            <p className="mx-auto mt-1.5 max-w-3xl text-center text-[10px] text-[var(--text-tertiary)]">
+            <p className="mx-auto max-w-4xl text-center text-[11px] text-[var(--text-tertiary)]">
+              {locale === 'ml'
+                ? 'സുരക്ഷിത റിലീസ് മോഡ്: ഫ്രീ-ടെക്സ്റ്റ് ചാറ്റ് ഓഫ് ആണ്. അംഗീകൃത ചോദ്യ ലിസ്റ്റിൽ നിന്ന് മാത്രം തിരഞ്ഞെടുക്കാം.'
+                : 'Safe release mode: free-text chat is disabled. Please select from the approved question list only.'}
+            </p>
+            <p className="mx-auto mt-1 max-w-4xl text-center text-[10px] text-[var(--text-tertiary)]">
               {locale === 'ml'
                 ? 'ജനമിത്ര നിഷ്പക്ഷ വോട്ടർ വിവരങ്ങൾ നൽകുന്നു. ഔദ്യോഗിക സൈറ്റുകളിൽ പരിശോധിക്കുക.'
                 : 'Janamitra provides impartial voter info. Verify on official sources.'}

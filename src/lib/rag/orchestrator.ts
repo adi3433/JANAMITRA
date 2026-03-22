@@ -15,7 +15,7 @@
  */
 
 import type { ChatMessage, ChatSource, ActionItem, RetrievalTraceEntry } from '@/types';
-import { retrievePassages } from './retriever';
+import { retrievePassages, retrieveFaqPassages } from './retriever';
 import { rerankPassages, type RerankResult } from './reranker';
 import { generateAnswer } from './generator';
 import { extractActions } from './actions';
@@ -73,14 +73,172 @@ const ESCALATION_THRESHOLD = 0.55;
 const LOW_RETRIEVAL_SIMILARITY = 0.34;
 const LOW_RERANK_SCORE = 0.4;
 
+function isFaqLikeQuery(query: string): boolean {
+  const q = query.toLowerCase();
+  return (
+    /\b(who|what|when|where|why|which|how|can|is|are|should|whether)\b/.test(q)
+    || /\b(eligib|nomination|proposer|withdrawal|scrutiny|form\s*\d+|voter\s*id|epic|electoral\s*roll|polling|complaint|cvigil|mcc|timeline)\b/.test(q)
+    || /[\u0D00-\u0D7F]/.test(query)
+  );
+}
+
+function isGenericUncertainReply(text: string): boolean {
+  return /more information needed|don't have a confident answer|connect you with a human operator|കൂടുതൽ വിവരങ്ങൾ ആവശ്യമാണ്|ഉറപ്പുള്ള ഉത്തരം/i.test(text);
+}
+
+function extractFaqAnswerFromPassage(content: string): string | null {
+  const match = content.match(/Q:\s*[\s\S]*?\nA:\s*([\s\S]+)/i);
+  if (!match || !match[1]) return null;
+  return match[1].replace(/\s+/g, ' ').trim();
+}
+
+function extractFaqQuestionFromPassage(content: string): string | null {
+  const match = content.match(/Q:\s*([\s\S]*?)\nA:\s*[\s\S]*/i);
+  if (!match || !match[1]) return null;
+  return match[1].replace(/\s+/g, ' ').trim();
+}
+
+function normalizeForMatch(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function faqQuestionMatchScore(query: string, faqQuestion: string): number {
+  const q = normalizeForMatch(query);
+  const f = normalizeForMatch(faqQuestion);
+  if (!q || !f) return 0;
+  if (q === f) return 1;
+  if (q.includes(f) || f.includes(q)) return 0.9;
+
+  const qTokens = new Set(q.split(' ').filter(Boolean));
+  const fTokens = new Set(f.split(' ').filter(Boolean));
+  if (qTokens.size === 0 || fTokens.size === 0) return 0;
+
+  let intersection = 0;
+  for (const token of qTokens) {
+    if (fTokens.has(token)) intersection += 1;
+  }
+
+  const union = new Set([...qTokens, ...fTokens]).size;
+  return union > 0 ? intersection / union : 0;
+}
+
+function buildFaqExtractiveReply(
+  locale: 'en' | 'ml',
+  sourceTitle: string,
+  sourceUrl: string,
+  answer: string
+): string {
+  if (locale === 'ml') {
+    return `**ECI FAQ അടിസ്ഥാനമാക്കിയുള്ള ഉത്തരം**\n\n${answer}\n\n[Source 1: ${sourceTitle}]\n${sourceUrl}`;
+  }
+  return `**Answer Based On ECI FAQ**\n\n${answer}\n\n[Source 1: ${sourceTitle}]\n${sourceUrl}`;
+}
+
 export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {
   const { query, locale, conversationHistory, userId } = input;
   const cfg = getConfig();
   const totalStart = Date.now();
 
-  // ── Stage 1 & 2: Hybrid retrieval (embed + vector + BM25) ──
-  const retrieval = await retrievePassages(query, locale, MAX_CONTEXT_TOKENS);
-  const retrievalLatencyMs = retrieval.retrievalLatencyMs;
+  // ── Stage 1 & 2: Retrieval lanes (general hybrid + FAQ-only lane) ──
+  const faqLaneEnabled = isFaqLikeQuery(query);
+  const [generalRetrieval, faqRetrieval] = await Promise.all([
+    retrievePassages(query, locale, MAX_CONTEXT_TOKENS),
+    faqLaneEnabled ? retrieveFaqPassages(query, locale, MAX_CONTEXT_TOKENS) : Promise.resolve(null),
+  ]);
+
+  const generalTop = generalRetrieval.passages[0]?.score ?? 0;
+  const faqTop = faqRetrieval?.passages[0]?.score ?? 0;
+  const faqTopLooksDirect = Boolean(
+    faqRetrieval?.passages[0]
+      && (/^Q:\s/i.test(faqRetrieval.passages[0].content) || /ECI FAQ/i.test(faqRetrieval.passages[0].metadata.source))
+  );
+
+  const faqBestLexical = faqRetrieval
+    ? faqRetrieval.passages
+      .slice(0, 5)
+      .map((p) => {
+        const faqQuestion = extractFaqQuestionFromPassage(p.content) || '';
+        return {
+          passage: p,
+          score: faqQuestionMatchScore(query, faqQuestion),
+        };
+      })
+      .sort((a, b) => b.score - a.score)[0]
+    : null;
+  const faqHasStrongQuestionMatch = Boolean(faqBestLexical && faqBestLexical.score >= 0.72);
+
+  const useFaqLane = Boolean(
+    faqRetrieval
+      && faqRetrieval.passages.length > 0
+      && (
+        faqHasStrongQuestionMatch
+        ||
+        faqTop >= Math.max(0.38, generalTop + 0.06)
+        || (faqLaneEnabled && faqTopLooksDirect && faqTop >= 0.3)
+      )
+  );
+
+  // Deterministic fast path: when FAQ lexical question match is strong,
+  // return the extracted FAQ answer directly to avoid generation drift.
+  if (faqRetrieval && faqHasStrongQuestionMatch && faqBestLexical) {
+    const bestPassage = faqBestLexical.passage;
+    const extractedAnswer = extractFaqAnswerFromPassage(bestPassage.content);
+
+    if (extractedAnswer) {
+      const text = buildFaqExtractiveReply(
+        locale,
+        bestPassage.metadata.source,
+        bestPassage.metadata.url,
+        extractedAnswer
+      );
+      const source: ChatSource = {
+        title: bestPassage.metadata.source,
+        url: bestPassage.metadata.url,
+        lastUpdated: bestPassage.metadata.lastUpdated,
+        excerpt: bestPassage.content.substring(0, 150) + '...',
+      };
+      const trace: RAGTrace = {
+        retrievalLatencyMs: Math.max(generalRetrieval.retrievalLatencyMs, faqRetrieval.retrievalLatencyMs),
+        rerankLatencyMs: 0,
+        generationLatencyMs: 0,
+        totalLatencyMs: Date.now() - totalStart,
+        retrievedCount: faqRetrieval.passages.length,
+        rerankedCount: 1,
+        contextTokens: estimateTokens(bestPassage.content),
+        promptTokens: 0,
+        completionTokens: estimateTokens(text),
+        promptVersion: PROMPT_VERSION,
+      };
+
+      return {
+        text,
+        confidence: 0.93,
+        sources: [source],
+        actionable: extractActions(query, text, locale),
+        retrievalScore: Math.round((bestPassage.score ?? 0) * 100) / 100,
+        rerankerScores: [0.9],
+        retrievalTrace: [{
+          docId: bestPassage.id,
+          chunkId: bestPassage.id,
+          similarityScore: bestPassage.score,
+          rerankerScore: 0.9,
+        }],
+        generatorModel: 'faq-extractive-direct',
+        promptVersionHash: computePromptHash(`faq-direct:${bestPassage.id}:${query}`),
+        trace,
+        escalate: false,
+      };
+    }
+  }
+
+  const retrieval = useFaqLane ? faqRetrieval! : generalRetrieval;
+  const retrievalLatencyMs = useFaqLane && faqRetrieval
+    ? Math.max(generalRetrieval.retrievalLatencyMs, faqRetrieval.retrievalLatencyMs)
+    : generalRetrieval.retrievalLatencyMs;
 
   // ── Stage 3: Rerank with qwen3-reranker-8b ─────────────────
   const rerankStart = Date.now();
@@ -159,6 +317,23 @@ export async function ragOrchestrate(input: RAGInput): Promise<RAGOutput> {
   let cleanText = generated.text
     .replace(/\n?CONFIDENCE_SCORE:\s*[\d.]+[^\n]*/g, '')
     .trim();
+
+  // If model falls back to a generic uncertainty reply but retrieval already
+  // found an FAQ passage with a direct Q/A answer, provide an extractive answer
+  // from the retrieved source instead of hiding available information.
+  const topFaqPassage = topPassages.find((p) => /ECI FAQ/i.test(p.metadata.source) || /^Q:\s/i.test(p.content));
+  if (topFaqPassage && isGenericUncertainReply(cleanText)) {
+    const extractedAnswer = extractFaqAnswerFromPassage(topFaqPassage.content);
+    if (extractedAnswer) {
+      cleanText = buildFaqExtractiveReply(
+        locale,
+        topFaqPassage.metadata.source,
+        topFaqPassage.metadata.url,
+        extractedAnswer
+      );
+      modelSelfScore = Math.max(modelSelfScore, 0.72);
+    }
+  }
 
   // Safety net: if generator returned empty (all reasoning, no answer) — use topic-contextual fallback
   if (!cleanText && topPassages.length > 0) {

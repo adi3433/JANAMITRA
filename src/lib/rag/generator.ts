@@ -208,7 +208,36 @@ function templateFallback(query: string, locale: string): GenerationResult {
   const queryLower = query.toLowerCase();
   const fallbackMeta = { promptTokens: 0, completionTokens: 0, model: 'template-fallback' };
 
+  const hasIdDocumentIntent =
+    /\b(voter\s*id|id\s*card|photo\s*id|identity\s*document|identity\s*card|accepted\s*id|valid\s*id|id\s*proof|epic)\b/i.test(query)
+    || /\b(can\s+i\s+vote\s+without\s+(a\s+)?(voter\s*)?(id|card))\b/i.test(query)
+    || /\b(what\s+(id|documents?|papers?)\s+(are\s+)?(required|needed|necessary))\b/i.test(query)
+    || /\b(what\s+(can|should)\s+i\s+(bring|carry)\s+to\s+(the\s+)?(poll|polling\s*booth|polling\s*station|booth))\b/i.test(query)
+    || /ഐഡി\s*പ്രൂഫ്|ഐഡി\s*കാർഡ്\s*ഇല്ലാതെ|രേഖകൾ|ഡോക്യുമെന്റ്/i.test(query);
+
   // Match common intents
+  if (
+    queryLower.includes('eligible')
+    || queryLower.includes('eligibility')
+    || queryLower.includes('who can vote')
+    || queryLower.includes('who is eligible to vote')
+    || queryLower.includes('who can be registered as a voter')
+    || queryLower.includes('age to vote')
+    || queryLower.includes('minimum age for voting')
+    || queryLower.includes('വോട്ട് ചെയ്യാൻ യോഗ്യത')
+    || queryLower.includes('വോട്ടർ ആയി രജിസ്റ്റർ ചെയ്യാൻ യോഗ്യത')
+  ) {
+    return {
+      text:
+        locale === 'ml'
+          ? '## വോട്ട് ചെയ്യാനുള്ള യോഗ്യത\n\nസാധാരണയായി, വോട്ടറായി രജിസ്റ്റർ ചെയ്യാൻ/വോട്ട് ചെയ്യാൻ ഒരു വ്യക്തി:\n- **ഇന്ത്യൻ പൗരൻ** ആയിരിക്കണം\n- യോഗ്യതാ തീയതിയിൽ **18 വയസ്സ്** പൂർത്തിയായിരിക്കണം\n- ബന്ധപ്പെട്ട നിയോജകമണ്ഡലത്തിലെ **സാധാരണ താമസക്കാരൻ** ആയിരിക്കണം\n\n**ശ്രദ്ധിക്കുക:** ഇന്ത്യൻ പൗരനല്ലാത്ത വ്യക്തിക്ക് ഇന്ത്യയിലെ വോട്ടർ പട്ടികയിൽ പേര് ചേർക്കാൻ കഴിയില്ല.\n\nഓൺലൈൻ സേവനങ്ങൾ: [voters.eci.gov.in](https://voters.eci.gov.in) | [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in)\n\n**ഹെൽപ്\u200cലൈൻ:** 1950\n\n[Source: ECI FAQ / Voter Registration Rules]'
+          : '## Eligibility To Vote\n\nIn general, to be registered as a voter / eligible to vote, a person must:\n- Be an **Indian citizen**\n- Be **18 years or older** on the qualifying date\n- Be an **ordinary resident** of the concerned constituency\n\n**Note:** A non-citizen of India cannot be enrolled in the electoral roll in India.\n\nOnline services: [voters.eci.gov.in](https://voters.eci.gov.in) | [electoralsearch.eci.gov.in](https://electoralsearch.eci.gov.in)\n\n**Helpline:** 1950\n\n[Source: ECI FAQ / Voter Registration Rules]',
+      confidence: 0.86,
+      tokensUsed: 0,
+      ...fallbackMeta,
+    };
+  }
+
   if (queryLower.includes('register') || queryLower.includes('രജിസ്')) {
     return {
       text:
@@ -233,7 +262,56 @@ function templateFallback(query: string, locale: string): GenerationResult {
     };
   }
 
-  if (queryLower.includes('document') || queryLower.includes('id') || queryLower.includes('രേഖ')) {
+  if (
+    /\bwhat\s+is\s+sveep\b/i.test(query)
+    || /\bsveep\s+full\s+form\b/i.test(query)
+    || /SVEEP\s*എന്താണ്/i.test(query)
+    || /sveep\s*എന്താണ്/i.test(query)
+  ) {
+    return {
+      text:
+        locale === 'ml'
+          ? `## SVEEP എന്താണ്?
+
+SVEEP (**Systematic Voters' Education and Electoral Participation**) ഇന്ത്യൻ തിരഞ്ഞെടുപ്പ് കമ്മീഷന്റെ പ്രധാന വോട്ടർ അവബോധ പദ്ധതിയാണ്.
+
+### പ്രധാന ലക്ഷ്യങ്ങൾ:
+- വോട്ടർമാരിൽ അവബോധം വർദ്ധിപ്പിക്കുക
+- രജിസ്ട്രേഷൻ, വോട്ടിംഗ് നടപടിക്രമങ്ങൾ സംബന്ധിച്ച വിവരം നൽകുക
+- യുവാക്കൾ, സ്ത്രീകൾ, PwD വോട്ടർമാർ അടക്കം എല്ലാവരുടെയും പങ്കാളിത്തം വർദ്ധിപ്പിക്കുക
+
+### സാധാരണ SVEEP പ്രവർത്തനങ്ങൾ:
+- ക്യാമ്പസ് അംബാസഡർ പരിപാടികൾ
+- വോട്ടർ അവബോധ റാലികൾ, സാംസ്കാരിക പരിപാടികൾ
+- സ്കൂൾ/കോളേജ് ഔട്രീച്ച്, സാമൂഹിക മീഡിയ ക്യാംപെയ്നുകൾ
+
+കൂടുതൽ: [ecisveep.nic.in](https://ecisveep.nic.in)
+
+[Source: Election Commission of India — SVEEP]`
+          : `## What Is SVEEP?
+
+SVEEP (**Systematic Voters' Education and Electoral Participation**) is the flagship voter-awareness programme of the Election Commission of India.
+
+### Core Objectives:
+- Increase voter awareness and informed participation
+- Provide guidance on registration and voting procedures
+- Improve participation across youth, women, and PwD voters
+
+### Typical SVEEP Activities:
+- Campus ambassador programmes
+- Voter awareness drives and cultural outreach
+- School/college engagement and social media campaigns
+
+Learn more: [ecisveep.nic.in](https://ecisveep.nic.in)
+
+[Source: Election Commission of India — SVEEP]`,
+      confidence: 0.9,
+      tokensUsed: 0,
+      ...fallbackMeta,
+    };
+  }
+
+  if (queryLower.includes('document') || hasIdDocumentIntent) {
     return {
       text:
         locale === 'ml'
