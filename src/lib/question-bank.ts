@@ -125,6 +125,11 @@ function buildFaqQuestions(): ApprovedQuestion[] {
 let cachedQuestions: ApprovedQuestion[] | null = null;
 let approvedNormalized: Set<string> | null = null;
 let faqAnswerByNormalizedQuestion: Map<string, FaqExactAnswer> | null = null;
+let faqAnswerByExactQuestion: Map<string, FaqExactAnswer> | null = null;
+
+function exactQuestionKey(value: string): string {
+  return value.replace(/\s+/g, ' ').trim().toLowerCase();
+}
 
 export function getApprovedQuestions(): ApprovedQuestion[] {
   if (cachedQuestions) return cachedQuestions;
@@ -152,6 +157,7 @@ export function getApprovedQuestions(): ApprovedQuestion[] {
 
   approvedNormalized = new Set<string>();
   faqAnswerByNormalizedQuestion = new Map<string, FaqExactAnswer>();
+  faqAnswerByExactQuestion = new Map<string, FaqExactAnswer>();
   for (const q of cachedQuestions) {
     approvedNormalized.add(normalizeQuestion(q.en));
     if (q.ml) approvedNormalized.add(normalizeQuestion(q.ml));
@@ -161,15 +167,24 @@ export function getApprovedQuestions(): ApprovedQuestion[] {
   for (const item of raw) {
     if (!item || typeof item.question !== 'string' || typeof item.answer !== 'string') continue;
     const norm = normalizeQuestion(item.question);
-    if (!norm || faqAnswerByNormalizedQuestion.has(norm)) continue;
+    if (!norm) continue;
 
-    faqAnswerByNormalizedQuestion.set(norm, {
+    const faqAnswer: FaqExactAnswer = {
       question: item.question.trim(),
       answer: item.answer.trim(),
       url: typeof item.url === 'string' && item.url ? item.url : 'https://www.eci.gov.in/faq/',
       categoryName: typeof item.categoryName === 'string' ? item.categoryName : undefined,
       subCategoryName: typeof item.subCategoryName === 'string' ? item.subCategoryName : undefined,
-    });
+    };
+
+    const exactKey = exactQuestionKey(item.question);
+    if (!faqAnswerByExactQuestion.has(exactKey)) {
+      faqAnswerByExactQuestion.set(exactKey, faqAnswer);
+    }
+
+    if (!faqAnswerByNormalizedQuestion.has(norm)) {
+      faqAnswerByNormalizedQuestion.set(norm, faqAnswer);
+    }
   }
 
   return cachedQuestions;
@@ -189,10 +204,14 @@ export function normalizeApprovedQuestion(input: string): string {
 }
 
 export function getFaqExactAnswer(input: string): FaqExactAnswer | null {
+  const exact = exactQuestionKey(input || '');
   const normalized = normalizeQuestion(input || '');
-  if (!normalized) return null;
-  if (!faqAnswerByNormalizedQuestion) {
+  if (!exact && !normalized) return null;
+  if (!faqAnswerByNormalizedQuestion || !faqAnswerByExactQuestion) {
     getApprovedQuestions();
   }
-  return faqAnswerByNormalizedQuestion?.get(normalized) ?? null;
+
+  return faqAnswerByExactQuestion?.get(exact)
+    ?? faqAnswerByNormalizedQuestion?.get(normalized)
+    ?? null;
 }

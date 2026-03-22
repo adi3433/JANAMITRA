@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useDeferredValue, useMemo } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import type { ApprovedQuestion } from '@/lib/question-bank';
 import { motion } from 'framer-motion';
@@ -34,11 +34,12 @@ export function QuestionBrowser({
   disabled,
   searchInputRef,
 }: Props) {
-  const filteredSections = useMemo(() => {
-    const q = query.trim().toLowerCase();
+  const deferredQuery = useDeferredValue(query);
+
+  const allSectionsFiltered = useMemo(() => {
+    const q = deferredQuery.trim().toLowerCase();
 
     return sections
-      .filter((section) => selectedSection === 'all' || section.sectionEn === selectedSection)
       .map((section) => {
         const questions = q
           ? section.questions.filter((item) => {
@@ -49,12 +50,24 @@ export function QuestionBrowser({
         return { ...section, questions };
       })
       .filter((section) => section.questions.length > 0);
-  }, [sections, selectedSection, query, locale]);
+  }, [sections, deferredQuery, locale]);
+
+  const filteredSections = useMemo(() => {
+    if (selectedSection === 'all') {
+      return allSectionsFiltered;
+    }
+    return allSectionsFiltered.filter((section) => section.sectionEn === selectedSection);
+  }, [selectedSection, allSectionsFiltered]);
 
   const totalCount = useMemo(
     () => filteredSections.reduce((sum, section) => sum + section.questions.length, 0),
     [filteredSections]
   );
+
+  const hasMatchesOutsideSelectedSection = useMemo(() => {
+    if (selectedSection === 'all' || !deferredQuery.trim()) return false;
+    return allSectionsFiltered.length > 0 && filteredSections.length === 0;
+  }, [selectedSection, deferredQuery, allSectionsFiltered, filteredSections]);
 
   return (
     <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] p-3 shadow-sm">
@@ -71,6 +84,7 @@ export function QuestionBrowser({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={locale === 'ml' ? 'ചോദ്യം തിരയുക...' : 'Search questions...'}
+            aria-label={locale === 'ml' ? 'ചോദ്യങ്ങൾ തിരയുക' : 'Search approved questions'}
             className={`w-full rounded-lg border border-[var(--border-primary)] bg-[var(--surface-secondary)] py-2 pl-8 pr-3 text-sm text-[var(--text-primary)] outline-none ring-0 transition focus:border-[var(--color-primary-400)] ${locale === 'ml' ? 'font-ml' : ''}`}
           />
         </div>
@@ -102,9 +116,19 @@ export function QuestionBrowser({
 
       <div className="max-h-[52vh] overflow-y-auto pr-1" style={{ WebkitOverflowScrolling: 'touch' }}>
         {filteredSections.length === 0 ? (
-          <p className={`py-8 text-center text-sm text-[var(--text-tertiary)] ${locale === 'ml' ? 'font-ml' : ''}`}>
-            {locale === 'ml' ? 'ചോദ്യങ്ങൾ കണ്ടെത്താനായില്ല.' : 'No questions found.'}
-          </p>
+          <div className="py-8 text-center">
+            <p className={`text-sm text-[var(--text-tertiary)] ${locale === 'ml' ? 'font-ml' : ''}`}>
+              {locale === 'ml' ? 'ചോദ്യങ്ങൾ കണ്ടെത്താനായില്ല.' : 'No questions found.'}
+            </p>
+            {hasMatchesOutsideSelectedSection && (
+              <button
+                onClick={() => setSelectedSection('all')}
+                className={`mt-2 rounded-md border border-[var(--border-primary)] bg-[var(--surface-secondary)] px-3 py-1 text-xs text-[var(--text-secondary)] transition hover:border-[var(--color-primary-300)] ${locale === 'ml' ? 'font-ml' : ''}`}
+              >
+                {locale === 'ml' ? 'എല്ലാ വിഭാഗങ്ങളിലും തിരയുക' : 'Search in all sections'}
+              </button>
+            )}
+          </div>
         ) : (
           filteredSections.map((section, index) => (
             <motion.details

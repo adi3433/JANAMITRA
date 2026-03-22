@@ -52,7 +52,10 @@ export default function ChatPage() {
     setShortcutHandlers({
       onNewChat: () => resetSession(),
       onFocusInput: () => {
-        searchInputRef.current?.focus();
+        setQuestionPanelCollapsed(false);
+        requestAnimationFrame(() => {
+          searchInputRef.current?.focus();
+        });
       },
       onStopGenerating: () => {
         // Stop the typing indicator (API call abort is handled in useChat)
@@ -111,10 +114,38 @@ export default function ChatPage() {
   const handleNewConversation = useCallback(() => {
     resetSession();
     setQuestionPanelCollapsed(false);
+    setQuestionQuery('');
+    setSelectedSection('all');
   }, [resetSession]);
+
+  const handleQuestionQueryChange = useCallback((value: string) => {
+    setQuestionQuery(value);
+
+    // Any active search should run across the full corpus and keep panel visible.
+    if (value.trim()) {
+      setSelectedSection('all');
+      setQuestionPanelCollapsed(false);
+    }
+  }, []);
+
+  const handleToggleQuestionPanel = useCallback(() => {
+    setQuestionPanelCollapsed((prev) => {
+      const next = !prev;
+
+      // If user collapses while a search is active, clear filters to avoid
+      // confusing hidden-state combinations when reopening.
+      if (next && questionQuery.trim()) {
+        setQuestionQuery('');
+        setSelectedSection('all');
+      }
+
+      return next;
+    });
+  }, [questionQuery]);
 
   const handleSelectQuestion = useCallback((question: string) => {
     setQuestionQuery('');
+    setSelectedSection('all');
     send(question);
 
     // On mobile, collapse picker after selection to prioritize message view.
@@ -215,8 +246,9 @@ export default function ChatPage() {
                   {locale === 'ml' ? 'അംഗീകൃത ചോദ്യങ്ങളുടെ ലിസ്റ്റ്' : 'Approved Questions List'}
                 </p>
                 <button
-                  onClick={() => setQuestionPanelCollapsed((v) => !v)}
+                  onClick={handleToggleQuestionPanel}
                   className={`inline-flex items-center gap-1 rounded-md border border-[var(--border-primary)] bg-[var(--surface-primary)] px-2 py-1 text-[11px] text-[var(--text-secondary)] transition hover:border-[var(--color-primary-300)] ${locale === 'ml' ? 'font-ml' : ''}`}
+                  aria-label={questionPanelCollapsed ? 'Show question list' : 'Collapse question list'}
                 >
                   {questionPanelCollapsed
                     ? (locale === 'ml' ? 'കാണിക്കുക' : 'Show')
@@ -236,7 +268,7 @@ export default function ChatPage() {
                       locale={locale}
                       sections={approvedSections}
                       query={questionQuery}
-                      setQuery={setQuestionQuery}
+                      setQuery={handleQuestionQueryChange}
                       selectedSection={selectedSection}
                       setSelectedSection={setSelectedSection}
                       onSelectQuestion={handleSelectQuestion}
